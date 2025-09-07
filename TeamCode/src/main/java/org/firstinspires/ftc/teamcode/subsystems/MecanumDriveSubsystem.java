@@ -22,11 +22,12 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        this.imu = imu;
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParams = new IMU.Parameters(
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(imuParams);
+
+        this.imu = imu;
     }
 
     public void drive(double x, double y, double rotation) {
