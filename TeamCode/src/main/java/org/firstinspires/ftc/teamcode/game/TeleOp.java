@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.game;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Subsystems.MecanumDriveSubsystem;
-import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
