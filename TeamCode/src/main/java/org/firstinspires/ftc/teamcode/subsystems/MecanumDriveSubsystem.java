@@ -10,7 +10,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
 
-    public MecanumDriveSubsystem(HardwareMap hardwareMap, IMU imu) {
+    public MecanumDriveSubsystem(HardwareMap hardwareMap) {
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -22,7 +22,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParams = new IMU.Parameters(
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(imuParams);
