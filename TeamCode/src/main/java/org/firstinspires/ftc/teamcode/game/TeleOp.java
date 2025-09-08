@@ -14,8 +14,7 @@ public class TeleOp extends OpMode {
     private DriveCommand driveCommand;
 
     public void init() {
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        driveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu);
+        driveSubsystem = new MecanumDriveSubsystem(hardwareMap);
         driveCommand = new DriveCommand(gamepad1, driveSubsystem);
         CommandScheduler.getInstance().schedule(driveCommand);
     }
