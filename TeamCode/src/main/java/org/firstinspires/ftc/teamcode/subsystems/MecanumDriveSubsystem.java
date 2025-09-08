@@ -11,10 +11,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     DcMotor frontLeft, frontRight, backLeft, backRight;
 
     public MecanumDriveSubsystem(HardwareMap hardwareMap) {
-        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
