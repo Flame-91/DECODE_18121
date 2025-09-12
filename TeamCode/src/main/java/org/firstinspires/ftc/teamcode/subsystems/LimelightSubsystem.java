@@ -4,34 +4,55 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+
 public class LimelightSubsystem {
     private Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         // Initialize your Limelight hardware
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
     }
 
-    // Call this to get the latest Limelight results
-    public LLResult getLatestResult() {
+    // Get latest vision result
+    private LLResult getLatestResult() {
         return limelight.getLatestResult();
     }
 
-    // Example: get AprilTag ID
     public int getAprilTagID() {
-        LLResult result = limelight.getLatestResult();
+        LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
-            return result.getId();   // This gives AprilTag ID
+            return result.getTargetID();   // FTC API uses getTargetID()
         }
         return -1; // No tag detected
     }
 
-    // Example: get robot pose (if AprilTag detected)
-    public double[] getBotPose() {
-        LLResult result = limelight.getLatestResult();
+    public Pose3D getBotPose() {
+        LLResult result = getLatestResult();
         if (result != null && result.isValid() && result.getBotpose() != null) {
-            return result.getBotpose();  // returns [x,y,z,roll,pitch,yaw]
+            return result.getBotpose();   // FTC API has getBotpose()
         }
-        return null; // No pose available
+        return null;
+    }
+
+    public boolean hasTarget() {
+        LLResult result = getLatestResult();
+        return result != null && result.isValid();
+    }
+
+    public double getXOffset() {
+        LLResult result = getLatestResult();
+        if (result != null && result.isValid()) {
+            return result.getTx();
+        }
+        return 0.0;
+    }
+
+    public double getYOffset() {
+        LLResult result = getLatestResult();
+        if (result != null && result.isValid()) {
+            return result.getTy();
+        }
+        return 0.0;
     }
 }
