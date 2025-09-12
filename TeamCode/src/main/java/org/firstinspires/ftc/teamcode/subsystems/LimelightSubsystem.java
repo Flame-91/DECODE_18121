@@ -64,4 +64,11 @@ public class LimelightSubsystem {
         }
         return 0.0;
     }
+    public double getPitch() {
+        LLResult result = getLatestResult();
+        if (result != null && result.isValid()) {
+            return result.getTy(); // How far up or down the target is (degrees)
+        }
+        return -1;
+    }
 }
