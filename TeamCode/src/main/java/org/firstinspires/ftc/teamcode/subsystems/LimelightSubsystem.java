@@ -71,4 +71,12 @@ public class LimelightSubsystem {
         }
         return -1;
     }
+
+    public double getYaw() {
+        LLResult result = getLatestResult();
+        if (result != null && result.isValid()) {
+            return result.getTx(); // How far up or down the target is (degrees)
+        }
+        return -1;
+    }
 }
