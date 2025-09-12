@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
+import java.util.List;
+
 public class LimelightSubsystem {
     private Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         // Initialize your Limelight hardware
-        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
     // Get latest vision result
@@ -22,7 +25,13 @@ public class LimelightSubsystem {
     public int getAprilTagID() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
-            return result.getTargetID();   // FTC API uses getTargetID()
+            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                int id = fiducial.getFiducialId();
+                return id;
+                // Use the ID as needed
+            }   // FTC API uses getTargetID()
+
         }
         return -1; // No tag detected
     }
@@ -30,7 +39,7 @@ public class LimelightSubsystem {
     public Pose3D getBotPose() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid() && result.getBotpose() != null) {
-            return result.getBotpose();   // FTC API has getBotpose()
+            return result.getBotpose();  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return null;
     }
