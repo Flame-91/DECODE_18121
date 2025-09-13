@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 public class DriveCommand extends CommandBase {
     MecanumDriveSubsystem drive;
     Gamepad gamepad;
-    private LimelightSubsystem ll;
+    LimelightSubsystem ll;
     public DriveCommand(Gamepad gamepad, MecanumDriveSubsystem drive) {
         this.drive = drive;
         this.gamepad = gamepad;

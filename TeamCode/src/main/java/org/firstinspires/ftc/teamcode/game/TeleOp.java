@@ -12,13 +12,16 @@ public class TeleOp extends OpMode {
 
     private MecanumDriveSubsystem driveSubsystem;
     private DriveCommand driveCommand;
+    public String team;
 
     public void init() {
         driveSubsystem = new MecanumDriveSubsystem(hardwareMap);
         driveCommand = new DriveCommand(gamepad1, driveSubsystem);
         CommandScheduler.getInstance().schedule(driveCommand);
+        team = driveCommand.team(); // string stores "blue" for lb, "red" for rb, or "" if not inputted
     }
     public void init_loop() {}
+
     public void start() {}
     public void loop() {
         CommandScheduler.getInstance().run();
