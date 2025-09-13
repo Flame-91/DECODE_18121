@@ -73,6 +73,7 @@ public class LimelightSubsystem {
         if (hasTarget()) {
             return Math.sqrt(Math.pow(distanceFromTag()[0], 2) + Math.pow(distanceFromTag()[1], 2)); // pythag to find xy distance
         }
+        return 0;
     }
 
     public double[] autoAlign() {

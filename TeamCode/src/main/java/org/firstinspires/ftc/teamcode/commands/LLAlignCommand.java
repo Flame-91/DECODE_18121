@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
@@ -9,9 +10,10 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
     private final double tolerance = 2.0;      // degrees tolerance
-    private final double kP = 0.01;       // proportional gain
+    private double kP = 0.01;       // proportional gain
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
+    PIDController PID =  new PIDController(0.001,0.01, 0.1);
     LimelightSubsystem LimelightSubsystem;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
@@ -19,9 +21,11 @@ public class LLAlignCommand extends CommandBase {
         addRequirements(drive);
     }
 
+
     @Override
     public void execute() {
         yaw = LimelightSubsystem.getYaw(); // horizontal offset
+        PID.setSetpoint(0);
 
         // Pause if no target
         if (yaw == -361.0) {
@@ -30,7 +34,8 @@ public class LLAlignCommand extends CommandBase {
         }
 
         // Proportional control
-        double yawCorrection = yaw * kP;
+//        kP = proportionalAlign(yaw);
+        double yawCorrection = PID.calculate(yaw);
 
         // Clamp to max rotation speed
         if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed;
