@@ -69,6 +69,36 @@ public class LimelightSubsystem {
         return null;
     }
 
+    public double[] autoAlign() {
+        if (hasTarget()) {
+            double buffer = 0.03;
+            double xCorrection = 0;
+            double yCorrection = 0;
+            double yawCorrection;
+            if (distanceFromTag()[0] > buffer) {
+                xCorrection = -0.2;
+            } else if (distanceFromTag()[0] < -buffer) {
+                xCorrection = 0.2;
+            }
+
+            if (distanceFromTag()[1] > buffer) {
+                yCorrection = -0.2;
+            } else if (distanceFromTag()[1] < -buffer) {
+                yCorrection = 0.2;
+            }
+
+            if (getYaw() > 0) {
+                yawCorrection = -0.15;
+            } else {
+                yawCorrection = 0.15;
+            }
+
+            return new double[]{xCorrection, yCorrection, yawCorrection};
+        }
+
+        return new double[]{};
+    }
+
     public boolean hasTarget() {
         LLResult result = getLatestResult();
         return result != null && result.isValid();
