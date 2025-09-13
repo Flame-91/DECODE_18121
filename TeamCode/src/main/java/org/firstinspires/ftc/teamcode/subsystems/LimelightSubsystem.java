@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 public class LimelightSubsystem {
-    private Limelight3A limelight;
+    private static Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         // Initialize your Limelight hardware
@@ -36,10 +38,33 @@ public class LimelightSubsystem {
         return -1; // No tag detected
     }
 
-    public Pose3D getBotPose() {
+    public double[] distanceFromTag() {
+        LLResult result = limelight.getLatestResult();
+
+        if (hasTarget()) {
+            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+            if (!fiducials.isEmpty()) {
+                LLResultTypes.FiducialResult tag = fiducials.get(0); // Get the first detected AprilTag
+                double distanceX =tag.getTargetPoseRobotSpace().getPosition().x; // this might be wrong idk lol
+                double distanceY = tag.getTargetPoseRobotSpace().getPosition().y;
+                double distanceZ = tag.getTargetPoseRobotSpace().getPosition().z;
+
+                return new double[]{distanceX, distanceY, distanceZ};
+                // Use distanceX, distanceY, and distanceZ as needed
+//                telemetry.addData("Distance X", distanceX);
+//                telemetry.addData("Distance Y", distanceY);
+//                telemetry.addData("Distance Z", distanceZ);
+            }
+        }
+
+        return new double[]{};
+    }
+
+    public double[] getBotPose() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid() && result.getBotpose() != null) {
-            return result.getBotpose();  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+            Pose3D botPose = result.getBotpose();
+            return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return null;
     }
@@ -49,34 +74,47 @@ public class LimelightSubsystem {
         return result != null && result.isValid();
     }
 
-    public double getXOffset() {
-        LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
-            return result.getTx();
-        }
-        return 0.0;
-    }
-
-    public double getYOffset() {
-        LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
-            return result.getTy();
-        }
-        return 0.0;
-    }
+//    public double getXOffset() {
+//        LLResult result = getLatestResult();
+//        if (hasTarget()) {
+//            return result.getTx();
+//        }
+//        return 0.0;
+//    }
+//
+//    public double getYOffset() {
+//        LLResult result = getLatestResult();
+//        if (hasTarget()) {
+//            return result.getTy();
+//        }
+//        return 0.0;
+//    }
     public double getPitch() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
+        if (hasTarget()) {
             return result.getTy(); // How far up or down the target is (degrees)
         }
-        return -1;
+        return -361.0;
     }
 
     public double getYaw() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
-            return result.getTx(); // How far up or down the target is (degrees)
+        if (hasTarget()) {
+            return result.getTx(); // How far left or right the target is (degrees)
         }
-        return -1;
+        return -361.0;
+    }
+
+    public String[] motif() {
+        int aprilTag = getAprilTagID();
+        if (aprilTag == 21) {
+            return new String[]{"g", "p", "p"};
+        } else if (aprilTag == 22) {
+            return new String[]{"p", "g", "p"};
+        } else if (aprilTag == 23) {
+            return new String[]{"p", "p", "g"};
+        }
+
+        return new String[]{};
     }
 }
