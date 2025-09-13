@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 public class DriveCommand extends CommandBase {
     MecanumDriveSubsystem drive;
     Gamepad gamepad;
-    LimelightSubsystem ll;
+    private LimelightSubsystem ll;
     public DriveCommand(Gamepad gamepad, MecanumDriveSubsystem drive) {
         this.drive = drive;
         this.gamepad = gamepad;
@@ -18,20 +18,21 @@ public class DriveCommand extends CommandBase {
 
     public void initialize() {}
 
+    public String team() {
+        if (gamepad.left_bumper) {
+            return "blue";
+        } else if (gamepad.right_bumper) {
+            return "red";
+        }
+        return "";
+    }
+
     public void execute() {
-        if (!gamepad.a) {
-            double x = -gamepad.left_stick_x;
-            double y = -gamepad.left_stick_y;
-            double rotation = gamepad.right_stick_x;
-            drive.drive(x, y, rotation);
-        } else {
-//            double correctX;
-//            double correctY;
+        if (gamepad.a && ll.hasTarget()) {
             double buffer = 0.03;
             double xCorrection = 0;
             double yCorrection = 0;
-            double yawCorrection = 0;
-
+            double yawCorrection;
             if (ll.distanceFromTag()[0] > buffer) {
                 xCorrection = -0.2;
             } else if (ll.distanceFromTag()[0] < -buffer) {
@@ -51,6 +52,12 @@ public class DriveCommand extends CommandBase {
             }
 
             drive.drive(-xCorrection, -yCorrection, yawCorrection);
+        } else {
+            double x = -gamepad.left_stick_x;
+            double y = -gamepad.left_stick_y;
+            double rotation = gamepad.right_stick_x;
+
+            drive.drive(x, y, rotation);
         }
     }
 
@@ -61,6 +68,7 @@ public class DriveCommand extends CommandBase {
     public boolean isFinished() {
         return false;
     }
+
     public void end(boolean interrupted) {
         drive.drive(0, 0, 0);
     }

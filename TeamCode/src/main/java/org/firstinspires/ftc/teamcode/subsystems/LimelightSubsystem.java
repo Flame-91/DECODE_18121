@@ -45,7 +45,7 @@ public class LimelightSubsystem {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (!fiducials.isEmpty()) {
                 LLResultTypes.FiducialResult tag = fiducials.get(0); // Get the first detected AprilTag
-                double distanceX =tag.getTargetPoseRobotSpace().getPosition().x; // this might be wrong idk lol
+                double distanceX = tag.getTargetPoseRobotSpace().getPosition().x; // this might be wrong idk lol
                 double distanceY = tag.getTargetPoseRobotSpace().getPosition().y;
                 double distanceZ = tag.getTargetPoseRobotSpace().getPosition().z;
 
