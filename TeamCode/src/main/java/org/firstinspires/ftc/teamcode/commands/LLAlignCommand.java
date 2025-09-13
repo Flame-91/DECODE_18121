@@ -12,6 +12,7 @@ public class LLAlignCommand extends CommandBase {
     private final double kP = 0.01;       // proportional gain
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
+    LimelightSubsystem LimelightSubsystem;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
