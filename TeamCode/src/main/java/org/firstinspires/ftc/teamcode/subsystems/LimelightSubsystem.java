@@ -4,10 +4,11 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import java.util.List;
 
-public class LimelightSubsystem {
+public class LimelightSubsystem extends SubsystemBase {
     private static Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
