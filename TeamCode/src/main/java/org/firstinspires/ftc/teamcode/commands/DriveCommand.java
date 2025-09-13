@@ -29,27 +29,11 @@ public class DriveCommand extends CommandBase {
 
     public void execute() {
         if (gamepad.a && ll.hasTarget()) {
-            double buffer = 0.03;
-            double xCorrection = 0;
-            double yCorrection = 0;
-            double yawCorrection;
-            if (ll.distanceFromTag()[0] > buffer) {
-                xCorrection = -0.2;
-            } else if (ll.distanceFromTag()[0] < -buffer) {
-                xCorrection = 0.2;
-            }
+            double[] corrections = ll.autoAlign();
 
-            if (ll.distanceFromTag()[1] > buffer) {
-                yCorrection = -0.2;
-            } else if (ll.distanceFromTag()[1] < -buffer) {
-                yCorrection = 0.2;
-            }
-
-            if (ll.getYaw() > 0) {
-                yawCorrection = -0.15;
-            } else {
-                yawCorrection = 0.15;
-            }
+            double xCorrection = corrections[0];
+            double yCorrection = corrections[1];
+            double yawCorrection = corrections[2];
 
             drive.drive(-xCorrection, -yCorrection, yawCorrection);
         } else {
