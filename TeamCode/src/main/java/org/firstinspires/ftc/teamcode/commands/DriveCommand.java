@@ -18,7 +18,7 @@ public class DriveCommand extends CommandBase {
     public void execute() {
         double x = -gamepad.left_stick_x;
         double y = -gamepad.left_stick_y;
-        double rotation = gamepad.right_stick_x;
+        double rotation = -gamepad.right_stick_x;
         drive.drive(x, y, rotation);
     }
     public boolean isFinished() {
