@@ -5,6 +5,8 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+
 import java.util.List;
 
 public class LimelightSubsystem {
@@ -68,6 +70,15 @@ public class LimelightSubsystem {
             }
         }
         return -361.0;
+    }
+
+    public double[] getBotPose() {
+        LLResult result = getLatestResult();
+        if (result != null && result.isValid() && result.getBotpose() != null) {
+            Pose3D botPose = result.getBotpose();
+            return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+        }
+        return null;
     }
 
     // Returns an array with yaw and pitch angles, empty if no target
