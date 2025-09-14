@@ -10,18 +10,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 public class LimelightSubsystem {
-    private static Limelight3A limelight;
+    private Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
-    private static LLResult getLatestResult() {
+    private LLResult getLatestResult() {
         return limelight.getLatestResult();
     }
 
     // Returns true if any target is visible
-    public static boolean hasTarget() {
+    public boolean hasTarget() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
             return true;
@@ -31,7 +31,7 @@ public class LimelightSubsystem {
     }
 
     // Returns the first AprilTag ID detected, or -1 if none
-    public static int getAprilTagID() {
+    public int getAprilTagID() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
@@ -43,7 +43,7 @@ public class LimelightSubsystem {
     }
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
-    public static double getYaw() {
+    public double getYaw() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
@@ -58,7 +58,7 @@ public class LimelightSubsystem {
     }
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
-    public static double getPitch() {
+    public double getPitch() {
         LLResult result = getLatestResult();
         if (result != null && result.isValid()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
@@ -82,7 +82,7 @@ public class LimelightSubsystem {
     }
 
     // Returns an array with yaw and pitch angles, empty if no target
-    public static double[] getTagAngles() {
+    public double[] getTagAngles() {
         double yaw = getYaw();
         double pitch = getPitch();
         if (yaw == -361.0 || pitch == -361.0) {
@@ -93,7 +93,7 @@ public class LimelightSubsystem {
     }
 
     // Returns the motif pattern based on AprilTag ID
-    public static String[] motif() {
+    public String[] motif() {
         int tagID = getAprilTagID();
         if (tagID == 21) {
             return new String[]{"g", "p", "p"};

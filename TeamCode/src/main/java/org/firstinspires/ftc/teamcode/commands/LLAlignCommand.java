@@ -15,6 +15,7 @@ public class LLAlignCommand extends CommandBase {
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
     LinearController LC = new LinearController(1.0 /200, 0, -maxYawSpeed, maxYawSpeed);
+    LimelightSubsystem ll;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
@@ -23,7 +24,7 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
-        yaw = LimelightSubsystem.getYaw(); // horizontal offset
+        yaw = ll.getYaw(); // horizontal offset
 //        LC.setSetpoint(0);
 
         // Pause if no target
