@@ -13,22 +13,22 @@ public class LLGoToPositionCommand extends CommandBase {
     final private double xTarget;
     final private double yTarget;
     private final MecanumDriveSubsystem drive;
-//    private final Gamepad gamepad;
+    private final Gamepad gamepad;
     LinearController xController = new LinearController((1.0/3.6), 0, -0.5, 0.5);
     LinearController yController = new LinearController((1.0/3.6), 0, -0.5, 0.5);
     LinearController yawController = new LinearController((1.0/250), 0, -0.5, 0.5);
     //    final private double
-    public LLGoToPositionCommand(MecanumDriveSubsystem drive, double xTarget, double yTarget) {
+    public LLGoToPositionCommand(Gamepad gamepad, MecanumDriveSubsystem drive, double xTarget, double yTarget) {
         this.xTarget = xTarget;
         this.yTarget = yTarget;
         this.drive = drive;
-//        this.gamepad = gamepad;
+        this.gamepad = gamepad;
     }
 
     @Override
     public void execute() {//(double xTarget in meters, double yTarget, double xRobot, double yRobot, double heading, double yawError) {
         // Position error in field space
-        if (ll.hasTarget()) {
+        if (ll.hasTarget() && gamepad.x) {
             double xRobot = ll.getBotPose()[0];
             double yRobot = ll.getBotPose()[1];
             double heading = ll.getBotPose()[5];
