@@ -23,7 +23,7 @@ public class LimelightSubsystem {
     // Returns true if any target is visible
     public boolean hasTarget() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
+        if (hasTarget()) {
             return true;
         } else {
             return false;
@@ -33,7 +33,7 @@ public class LimelightSubsystem {
     // Returns the first AprilTag ID detected, or -1 if none
     public int getAprilTagID() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
+        if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && fiducials.size() > 0) {
                 return fiducials.get(0).getFiducialId();
@@ -45,7 +45,7 @@ public class LimelightSubsystem {
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYaw() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
+        if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && fiducials.size() > 0) {
                 LLResultTypes.FiducialResult tag = fiducials.get(0);
@@ -60,7 +60,7 @@ public class LimelightSubsystem {
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitch() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid()) {
+        if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && fiducials.size() > 0) {
                 LLResultTypes.FiducialResult tag = fiducials.get(0);
@@ -74,7 +74,7 @@ public class LimelightSubsystem {
 
     public double[] getBotPose() {
         LLResult result = getLatestResult();
-        if (result != null && result.isValid() && result.getBotpose() != null) {
+        if (hasTarget() && result.getBotpose() != null) {
             Pose3D botPose = result.getBotpose();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
