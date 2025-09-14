@@ -72,25 +72,27 @@ public class LimelightSubsystem {
         return -361.0;
     }
 
+    // returns the robot's center's position on the field if limelight can see an april tag
+
     public double[] getBotPose() {
         LLResult result = getLatestResult();
-        if (hasTarget() && result.getBotpose() != null) {
+        if (hasTarget()) {
             Pose3D botPose = result.getBotpose();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
-        return null;
+        return new double[]{};
     }
 
     // Returns an array with yaw and pitch angles, empty if no target
-    public double[] getTagAngles() {
-        double yaw = getYaw();
-        double pitch = getPitch();
-        if (yaw == -361.0 || pitch == -361.0) {
-            return new double[]{};
-        } else {
-            return new double[]{yaw, pitch};
-        }
-    }
+//    public double[] getTagAngles() {
+//        double yaw = getYaw();
+//        double pitch = getPitch();
+//        if (yaw == -361.0 || pitch == -361.0) {
+//            return new double[]{};
+//        } else {
+//            return new double[]{yaw, pitch};
+//        }
+//    }
 
     // Returns the motif pattern based on AprilTag ID
     public String[] motif() {
@@ -101,8 +103,8 @@ public class LimelightSubsystem {
             return new String[]{"p", "g", "p"};
         } else if (tagID == 23) {
             return new String[]{"p", "p", "g"};
-        } else {
-            return new String[]{};
         }
+
+        return new String[]{};
     }
 }

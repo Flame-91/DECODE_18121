@@ -37,8 +37,8 @@ public class LLAlignCommand extends CommandBase {
         double yawCorrection = LC.calculate(yaw);
 
         // Clamp to max rotation speed
-        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed;
-        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
+//        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl function
+//        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
 
         // Apply rotation
         drive.drive(0, 0, -yawCorrection); // negative to correct direction
