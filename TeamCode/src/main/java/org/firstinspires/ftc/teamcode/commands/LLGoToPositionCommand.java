@@ -21,5 +21,42 @@ public class LLGoToPositionCommand extends CommandBase {
         this.gamepad = gamepad;
     }
 
+    @Override
+    public void execute() {//(double xTarget in meters, double yTarget, double xRobot, double yRobot, double heading, double yawError) {
+        // Position error in field space
+        double xRobot = ll.getBotPose()[0];
+        double yRobot = ll.getBotPose()[1];
+
+
+        double errorX = xTarget - xRobot;
+        double errorY = yTarget - yRobot;
+
+        // Linear controllers (you already have)
+        double vx = xController.calculate(errorX);
+        double vy = yController.calculate(errorY);
+
+        // Rotate into robot space
+        double xCmd = vx * Math.cos(heading) + vy * Math.sin(heading);
+        double yCmd = -vx * Math.sin(heading) + vy * Math.cos(heading);
+
+        // Rotation correction
+        double rx = yawController.calculate(yawError);
+
+        // Mecanum drive
+        double fl = yCmd + xCmd + rx;
+        double fr = yCmd - xCmd - rx;
+        double bl = yCmd - xCmd + rx;
+        double br = yCmd + xCmd - rx;
+
+        double max = Math.max(1.0, Math.max(Math.abs(fl), Math.max(Math.abs(fr),
+                Math.max(Math.abs(bl), Math.abs(br)))));
+        fl /= max; fr /= max; bl /= max; br /= max;
+
+        lf.setPower(fl);
+        rf.setPower(fr);
+        lb.setPower(bl);
+        rb.setPower(br);
+    }
+
 
 }
