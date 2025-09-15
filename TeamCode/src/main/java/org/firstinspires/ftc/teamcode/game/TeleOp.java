@@ -45,8 +45,18 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad1.x) {
-            if (Objects.equals(team, "blue")) LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            if (Objects.equals(team, "red")) LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+            if (Objects.equals(team, "blue")) {
+                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+            } else if (Objects.equals(team, "red")) {
+                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+            } else {
+                if (gamepad1.left_bumper) {
+                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+                } else if (gamepad1.right_bumper) {
+                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+                }
+            }
+
             CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
         } else {
             CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
