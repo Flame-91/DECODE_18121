@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.commands.LLGoToPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 
+import java.util.Objects;
+
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
@@ -41,8 +43,8 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad1.x) {
-            if (team == "blue") LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            if (team == "red") LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+            if (Objects.equals(team, "blue")) LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+            if (Objects.equals(team, "red")) LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
             CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
         }
         CommandScheduler.getInstance().run();
