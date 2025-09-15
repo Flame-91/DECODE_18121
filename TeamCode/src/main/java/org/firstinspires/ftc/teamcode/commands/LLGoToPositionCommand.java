@@ -41,7 +41,7 @@ public class LLGoToPositionCommand extends CommandBase {
             double errorX = xTarget - xRobot;
             double errorY = yTarget - yRobot;
 
-            // Linear controllers (you already have)
+            // Linear controllers
             double vx = xController.calculate(errorX);
             double vy = yController.calculate(errorY);
 
