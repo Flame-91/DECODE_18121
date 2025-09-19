@@ -4,13 +4,14 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
 public class LimelightSubsystem {
-    private Limelight3A limelight;
+    private final Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
