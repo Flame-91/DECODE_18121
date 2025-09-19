@@ -22,7 +22,7 @@ public class TeleOp extends OpMode {
     public final double[] redBaseCenterCoordinates = new double[]{0.9914, -0.8386}; // coords x,y in meters
     public final double[] blueBaseCenterCoordinates = new double[]{0.9914, 0.8386};
     public final double goToPositionPositionWithLLTolerance = 0.02;
-    private String team;
+    private String team = "";
 
     public void init() {
         driveSubsystem = new MecanumDriveSubsystem(hardwareMap);

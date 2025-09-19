@@ -48,11 +48,13 @@ public class LimelightSubsystem {
         LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null && fiducials.size() > 0) {
-                LLResultTypes.FiducialResult tag = fiducials.get(0);
-                double x = tag.getTargetPoseRobotSpace().getPosition().x; // forward
-                double y = tag.getTargetPoseRobotSpace().getPosition().y; // left/right
-                return Math.toDegrees(Math.atan2(y, x));
+            if (fiducials != null) {
+                if (!fiducials.isEmpty()) {
+                    LLResultTypes.FiducialResult tag = fiducials.get(0);
+                    double x = tag.getTargetPoseRobotSpace().getPosition().x; // forward
+                    double y = tag.getTargetPoseRobotSpace().getPosition().y; // left/right
+                    return Math.toDegrees(Math.atan2(y, x));
+                }
             }
         }
         return -361.0;

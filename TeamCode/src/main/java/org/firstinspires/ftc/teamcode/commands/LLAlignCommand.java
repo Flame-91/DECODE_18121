@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
@@ -14,7 +16,8 @@ public class LLAlignCommand extends CommandBase {
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
     LinearController LC = new LinearController(1.0 /200, 0, -maxYawSpeed, maxYawSpeed);
-    LimelightSubsystem ll;
+    HardwareMap hwMap = hardwareMap;
+    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
@@ -23,28 +26,32 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
-        yaw = ll.getYaw(); // horizontal offset
-//        LC.setSetpoint(0);
+        if (ll != null) {
+            if (ll.hasTarget()) {
+                yaw = ll.getYaw(); // horizontal offset
+                //        LC.setSetpoint(0);
 
-        // Pause if no target
-        if (yaw == -361.0) {
-            drive.drive(0, 0, 0);
-            return;
+                // Pause if no target
+                if (yaw == -361.0) {
+                    drive.drive(0, 0, 0);
+                    return;
+                }
+
+                // Proportional control
+                double yawCorrection = LC.calculate(yaw);
+
+                // Clamp to max rotation speed
+                //        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
+                //        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
+
+                // Apply rotation
+                drive.drive(0, 0, yawCorrection); // NOT negative to correct direction bc it already makes it negative in LC method
+
+                telemetry.addData("Yaw", yaw);
+                telemetry.addData("Yaw Correction", yawCorrection);
+                telemetry.update();
+            }
         }
-
-        // Proportional control
-        double yawCorrection = LC.calculate(yaw);
-
-        // Clamp to max rotation speed
-//        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
-//        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
-
-        // Apply rotation
-        drive.drive(0, 0, yawCorrection); // NOT negative to correct direction bc it already makes it negative in LC method
-
-        telemetry.addData("Yaw", yaw);
-        telemetry.addData("Yaw Correction", yawCorrection);
-        telemetry.update();
     }
 
     @Override
