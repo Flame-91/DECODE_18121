@@ -16,8 +16,8 @@ public class LLAlignCommand extends CommandBase {
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
     LinearController LC = new LinearController(1.0 /200, 0, -maxYawSpeed, maxYawSpeed);
-    HardwareMap hwMap = hardwareMap;
-    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
+//    HardwareMap hwMap = hardwareMap;
+    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
