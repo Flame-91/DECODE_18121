@@ -35,11 +35,12 @@ public class LLGoToPositionCommand extends CommandBase {
             double yRobot = ll.getBotPose()[1];
             double heading = ll.getBotPose()[5];
 
-            double yawError = ll.getYaw();
+//            double yawError = ll.getYaw();
 
 
             double errorX = xTarget - xRobot;
             double errorY = yTarget - yRobot;
+            double yawError = Math.abs(180-heading);
 
             // Linear controllers
             double vx = xController.calculate(errorX);
