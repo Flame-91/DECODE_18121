@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
-import org.firstinspires.ftc.teamcode.commands.LLGoToPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 
@@ -18,7 +16,7 @@ public class TeleOp extends OpMode {
     private MecanumDriveSubsystem driveSubsystem;
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
-    private LLGoToPositionCommand LLGoToPositionCommand;
+//    private LLGoToPositionCommand LLGoToPositionCommand;
     public final double[] redBaseCenterCoordinates = new double[]{0.9914, -0.8386}; // coords x,y in meters
     public final double[] blueBaseCenterCoordinates = new double[]{0.9914, 0.8386};
     public final double goToPositionPositionWithLLTolerance = 0.02;
@@ -44,25 +42,25 @@ public class TeleOp extends OpMode {
             CommandScheduler.getInstance().cancel(LLAlignCommand); // driver has to hold button to keep running the command
         }
 
-        if (gamepad1.x) {
-            if (Objects.equals(team, "blue")) {
-                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            } else if (Objects.equals(team, "red")) {
-                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            } else {
-                if (gamepad1.left_bumper) {
-                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-                } else if (gamepad1.right_bumper) {
-                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-                }
-            }
-
-            CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
-        } else {
-            CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
-        }
-
-        CommandScheduler.getInstance().run();
+///        if (gamepad1.x) {
+//            if (Objects.equals(team, "blue")) {
+//                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//            } else if (Objects.equals(team, "red")) {
+//                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//            } else {
+//                if (gamepad1.left_bumper) {
+//                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//                } else if (gamepad1.right_bumper) {
+//                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//                }
+//            }
+//
+//            CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
+//        } else {
+//            CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
+//        }
+//
+//        CommandScheduler.getInstance().run();
     }
     public void stop() {
         CommandScheduler.getInstance().cancelAll();

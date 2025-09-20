@@ -7,17 +7,24 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
-import org.firstinspires.ftc.teamcode.util.LinearController;
+//import org.firstinspires.ftc.teamcode.util.LinearController;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
     private final double tolerance = 2.0;      // degrees tolerance
-    private final double kP = 0.005;       // proportional gain
+    private final double Kp = 0.001;       // proportional gain
+    private final double Ki = 0.01; // Integral gain
+    private final double Kd = 0.1; // Derivative gain
+    private final double setpoint = 0;
     private final double maxYawSpeed = 0.2; // max rotation speed
-    double yaw;
-    LinearController LC = new LinearController(kP, 0, -maxYawSpeed, maxYawSpeed);
+//    double yaw;
+    long lastTime = System.nanoTime();
+    double output;
+    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint);
     HardwareMap hwMap = hardwareMap;
     LimelightSubsystem ll = new LimelightSubsystem(hwMap);
+    double processVariable = 0;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
@@ -26,41 +33,38 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (ll != null) {
-            if (ll.hasTarget()) {
-                yaw = ll.getYaw(); // horizontal offset
-                //        LC.setSetpoint(0);
+//        if (ll != null) { it won't be null bc we assign it a value
+        if (ll.hasTarget()) {
+            processVariable = ll.getYaw(); // horizontal offset
+            long currentTime = System.nanoTime();
+            double deltaTime =  (currentTime - lastTime) / 1_000_000_000.0;
+            lastTime = currentTime;
+            //        LC.setSetpoint(0);
 
-                // Pause if no target
-                if (yaw == -361.0) {
-                    drive.drive(0, 0, 0);
-                    return;
-                }
+            // PID control
+            output = PID.calculate(processVariable, deltaTime);
 
-                // Proportional control
-                double yawCorrection = LC.calculate(yaw);
+            // Clamp to max rotation speed
+            //        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
+            //        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
 
-                // Clamp to max rotation speed
-                //        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
-                //        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
+            // Apply rotation
+            drive.drive(0, 0, output); // NOT negative to correct direction bc it already makes it negative in LC method
 
-                // Apply rotation
-                drive.drive(0, 0, yawCorrection); // NOT negative to correct direction bc it already makes it negative in LC method
-
-                telemetry.addData("Yaw", yaw);
-                telemetry.addData("Yaw Correction", yawCorrection);
-                telemetry.update();
-            }
+            telemetry.addData("Yaw", processVariable);
+            telemetry.addData("Yaw Correction", output);
+            telemetry.update();
         }
+
     }
 
     @Override
     public boolean isFinished() {
-        // Keep command alive if no target
-        if (yaw == -361.0) return false;
+        // DO NOT Keep command alive if no target
+//        if (yaw == -361.0) return false;
 
         // Finish when aligned
-        return Math.abs(yaw) < tolerance;
+        return Math.abs(processVariable) < tolerance;
     }
 
     @Override
