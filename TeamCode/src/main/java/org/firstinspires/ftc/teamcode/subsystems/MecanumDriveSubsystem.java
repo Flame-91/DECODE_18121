@@ -52,4 +52,11 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
     }
+
+    public void drive(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
+    }
 }
