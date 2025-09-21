@@ -9,11 +9,12 @@ public class PIDController {
     private double integralSum = 0;
     private double outputLimit = 1.0; // Example: Max output value
 
-    public PIDController(double Kp, double Ki, double Kd, double setpoint) {
+    public PIDController(double Kp, double Ki, double Kd, double setpoint, double outputLimit) {
         this.Kp = Kp;
         this.Ki = Ki;
         this.Kd = Kd;
         this.setpoint = setpoint;
+        this.outputLimit = outputLimit;
     }
 
     public double calculate(double processVariable, double deltaTime) {

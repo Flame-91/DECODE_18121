@@ -17,13 +17,12 @@ public class LLAlignCommand extends CommandBase {
     private final double Ki = 0.01; // Integral gain
     private final double Kd = 0.1; // Derivative gain
     private final double setpoint = 0;
-    private final double maxYawSpeed = 0.2; // max rotation speed
+    private final double maxYawSpeed = 0.7; // max rotation speed
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
-    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint);
-    HardwareMap hwMap = hardwareMap;
-    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
+    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint, maxYawSpeed); // Iniitialize pid controller
+    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
     double processVariable = 0;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
