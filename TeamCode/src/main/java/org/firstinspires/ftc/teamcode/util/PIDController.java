@@ -17,9 +17,7 @@ public class PIDController {
         this.outputLimit = outputLimit;
     }
 
-    public double calculate(double processVariable, double deltaTime) {
-        double error = setpoint - processVariable;
-
+    public double calculate(double error, double deltaTime) {
         integralSum += error * deltaTime;
         double derivative = (error - previousError) / deltaTime;
 
