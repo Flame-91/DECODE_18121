@@ -31,21 +31,38 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     }
 
     public void drive(double x, double y, double rotation) {
-        double headingRadians = -imu.getRobotYawPitchRollAngles().getYaw() * Math.PI / 180.0;
+//        double headingRadians = -imu.getRobotYawPitchRollAngles().getYaw() * Math.PI / 180.0;
+//
+//        double rotatedX = x * Math.cos(headingRadians) - y * Math.sin(headingRadians);
+//        double rotatedY = x * Math.sin(headingRadians) + y * Math.cos(headingRadians);
+//
+//        double frontLeftPower = rotatedY + rotatedX + rotation;
+//        double frontRightPower = rotatedY - rotatedX - rotation;
+//        double backLeftPower = rotatedY - rotatedX + rotation;
+//        double backRightPower = rotatedY + rotatedX - rotation;
+//
+//        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
+//        frontLeftPower /= max;
+//        frontRightPower /= max;
+//        backLeftPower /= max;
+//        backRightPower /= max;
+        double frontLeftPower = y + x + rotation;
+        double frontRightPower = y - x - rotation;
+        double backRightPower = y + x - rotation;
+        double backLeftPower = y - x + rotation;
 
-        double rotatedX = x * Math.cos(headingRadians) - y * Math.sin(headingRadians);
-        double rotatedY = x * Math.sin(headingRadians) + y * Math.cos(headingRadians);
+        double max;
 
-        double frontLeftPower = rotatedY + rotatedX + rotation;
-        double frontRightPower = rotatedY - rotatedX - rotation;
-        double backLeftPower = rotatedY - rotatedX + rotation;
-        double backRightPower = rotatedY + rotatedX - rotation;
+        max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
 
-        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
-        frontLeftPower /= max;
-        frontRightPower /= max;
-        backLeftPower /= max;
-        backRightPower /= max;
+        if (max > 1.0) {
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backRightPower /= max;
+            backLeftPower /= max;
+        }
 
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
