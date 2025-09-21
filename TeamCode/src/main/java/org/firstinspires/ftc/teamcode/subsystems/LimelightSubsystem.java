@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
-public class LimelightSubsystem {
+public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
@@ -47,9 +47,7 @@ public class LimelightSubsystem {
             if (fiducials != null) {
                 if (!fiducials.isEmpty()) {
                     LLResultTypes.FiducialResult tag = fiducials.get(0);
-                    double x = tag.getTargetPoseRobotSpace().getPosition().x; // forward
-                    double y = tag.getTargetPoseRobotSpace().getPosition().y; // left/right
-                    return Math.toDegrees(Math.atan2(y, x));
+                    return tag.getTargetPoseRobotSpace().getOrientation().getYaw();
                 }
             }
         }
@@ -82,7 +80,7 @@ public class LimelightSubsystem {
         return new double[]{};
     }
 
-    // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[]
+    // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
         LLResult result = getLatestResult();
         if (hasTarget()) {
