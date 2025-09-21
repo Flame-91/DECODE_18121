@@ -24,11 +24,7 @@ public class LimelightSubsystem {
     // Returns true if any target is visible
     public boolean hasTarget() {
         LLResult result = getLatestResult();
-        if (hasTarget()) {
-            return true;
-        } else {
-            return false;
-        }
+        return result != null && result.isValid();
     }
 
     // Returns the first AprilTag ID detected, or -1 if none
@@ -36,7 +32,7 @@ public class LimelightSubsystem {
         LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null && fiducials.size() > 0) {
+            if (fiducials != null && !fiducials.isEmpty()) {
                 return fiducials.get(0).getFiducialId();
             }
         }
@@ -65,7 +61,7 @@ public class LimelightSubsystem {
         LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null && fiducials.size() > 0) {
+            if (fiducials != null && !fiducials.isEmpty()) {
                 LLResultTypes.FiducialResult tag = fiducials.get(0);
                 double x = tag.getTargetPoseRobotSpace().getPosition().x; // forward
                 double z = tag.getTargetPoseRobotSpace().getPosition().z; // up/down
