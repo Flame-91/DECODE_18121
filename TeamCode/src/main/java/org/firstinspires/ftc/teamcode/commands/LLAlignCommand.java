@@ -12,12 +12,12 @@ import org.firstinspires.ftc.teamcode.util.LinearController;
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
     private final double tolerance = 2.0;      // degrees tolerance
-    private final double kP = 0.01;       // proportional gain
+    private final double kP = 0.005;       // proportional gain
     private final double maxYawSpeed = 0.2; // max rotation speed
     double yaw;
-    LinearController LC = new LinearController(1.0 /200, 0, -maxYawSpeed, maxYawSpeed);
-//    HardwareMap hwMap = hardwareMap;
-    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
+    LinearController LC = new LinearController(kP, 0, -maxYawSpeed, maxYawSpeed);
+    HardwareMap hwMap = hardwareMap;
+    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;

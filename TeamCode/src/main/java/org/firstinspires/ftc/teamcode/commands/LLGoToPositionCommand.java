@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.robocol.Command;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
@@ -9,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.util.LinearController;
 
 public class LLGoToPositionCommand extends CommandBase {
-    LimelightSubsystem ll;
+    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
     final private double xTarget;
     final private double yTarget;
     private final MecanumDriveSubsystem drive;
