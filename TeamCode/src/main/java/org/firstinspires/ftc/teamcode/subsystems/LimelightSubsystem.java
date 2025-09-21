@@ -59,11 +59,11 @@ public class LimelightSubsystem extends SubsystemBase {
         LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null && !fiducials.isEmpty()) {
-                LLResultTypes.FiducialResult tag = fiducials.get(0);
-                double x = tag.getTargetPoseRobotSpace().getPosition().x; // forward
-                double z = tag.getTargetPoseRobotSpace().getPosition().z; // up/down
-                return Math.toDegrees(Math.atan2(z, x));
+            if (fiducials != null) {
+                if (!fiducials.isEmpty()) {
+                    LLResultTypes.FiducialResult tag = fiducials.get(0);
+                    return tag.getTargetPoseRobotSpace().getOrientation().getPitch();
+                }
             }
         }
         return -361.0;
