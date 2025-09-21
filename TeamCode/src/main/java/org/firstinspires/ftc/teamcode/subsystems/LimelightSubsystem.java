@@ -82,16 +82,14 @@ public class LimelightSubsystem {
         return new double[]{};
     }
 
-    // Returns an array with yaw and pitch angles, empty if no target
-//    public double[] getTagAngles() {
-//        double yaw = getYaw();
-//        double pitch = getPitch();
-//        if (yaw == -361.0 || pitch == -361.0) {
-//            return new double[]{};
-//        } else {
-//            return new double[]{yaw, pitch};
-//        }
-//    }
+    // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[]
+    public Pose3D getBotPosePose3D() {
+        LLResult result = getLatestResult();
+        if (hasTarget()) {
+            return result.getBotpose();
+        }
+        return null;
+    }
 
     // Returns the motif pattern based on AprilTag ID
     public String[] motif() {
