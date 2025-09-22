@@ -18,7 +18,7 @@ public class LLAlignCommand extends CommandBase {
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
-    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint, maxYawSpeed); // Iniitialize pid controller
+    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint, maxYawSpeed); // Initialize pid controller
     LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
     double error = 0;
 
