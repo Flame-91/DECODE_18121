@@ -40,31 +40,19 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
-    public double getYaw() {
+    public double getYawError() {
         LLResult result = getLatestResult();
         if (hasTarget()) {
-            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null) {
-                if (!fiducials.isEmpty()) {
-                    LLResultTypes.FiducialResult tag = fiducials.get(0);
-                    return tag.getTargetPoseRobotSpace().getOrientation().getYaw();
-                }
-            }
+            return result.getTx();
         }
         return -361.0;
     }
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
-    public double getPitch() {
+    public double getPitchError() {
         LLResult result = getLatestResult();
         if (hasTarget()) {
-            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null) {
-                if (!fiducials.isEmpty()) {
-                    LLResultTypes.FiducialResult tag = fiducials.get(0);
-                    return tag.getTargetPoseRobotSpace().getOrientation().getPitch();
-                }
-            }
+            return result.getTy();
         }
         return -361.0;
     }
