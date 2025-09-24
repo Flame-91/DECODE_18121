@@ -28,7 +28,7 @@ public class LLAlignCommand extends CommandBase {
     public void execute() {
         if (ll != null) {
             if (ll.hasTarget()) {
-                yaw = ll.getYaw(); // horizontal offset
+                yaw = ll.getYawError(); // horizontal offset
                 //        LC.setSetpoint(0);
 
                 // Pause if no target
