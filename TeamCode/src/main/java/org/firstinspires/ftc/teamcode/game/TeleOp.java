@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import java.util.Objects;
 
@@ -14,8 +16,6 @@ import java.util.Objects;
 public class TeleOp extends OpMode {
     private MecanumDriveSubsystem driveSubsystem;
     FtcDashboard dashboard = FtcDashboard.getInstance();
-
-    waitForStart();
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
 //    private LLGoToPositionCommand LLGoToPositionCommand;
@@ -33,6 +33,9 @@ public class TeleOp extends OpMode {
     public void init_loop() {}
     public void start() {}
     public void loop() {
+        TelemetryPacket packet = new TelemetryPacket();
+        dashboard.sendTelemetryPacket(packet);
+
         if (gamepad1.a) {
             LLAlignCommand = new LLAlignCommand(driveSubsystem);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
