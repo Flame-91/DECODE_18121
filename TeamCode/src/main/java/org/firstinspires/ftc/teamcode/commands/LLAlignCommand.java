@@ -2,22 +2,28 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
-import org.firstinspires.ftc.teamcode.util.LinearController;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
-    private final double tolerance = 2.0;      // degrees tolerance
-    private final double kP = 0.005;       // proportional gain
-    private final double maxYawSpeed = 0.2; // max rotation speed
-    double yaw;
-    LinearController LC = new LinearController(kP, 0, -maxYawSpeed, maxYawSpeed);
-    HardwareMap hwMap = hardwareMap;
-    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
+//    private final double Kp = 0.001;       // proportional gain
+//    private final double Ki = 0.01; // Integral gain
+//    private final double Kd = 0.1; // Derivative gain
+    private final double setpoint = 0;
+    private final double maxYawSpeed = 0.7; // max rotation speed
+//    double yaw;
+    long lastTime = System.nanoTime();
+    double output;
+    PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
+    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
+    double error = 0;
 
     public LLAlignCommand(MecanumDriveSubsystem drive) {
         this.drive = drive;
@@ -26,41 +32,27 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (ll != null) {
-            if (ll.hasTarget()) {
-                yaw = ll.getYaw(); // horizontal offset
-                //        LC.setSetpoint(0);
+        if (ll.hasTarget()) {
+            error = ll.getYawError(); // horizontal offset
+            long currentTime = System.nanoTime();
+            double deltaTime =  (currentTime - lastTime) / 1_000_000_000.0;
+            lastTime = currentTime;
 
-                // Pause if no target
-                if (yaw == -361.0) {
-                    drive.drive(0, 0, 0);
-                    return;
-                }
+            output = PID.calculate(error, deltaTime);
 
-                // Proportional control
-                double yawCorrection = LC.calculate(yaw);
+            drive.drive(0, 0, output);
 
-                // Clamp to max rotation speed
-                //        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
-                //        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
-
-                // Apply rotation
-                drive.drive(0, 0, yawCorrection); // NOT negative to correct direction bc it already makes it negative in LC method
-
-                telemetry.addData("Yaw", yaw);
-                telemetry.addData("Yaw Correction", yawCorrection);
-                telemetry.update();
-            }
+            telemetry.addData("Yaw Error", error);
+            telemetry.addData("Yaw Correction", output);
+            telemetry.update();
         }
+
     }
 
     @Override
     public boolean isFinished() {
-        // Keep command alive if no target
-        if (yaw == -361.0) return false;
-
-        // Finish when aligned
-        return Math.abs(yaw) < tolerance;
+        double tolerance = 2.0; // degrees tolerance
+        return Math.abs(error) < tolerance;
     }
 
     @Override

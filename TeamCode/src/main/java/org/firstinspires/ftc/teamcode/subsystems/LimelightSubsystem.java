@@ -40,40 +40,31 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
-    public double getYaw() {
+    public double getYawError() {
         LLResult result = getLatestResult();
         if (hasTarget()) {
-            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null) {
-                if (!fiducials.isEmpty()) {
-                    LLResultTypes.FiducialResult tag = fiducials.get(0);
-                    return tag.getTargetPoseRobotSpace().getOrientation().getYaw();
-                }
-            }
+            return result.getTx();
         }
         return -361.0;
     }
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
-    public double getPitch() {
+    public double getPitchError() {
         LLResult result = getLatestResult();
         if (hasTarget()) {
-            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-            if (fiducials != null) {
-                if (!fiducials.isEmpty()) {
-                    LLResultTypes.FiducialResult tag = fiducials.get(0);
-                    return tag.getTargetPoseRobotSpace().getOrientation().getPitch();
-                }
-            }
+            return result.getTy();
         }
         return -361.0;
     }
 
+    public boolean isObelisk() {
+         return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
+    }
     // returns the robot's center's position on the field if limelight can see an april tag
 
     public double[] getBotPose() {
         LLResult result = getLatestResult();
-        if (hasTarget()) {
+        if (hasTarget() && !isObelisk()) {
             Pose3D botPose = result.getBotpose();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
@@ -83,7 +74,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
         LLResult result = getLatestResult();
-        if (hasTarget()) {
+        if (hasTarget() && !isObelisk()) {
             return result.getBotpose();
         }
         return null;

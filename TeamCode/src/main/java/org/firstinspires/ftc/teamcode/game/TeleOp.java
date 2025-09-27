@@ -1,27 +1,24 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
-import org.firstinspires.ftc.teamcode.commands.LLGoToPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import java.util.Objects;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-
     private MecanumDriveSubsystem driveSubsystem;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
-    private LLGoToPositionCommand LLGoToPositionCommand;
-    public final double[] redBaseCenterCoordinates = new double[]{0.9914, -0.8386}; // coords x,y in meters
-    public final double[] blueBaseCenterCoordinates = new double[]{0.9914, 0.8386};
-    public final double goToPositionPositionWithLLTolerance = 0.02;
+//    private LLGoToPositionCommand LLGoToPositionCommand;
     private String team = "";
 
     public void init() {
@@ -29,14 +26,16 @@ public class TeleOp extends OpMode {
         driveCommand = new DriveCommand(gamepad1, driveSubsystem);
         CommandScheduler.getInstance().schedule(driveCommand);
 
-        if (team.isEmpty()) {
-            if (gamepad1.right_bumper) team = "red";
-            if (gamepad1.left_bumper) team = "blue";
-        }
+        if (gamepad1.right_bumper) team = "red";
+        if (gamepad1.left_bumper) team = "blue";
+        telemetry.addData("team", team);
     }
     public void init_loop() {}
     public void start() {}
     public void loop() {
+        TelemetryPacket packet = new TelemetryPacket();
+        dashboard.sendTelemetryPacket(packet);
+
         if (gamepad1.a) {
             LLAlignCommand = new LLAlignCommand(driveSubsystem);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
@@ -44,26 +43,27 @@ public class TeleOp extends OpMode {
             CommandScheduler.getInstance().cancel(LLAlignCommand); // driver has to hold button to keep running the command
         }
 
-        if (gamepad1.x) {
-            if (Objects.equals(team, "blue")) {
-                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            } else if (Objects.equals(team, "red")) {
-                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-            } else {
-                if (gamepad1.left_bumper) {
-                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-                } else if (gamepad1.right_bumper) {
-                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
-                }
-            }
-
-            CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
-        } else {
-            CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
-        }
-
-        CommandScheduler.getInstance().run();
+///        if (gamepad1.x) {
+//            if (Objects.equals(team, "blue")) {
+//                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//            } else if (Objects.equals(team, "red")) {
+//                LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//            } else {
+//                if (gamepad1.left_bumper) {
+//                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, blueBaseCenterCoordinates[0], blueBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//                } else if (gamepad1.right_bumper) {
+//                    LLGoToPositionCommand = new LLGoToPositionCommand(driveSubsystem, redBaseCenterCoordinates[0], redBaseCenterCoordinates[1], goToPositionPositionWithLLTolerance);
+//                }
+//            }
+//
+//            CommandScheduler.getInstance().schedule(LLGoToPositionCommand);
+//        } else {
+//            CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
+//        }
+//
+//        CommandScheduler.getInstance().run();
     }
+
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
     }
