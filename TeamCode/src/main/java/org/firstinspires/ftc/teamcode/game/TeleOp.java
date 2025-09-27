@@ -12,8 +12,10 @@ import java.util.Objects;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-
     private MecanumDriveSubsystem driveSubsystem;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    waitForStart();
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
 //    private LLGoToPositionCommand LLGoToPositionCommand;

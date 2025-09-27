@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
@@ -10,15 +13,15 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
-    private final double Kp = 0.001;       // proportional gain
-    private final double Ki = 0.01; // Integral gain
-    private final double Kd = 0.1; // Derivative gain
+//    private final double Kp = 0.001;       // proportional gain
+//    private final double Ki = 0.01; // Integral gain
+//    private final double Kd = 0.1; // Derivative gain
     private final double setpoint = 0;
     private final double maxYawSpeed = 0.7; // max rotation speed
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
-    PIDController PID = new PIDController(Kp, Ki, Kd, setpoint, maxYawSpeed); // Initialize pid controller
+    PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
     LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
     double error = 0;
 
