@@ -17,9 +17,6 @@ public class TeleOp extends OpMode {
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
 //    private LLGoToPositionCommand LLGoToPositionCommand;
-    public final double[] redBaseCenterCoordinates = new double[]{0.9914, -0.8386}; // coords x,y in meters
-    public final double[] blueBaseCenterCoordinates = new double[]{0.9914, 0.8386};
-    public final double goToPositionPositionWithLLTolerance = 0.02;
     private String team = "";
 
     public void init() {
@@ -27,10 +24,9 @@ public class TeleOp extends OpMode {
         driveCommand = new DriveCommand(gamepad1, driveSubsystem);
         CommandScheduler.getInstance().schedule(driveCommand);
 
-        if (team.isEmpty()) {
-            if (gamepad1.right_bumper) team = "red";
-            if (gamepad1.left_bumper) team = "blue";
-        }
+        if (gamepad1.right_bumper) team = "red";
+        if (gamepad1.left_bumper) team = "blue";
+        telemetry.addData("team", team);
     }
     public void init_loop() {}
     public void start() {}
@@ -62,6 +58,7 @@ public class TeleOp extends OpMode {
 //
 //        CommandScheduler.getInstance().run();
     }
+
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
     }
