@@ -25,12 +25,12 @@ public class TeleOp extends OpMode {
         driveSubsystem = new MecanumDriveSubsystem(hardwareMap);
         driveCommand = new DriveCommand(gamepad1, driveSubsystem);
         CommandScheduler.getInstance().schedule(driveCommand);
-
+    }
+    public void init_loop() {
         if (gamepad1.right_bumper) team = "red";
         if (gamepad1.left_bumper) team = "blue";
         telemetry.addData("team", team);
     }
-    public void init_loop() {}
     public void start() {}
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
@@ -61,7 +61,7 @@ public class TeleOp extends OpMode {
 //            CommandScheduler.getInstance().cancel(LLGoToPositionCommand); // driver has to hold button to keep running the command
 //        }
 //
-//        CommandScheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
     }
 
     public void stop() {

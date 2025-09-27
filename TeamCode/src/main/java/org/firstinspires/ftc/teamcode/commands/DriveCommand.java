@@ -18,8 +18,8 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double x = -gamepad.left_stick_x;
-        double y = -gamepad.left_stick_y;
+        double x = gamepad.left_stick_x;
+        double y = gamepad.left_stick_y;
         double rotation = -gamepad.right_stick_x;
         drive.drive(x, y, rotation);
     }
