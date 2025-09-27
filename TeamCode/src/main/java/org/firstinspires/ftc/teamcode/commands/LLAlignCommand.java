@@ -33,7 +33,7 @@ public class LLAlignCommand extends CommandBase {
     @Override
     public void execute() {
         if (ll.hasTarget()) {
-            error = ll.getYaw(); // horizontal offset
+            error = ll.getYawError(); // horizontal offset
             long currentTime = System.nanoTime();
             double deltaTime =  (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
