@@ -13,15 +13,15 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-    private MecanumDriveSubsystem MacanumDriveSubsystem;
+    private MecanumDriveSubsystem mecanumDriveSubsystem;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private LLAlignCommand LLAlignCommand;
     private String team = "";
     LimelightSubsystem ll;
 
     public void init() {
-        MacanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        DriveCommand driveCommand = new DriveCommand(gamepad1, MacanumDriveSubsystem, telemetry);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+        DriveCommand driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry);
         CommandScheduler.getInstance().schedule(driveCommand);
         ll = new LimelightSubsystem(hardwareMap);
     }
@@ -37,7 +37,7 @@ public class TeleOp extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         if (gamepad1.a) {
-            LLAlignCommand = new LLAlignCommand(MacanumDriveSubsystem, ll, gamepad1, telemetry);
+            LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
 //        } else if (LLAlignCommand != null) {
 //            CommandScheduler.getInstance().cancel(LLAlignCommand); // driver has to hold button to keep running the command
