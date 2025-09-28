@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -12,11 +14,9 @@ import java.util.List;
 
 public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
-
     public LimelightSubsystem(HardwareMap hardwareMap) {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
-
     private LLResult getLatestResult() {
         return limelight.getLatestResult();
     }

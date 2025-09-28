@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
-    private final MecanumDriveSubsystem drive;
+    private MecanumDriveSubsystem drive;
 //    private final double Kp = 0.001;       // proportional gain
 //    private final double Ki = 0.01; // Integral gain
 //    private final double Kd = 0.1; // Derivative gain
@@ -21,12 +24,17 @@ public class LLAlignCommand extends CommandBase {
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
+    private Gamepad gamepad;
+    private Telemetry telemetry;
     PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
-    LimelightSubsystem ll = new LimelightSubsystem(hardwareMap);
+    private final LimelightSubsystem ll;
     double error = 0;
 
-    public LLAlignCommand(MecanumDriveSubsystem drive) {
+    public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry) {
         this.drive = drive;
+        this.ll = ll;
+        this.gamepad = gamepad;
+        this.telemetry = telemetry;
         addRequirements(drive);
     }
 
@@ -52,7 +60,11 @@ public class LLAlignCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         double tolerance = 2.0; // degrees tolerance
-        return Math.abs(error) < tolerance;
+        if (!gamepad.a) {
+            return true;
+        } else {
+            return Math.abs(error) < tolerance;
+        }
     }
 
     @Override
