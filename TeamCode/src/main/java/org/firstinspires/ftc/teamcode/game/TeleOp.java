@@ -36,11 +36,9 @@ public class TeleOp extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        if (gamepad1.a) {
+        if (gamepad1.a && (LLAlignCommand == null || !LLAlignCommand.isScheduled())) {
             LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
-//        } else if (LLAlignCommand != null) {
-//            CommandScheduler.getInstance().cancel(LLAlignCommand); // driver has to hold button to keep running the command
         }
 
         dashboard.sendTelemetryPacket(packet);
