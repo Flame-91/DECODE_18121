@@ -13,17 +13,14 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
-    private MecanumDriveSubsystem drive;
-//    private final double Kp = 0.001;       // proportional gain
-//    private final double Ki = 0.01; // Integral gain
-//    private final double Kd = 0.1; // Derivative gain
+    private final MecanumDriveSubsystem drive;
     private final double setpoint = 0;
     private final double maxYawSpeed = 0.7; // max rotation speed
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
-    private Gamepad gamepad;
-    private Telemetry telemetry;
+    private final Gamepad gamepad;
+    private final Telemetry telemetry;
     PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
     private final LimelightSubsystem ll;
     double error = 0;
