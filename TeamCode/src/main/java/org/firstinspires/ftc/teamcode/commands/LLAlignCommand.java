@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
