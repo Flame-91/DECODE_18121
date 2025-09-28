@@ -81,12 +81,14 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns the motif pattern based on AprilTag ID
     public String[] motif() {
         int tagID = getAprilTagID();
-        if (tagID == 21) {
-            return new String[]{"g", "p", "p"};
-        } else if (tagID == 22) {
-            return new String[]{"p", "g", "p"};
-        } else if (tagID == 23) {
-            return new String[]{"p", "p", "g"};
+        if (isObelisk()) {
+            if (tagID == 21) {
+                return new String[]{"g", "p", "p"};
+            } else if (tagID == 22) {
+                return new String[]{"p", "g", "p"};
+            } else if (tagID == 23) {
+                return new String[]{"p", "p", "g"};
+            }
         }
 
         return new String[]{};

@@ -32,7 +32,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("team", team);
     }
 
-    public void start() {}
+//    public void start() {}
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
