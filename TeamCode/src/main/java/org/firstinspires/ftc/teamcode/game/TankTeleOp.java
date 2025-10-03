@@ -1,0 +1,34 @@
+package org.firstinspires.ftc.teamcode.game;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
+
+import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
+import org.firstinspires.ftc.teamcode.commands.LLGoToPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.TankDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.TankDriveSubsystem;
+
+import java.util.Objects;
+
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
+
+public class TankTeleOp extends OpMode {
+    private TankDriveSubsystem driveSubsystem;
+    private TankDriveCommand driveCommand;
+
+    public void init() {
+        driveSubsystem = new TankDriveSubsystem(hardwareMap);
+        driveCommand = new TankDriveCommand(gamepad1, driveSubsystem);
+        CommandScheduler.getInstance().schedule(driveCommand);
+    }
+    public void init_loop() {}
+    public void start() {}
+    public void loop() {
+        CommandScheduler.getInstance().run();
+    }
+    public void stop() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+}
