@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
     private final double setpoint = 0;
-    private final double maxYawSpeed = 0.7; // max rotation speed
+    private final double maxYawSpeed = 1; // max rotation speed
 //    double yaw;
     long lastTime = System.nanoTime();
     double output;
@@ -24,6 +25,7 @@ public class LLAlignCommand extends CommandBase {
     PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
     private final LimelightSubsystem ll;
     double error = 0;
+    boolean target = false;
 
     public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry) {
         this.drive = drive;
@@ -35,21 +37,29 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
+        telemetry.addData("excecuting LLalignCommand", "true");
         if (ll.hasTarget()) {
             error = ll.getYawError(); // horizontal offset
             long currentTime = System.nanoTime();
             double deltaTime =  (currentTime - lastTime) / 1_000_000_000.0;
+
             lastTime = currentTime;
 
             output = PID.calculate(error, deltaTime);
 
             drive.drive(0, 0, output);
 
+
             telemetry.addData("Yaw Error", error);
             telemetry.addData("Yaw Correction", output);
             telemetry.update();
+        } else {
+            LLResult result = ll.getLatestResult();
+            telemetry.addData("hasTarget", "false");
+            if (result == null) telemetry.addData("resultNull", "true");
+            assert result != null;
+            if (!result.isValid()) telemetry.addData("resultValid", "false");
         }
-
     }
 
     @Override

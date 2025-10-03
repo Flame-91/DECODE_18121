@@ -14,8 +14,11 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     public LimelightSubsystem(HardwareMap hardwareMap) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.setPollRateHz(100);
+        limelight.start();
+        limelight.pipelineSwitch(0);
     }
-    private LLResult getLatestResult() {
+    public LLResult getLatestResult() {
         return limelight.getLatestResult();
     }
 
@@ -82,12 +85,10 @@ public class LimelightSubsystem extends SubsystemBase {
     public String[] motif() {
         int tagID = getAprilTagID();
         if (isObelisk()) {
-            if (tagID == 21) {
-                return new String[]{"g", "p", "p"};
-            } else if (tagID == 22) {
-                return new String[]{"p", "g", "p"};
-            } else if (tagID == 23) {
-                return new String[]{"p", "p", "g"};
+            switch (tagID) {
+                case 21: return new String[]{"g", "p", "p"};
+                case 22: return new String[]{"p", "g", "p"};
+                case 23: return new String[]{"p", "p", "g"};
             }
         }
 

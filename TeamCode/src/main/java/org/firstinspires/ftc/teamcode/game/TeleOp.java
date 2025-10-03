@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
@@ -17,11 +18,12 @@ public class TeleOp extends OpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private LLAlignCommand LLAlignCommand;
     private String team = "";
+    DriveCommand driveCommand;
     LimelightSubsystem ll;
 
     public void init() {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        DriveCommand driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry);
+        driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry);
         CommandScheduler.getInstance().schedule(driveCommand);
         ll = new LimelightSubsystem(hardwareMap);
     }
@@ -36,9 +38,13 @@ public class TeleOp extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        if (gamepad1.a && (LLAlignCommand == null || !LLAlignCommand.isScheduled())) {
+        if (gamepad1.a) {
+            telemetry.addData("pressing a", "true");
             LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
+        } else {
+            telemetry.addData("pressing a", "false");
+            CommandScheduler.getInstance().schedule(driveCommand);
         }
 
         dashboard.sendTelemetryPacket(packet);

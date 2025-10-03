@@ -24,7 +24,7 @@ public class PIDController {
         double output = (Kp * error) + (Ki * integralSum) + (Kd * derivative);
 
         // Apply output limits if necessary
-        output = Math.max(-outputLimit, Math.min(outputLimit, output));
+        output = -Math.max(-outputLimit, Math.min(outputLimit, output));
 
         previousError = error;
         return output;
