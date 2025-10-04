@@ -8,8 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-public class FlywheelSubsystem {
+public class FlywheelSubsystem extends SubsystemBase {
     private final CRServo leftServo;
     private final CRServo rightServo;
     private final DcMotor flywheelMotor;
@@ -26,17 +27,13 @@ public class FlywheelSubsystem {
         rightServo.setPower(1);
         flywheelMotor.setPower(1);
         timer.reset();
-        while (timer.seconds() < 0.5) {
-
-        }
+        while (timer.seconds() < 0.5) {}
         leftServo.setPower(0);
         rightServo.setPower(0);
 
         timer.reset();
 
-        while (timer.seconds() < 0.3) {
-
-        }
+        while (timer.seconds() < 0.3) {}
 
         flywheelMotor.setPower(0);
     }
