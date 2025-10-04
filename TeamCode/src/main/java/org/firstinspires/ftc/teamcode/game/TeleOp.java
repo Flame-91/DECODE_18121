@@ -18,7 +18,7 @@ public class TeleOp extends OpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     TelemetryPacket packet = new TelemetryPacket();
-    private LLAlignCommand LLAlignCommand;
+//    private LLAlignCommand LLAlignCommand;
     private String team = "";
     DriveCommand driveCommand;
     LimelightSubsystem ll;
@@ -26,7 +26,7 @@ public class TeleOp extends OpMode {
     public void init() {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
         driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry);
-        LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
+//        LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
         CommandScheduler.getInstance().schedule(driveCommand);
         ll = new LimelightSubsystem(hardwareMap);
     }
@@ -42,6 +42,7 @@ public class TeleOp extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         if (gamepad1.a) {
+            LLAlignCommand LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
         } else {
             CommandScheduler.getInstance().schedule(driveCommand);

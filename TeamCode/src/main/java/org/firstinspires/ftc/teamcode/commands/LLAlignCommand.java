@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
-    private final double setpoint = 0;
     private final double maxYawSpeed = 1; // max rotation speed
 //    double yaw;
     long lastTime = System.nanoTime();
@@ -26,7 +25,7 @@ public class LLAlignCommand extends CommandBase {
     private final Telemetry dashboardTelemetry;
     private final TelemetryPacket packet;
     private final FtcDashboard dashboard;
-    PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
+    PIDController PID; // Initialize pid controller
     private final LimelightSubsystem ll;
     double error = 0;
 
@@ -38,6 +37,7 @@ public class LLAlignCommand extends CommandBase {
         this.dashboardTelemetry = dashboardTelemetry;
         this.packet = packet;
         this.dashboard = dashboard;
+        PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed, dashboard);
         addRequirements(drive);
     }
 
@@ -52,7 +52,7 @@ public class LLAlignCommand extends CommandBase {
 
             output = PID.calculate(error, deltaTime);
 
-            drive.drive(0, 0, output);
+            drive.drive(0, 0, -output);
 
 
             telemetry.addData("Yaw Error", error);
@@ -60,7 +60,7 @@ public class LLAlignCommand extends CommandBase {
             dashboardTelemetry.addData("Yaw Error", error);
             dashboardTelemetry.addData("Yaw Correction", output);
             packet.put("Yaw Error", error);
-            packet.put("Target", "0");
+            packet.put("Target", 0);
             packet.put("Yaw Correction", output);
             dashboard.sendTelemetryPacket(packet);
             dashboardTelemetry.update();
@@ -70,7 +70,7 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        double tolerance = 2.0; // degrees tolerance
+        double tolerance = 10.0; // degrees tolerance
         if (!gamepad.a) {
             return true;
         } else {

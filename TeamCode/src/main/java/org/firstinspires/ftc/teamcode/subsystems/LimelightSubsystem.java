@@ -23,7 +23,10 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns true if any target is visible
     public boolean hasTarget() {
         LLResult result = getLatestResult();
-        return result != null && result.isValid();
+        if (result != null) {
+            return result.isValid();
+        }
+        return false;
     }
 
     // Returns the first AprilTag ID detected, or -1 if none
