@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.kitbot;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -7,16 +9,18 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 public class OmniDriveSubsystem extends SubsystemBase {
     DcMotor left, right;
     public OmniDriveSubsystem(HardwareMap hardwareMap) {
-        //must add motor names in config through driver station
+//        must add motor names in config through driver station
         left = hardwareMap.get(DcMotor.class, "left");
         right = hardwareMap.get(DcMotor.class, "right");
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // Put upside down and test if necessary
+//         Put upside down and test if necessary
 //        left.setDirection(DcMotor.Direction.REVERSE);
 //        right.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void OmniDrive(double y, double rotation) {
+    public void OmniDrive() {
+        double y = -gamepad1.left_stick_y;
+        double rotation = gamepad1.right_stick_x;
         double leftMotorPower = y + rotation;
         double rightMotorPower = y - rotation;
 
@@ -24,6 +28,7 @@ public class OmniDriveSubsystem extends SubsystemBase {
 
         leftMotorPower /= max;
         rightMotorPower /= max;
+
         left.setPower(leftMotorPower);
         right.setPower(rightMotorPower);
     }

@@ -10,10 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class FieldCentricDriveTeleop extends OpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     private IMU imu;
-    IMU.Parameters IMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-            RevHubOrientationOnRobot.UsbFacingDirection.UP
-    )); //Passes IMU parameters based on robot orientation
     public void initializeMotors() {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
@@ -27,6 +23,9 @@ public class FieldCentricDriveTeleop extends OpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public void initializeIMU() {
+        IMU.Parameters IMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
         IMU imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(IMUparameters);
         this.imu = imu;
