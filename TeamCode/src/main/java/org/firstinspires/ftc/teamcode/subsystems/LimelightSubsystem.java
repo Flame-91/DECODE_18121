@@ -18,9 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
         limelight.start();
         limelight.pipelineSwitch(0);
     }
-    public LLResult getLatestResult() {
-        return limelight.getLatestResult();
-    }
+    public LLResult getLatestResult() { return limelight.getLatestResult(); }
 
     // Returns true if any target is visible
     public boolean hasTarget() {

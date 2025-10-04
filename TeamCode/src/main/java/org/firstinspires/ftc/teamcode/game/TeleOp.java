@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
@@ -14,8 +15,10 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-    private MecanumDriveSubsystem mecanumDriveSubsystem;
+    MecanumDriveSubsystem mecanumDriveSubsystem;
     FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
+    TelemetryPacket packet = new TelemetryPacket();
     private LLAlignCommand LLAlignCommand;
     private String team = "";
     DriveCommand driveCommand;
@@ -23,7 +26,8 @@ public class TeleOp extends OpMode {
 
     public void init() {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry);
+        driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry);
+        LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
         CommandScheduler.getInstance().schedule(driveCommand);
         ll = new LimelightSubsystem(hardwareMap);
     }
@@ -39,11 +43,8 @@ public class TeleOp extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         if (gamepad1.a) {
-            telemetry.addData("pressing a", "true");
-            LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry);
             CommandScheduler.getInstance().schedule(LLAlignCommand);
         } else {
-            telemetry.addData("pressing a", "false");
             CommandScheduler.getInstance().schedule(driveCommand);
         }
 

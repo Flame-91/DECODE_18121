@@ -4,11 +4,14 @@ import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.RefCounted;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
@@ -22,26 +25,30 @@ public class LLAlignCommand extends CommandBase {
     double output;
     private final Gamepad gamepad;
     private final Telemetry telemetry;
+    private final Telemetry dashboardTelemetry;
+    private final TelemetryPacket packet;
+    private final FtcDashboard dashboard;
     PIDController PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, setpoint, maxYawSpeed); // Initialize pid controller
     private final LimelightSubsystem ll;
     double error = 0;
-    boolean target = false;
 
-    public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry) {
+    public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry, Telemetry dashboardTelemetry, TelemetryPacket packet, FtcDashboard dashboard) {
         this.drive = drive;
         this.ll = ll;
         this.gamepad = gamepad;
         this.telemetry = telemetry;
+        this.dashboardTelemetry = dashboardTelemetry;
+        this.packet = packet;
+        this.dashboard = dashboard;
         addRequirements(drive);
     }
 
     @Override
     public void execute() {
-        telemetry.addData("excecuting LLalignCommand", "true");
         if (ll.hasTarget()) {
             error = ll.getYawError(); // horizontal offset
             long currentTime = System.nanoTime();
-            double deltaTime =  (currentTime - lastTime) / 1_000_000_000.0;
+            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
             lastTime = currentTime;
 
@@ -52,13 +59,14 @@ public class LLAlignCommand extends CommandBase {
 
             telemetry.addData("Yaw Error", error);
             telemetry.addData("Yaw Correction", output);
+            dashboardTelemetry.addData("Yaw Error", error);
+            dashboardTelemetry.addData("Yaw Correction", output);
+            packet.put("Yaw Error", error);
+            packet.put("Target", "0");
+            packet.put("Yaw Correction", output);
+            dashboard.sendTelemetryPacket(packet);
+            dashboardTelemetry.update();
             telemetry.update();
-        } else {
-            LLResult result = ll.getLatestResult();
-            telemetry.addData("hasTarget", "false");
-            if (result == null) telemetry.addData("resultNull", "true");
-            assert result != null;
-            if (!result.isValid()) telemetry.addData("resultValid", "false");
         }
     }
 
