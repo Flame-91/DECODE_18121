@@ -1,66 +1,81 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
-import org.firstinspires.ftc.teamcode.util.LinearController;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
-    private final double tolerance = 2.0;      // degrees tolerance
-    private final double kP = 0.005;       // proportional gain
-    private final double maxYawSpeed = 0.2; // max rotation speed
-    double yaw;
-    LinearController LC = new LinearController(kP, 0, -maxYawSpeed, maxYawSpeed);
-    HardwareMap hwMap = hardwareMap;
-    LimelightSubsystem ll = new LimelightSubsystem(hwMap);
+    private final double maxYawSpeed = 1; // max rotation speed
+//    double yaw;
+    long lastTime = System.nanoTime();
+    double output;
+    private final Gamepad gamepad;
+    private final Telemetry telemetry;
+    private final Telemetry dashboardTelemetry;
+    private final TelemetryPacket packet;
+    private final FtcDashboard dashboard;
+    PIDController PID; // Initialize pid controller
+    private final LimelightSubsystem ll;
+    double error = 0;
 
-    public LLAlignCommand(MecanumDriveSubsystem drive) {
+    public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry, Telemetry dashboardTelemetry, TelemetryPacket packet, FtcDashboard dashboard) {
         this.drive = drive;
+        this.ll = ll;
+        this.gamepad = gamepad;
+        this.telemetry = telemetry;
+        this.dashboardTelemetry = dashboardTelemetry;
+        this.packet = packet;
+        this.dashboard = dashboard;
+        PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed, dashboard);
         addRequirements(drive);
     }
 
     @Override
     public void execute() {
-        if (ll != null) {
-            if (ll.hasTarget()) {
-                yaw = ll.getYaw(); // horizontal offset
-                //        LC.setSetpoint(0);
+        if (ll.hasTarget()) {
+            error = ll.getYawError(); // horizontal offset
+            long currentTime = System.nanoTime();
+            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
-                // Pause if no target
-                if (yaw == -361.0) {
-                    drive.drive(0, 0, 0);
-                    return;
-                }
+            lastTime = currentTime;
 
-                // Proportional control
-                double yawCorrection = LC.calculate(yaw);
+            output = PID.calculate(error, deltaTime);
 
-                // Clamp to max rotation speed
-                //        if (yawCorrection > maxYawSpeed) yawCorrection = maxYawSpeed; <-- already did in LinearControl method
-                //        if (yawCorrection < -maxYawSpeed) yawCorrection = -maxYawSpeed;
+            drive.drive(0, 0, -output);
 
-                // Apply rotation
-                drive.drive(0, 0, yawCorrection); // NOT negative to correct direction bc it already makes it negative in LC method
 
-                telemetry.addData("Yaw", yaw);
-                telemetry.addData("Yaw Correction", yawCorrection);
-                telemetry.update();
-            }
+            telemetry.addData("Yaw Error", error);
+            telemetry.addData("Yaw Correction", output);
+            dashboardTelemetry.addData("Yaw Error", error);
+            dashboardTelemetry.addData("Yaw Correction", output);
+            packet.put("Yaw Error", error);
+            packet.put("Target", 0);
+            packet.put("Yaw Correction", output);
+            dashboard.sendTelemetryPacket(packet);
+            dashboardTelemetry.update();
+            telemetry.update();
         }
     }
 
     @Override
     public boolean isFinished() {
-        // Keep command alive if no target
-        if (yaw == -361.0) return false;
-
-        // Finish when aligned
-        return Math.abs(yaw) < tolerance;
+        double tolerance = 10.0; // degrees tolerance
+        if (!gamepad.a) {
+            return true;
+        } else {
+            return Math.abs(error) < tolerance;
+        }
     }
 
     @Override

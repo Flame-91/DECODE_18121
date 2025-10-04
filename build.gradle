@@ -15,6 +15,18 @@ buildscript {
     }
 }
 
+repositories {
+    google()
+    mavenCentral()
+
+    // Needed for FTC Dashboard
+    maven { url = 'https://maven.brott.dev/' }
+
+    // Extra repos you already had
+    maven { url = 'https://maven.pedropathing.com' }
+    maven { url = "https://mymaven.bylazar.com/releases" }
+}
+
 // This is now required because aapt2 has to be downloaded from the
 // google() repository beginning with version 3.2 of the Android Gradle Plugin
 allprojects {
