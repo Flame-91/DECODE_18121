@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlywheelSubsystem;
 
 public class FlywheelCommand extends CommandBase {
     private final FlywheelSubsystem flywheelSubsystem;
-    private final Gamepad gamepad;
-    public FlywheelCommand(Gamepad gamepad, FlywheelSubsystem flywheelSubsystem) {
+    private final GamepadEx gamepad;
+
+    public FlywheelCommand(GamepadEx gamepad, FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
         this.gamepad = gamepad;
 
@@ -24,7 +26,7 @@ public class FlywheelCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return !gamepad.y;
+        return !gamepad.getButton(GamepadKeys.Button.Y);
     }
 
     @Override

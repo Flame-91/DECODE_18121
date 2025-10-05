@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.game;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.*;
 import org.firstinspires.ftc.teamcode.subsystems.*;
@@ -16,14 +18,19 @@ public class TeleOp extends OpMode {
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
 
-    private boolean lastA = false;
-    private boolean lastY = false;
+    private GamepadEx driver;
+
 
     @Override
     public void init() {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, dashboard);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, dashboard);
+        driver = new GamepadEx(gamepad1);
+
+        mecanumDriveSubsystem.setDefaultCommand(
+                new DriveCommand(driver, mecanumDriveSubsystem)
+        );
     }
 
     @Override
@@ -35,33 +42,23 @@ public class TeleOp extends OpMode {
 
     @Override
     public void start() {
-        mecanumDriveSubsystem.setDefaultCommand(
-                new DriveCommand(gamepad1, mecanumDriveSubsystem)
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+                () -> CommandScheduler.getInstance().schedule(
+                        new LLAlignCommand(driver, mecanumDriveSubsystem, limelightSubsystem)
+                )
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
+                () -> CommandScheduler.getInstance().schedule(
+                        new FlywheelCommand(driver, flywheelSubsystem)
+                )
         );
     }
+
 
     @Override
     public void loop() {
         CommandScheduler.getInstance().run();
-
-        boolean aPressed = gamepad1.a;
-        boolean yPressed = gamepad1.y;
-
-        if (aPressed && !lastA) {
-            CommandScheduler.getInstance().schedule(
-                    new LLAlignCommand(gamepad1, mecanumDriveSubsystem, limelightSubsystem)
-            );
-        }
-
-        if (yPressed && !lastY) {
-            CommandScheduler.getInstance().schedule(
-                    new FlywheelCommand(gamepad1, flywheelSubsystem)
-            );
-        }
-
-        lastA = aPressed;
-        lastY = yPressed;
-
         telemetry.update();
     }
 

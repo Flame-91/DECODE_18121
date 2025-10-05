@@ -4,7 +4,8 @@ import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
@@ -13,14 +14,16 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem mecanumDriveSubsystem;
+    private final LimelightSubsystem limelightSubsystem;
+
+    private final GamepadEx gamepad;
+
+    PIDController PID; // Initialize pid controller
     long lastTime = System.nanoTime();
     double output;
-    private final Gamepad gamepad;
-    PIDController PID; // Initialize pid controller
-    private final LimelightSubsystem limelightSubsystem;
     double error = 0;
 
-    public LLAlignCommand(Gamepad gamepad, MecanumDriveSubsystem mecanumDriveSubsystem, LimelightSubsystem limelightSubsystem) {
+    public LLAlignCommand(GamepadEx gamepad, MecanumDriveSubsystem mecanumDriveSubsystem, LimelightSubsystem limelightSubsystem) {
         this.mecanumDriveSubsystem = mecanumDriveSubsystem;
         this.limelightSubsystem = limelightSubsystem;
         this.gamepad = gamepad;
@@ -47,7 +50,7 @@ public class LLAlignCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         double tolerance = 10.0; // degrees tolerance
-        if (!gamepad.a) {
+        if (!gamepad.getButton(GamepadKeys.Button.A)) {
             return true;
         } else {
             return Math.abs(error) < tolerance;
