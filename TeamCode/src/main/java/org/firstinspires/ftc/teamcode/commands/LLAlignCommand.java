@@ -17,12 +17,12 @@ public class LLAlignCommand extends CommandBase {
     double output;
     private final Gamepad gamepad;
     PIDController PID; // Initialize pid controller
-    private final LimelightSubsystem ll;
+    private final LimelightSubsystem limelightSubsystem;
     double error = 0;
 
-    public LLAlignCommand(Gamepad gamepad, MecanumDriveSubsystem mecanumDriveSubsystem, LimelightSubsystem ll) {
+    public LLAlignCommand(Gamepad gamepad, MecanumDriveSubsystem mecanumDriveSubsystem, LimelightSubsystem limelightSubsystem) {
         this.mecanumDriveSubsystem = mecanumDriveSubsystem;
-        this.ll = ll;
+        this.limelightSubsystem = limelightSubsystem;
         this.gamepad = gamepad;
         double maxYawSpeed = 1;
         PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed);
@@ -31,8 +31,8 @@ public class LLAlignCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (ll.hasTarget()) {
-            error = ll.getYawError(); // horizontal offset
+        if (limelightSubsystem.hasTarget()) {
+            error = limelightSubsystem.getYawError(); // horizontal offset
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
