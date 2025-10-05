@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -42,10 +43,10 @@ public class TeleOp extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         if (gamepad1.a) {
-            LLAlignCommand LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
-            CommandScheduler.getInstance().schedule(LLAlignCommand);
+            CommandScheduler.getInstance().schedule(new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard););
         } else {
             CommandScheduler.getInstance().schedule(driveCommand);
+            if (gamepad1.y) CommandScheduler.getInstance().schedule();
         }
 
         dashboard.sendTelemetryPacket(packet);
