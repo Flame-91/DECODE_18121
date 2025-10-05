@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
 import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
+import org.firstinspires.ftc.teamcode.subsystems.FlywheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
@@ -15,21 +16,17 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-    MecanumDriveSubsystem mecanumDriveSubsystem;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
-    TelemetryPacket packet = new TelemetryPacket();
-//    private LLAlignCommand LLAlignCommand;
     private String team = "";
-    DriveCommand driveCommand;
-    LimelightSubsystem ll;
+    MecanumDriveSubsystem mecanumDriveSubsystem;
+    LimelightSubsystem limelightSubsystem;
+    FlywheelSubsystem flywheelSubsystem;
 
     public void init() {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry);
-//        LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
-        CommandScheduler.getInstance().schedule(driveCommand);
-        ll = new LimelightSubsystem(hardwareMap);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap);
+        flywheelSubsystem = new FlywheelSubsystem(hardwareMap);
     }
 
     public void init_loop() {
@@ -42,11 +39,11 @@ public class TeleOp extends OpMode {
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        if (gamepad1.a) {
-            CommandScheduler.getInstance().schedule(new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard););
+        if (gamepad1.a) { // can't run LLAlign & DriveCommand at once since they both use MecanumDrive Subsystem
+            CommandScheduler.getInstance().schedule(new LLAlignCommand(mecanumDriveSubsystem, limelightSubsystem, gamepad1, telemetry, dashboardTelemetry, packet, dashboard));
         } else {
-            CommandScheduler.getInstance().schedule(driveCommand);
-            if (gamepad1.y) CommandScheduler.getInstance().schedule();
+            CommandScheduler.getInstance().schedule(new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry));
+            if (gamepad1.y) CommandScheduler.getInstance().schedule(new FlywheelCommand(gamepad1, flywheelSubsystem, telemetry));
         }
 
         dashboard.sendTelemetryPacket(packet);

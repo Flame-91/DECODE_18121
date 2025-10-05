@@ -16,10 +16,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final CRServo leftServo;
     private final CRServo rightServo;
     private final DcMotor flywheelMotor;
-    private final Telemetry telemetry;
     private final ElapsedTime timer = new ElapsedTime();
-    public FlywheelSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public FlywheelSubsystem(HardwareMap hardwareMap) {
         leftServo = hardwareMap.get(CRServo.class, "leftServo");
         rightServo = hardwareMap.get(CRServo.class, "rightServo");
         flywheelMotor = hardwareMap.get(DcMotor.class, "flywheelMotor");
@@ -28,13 +26,11 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void setFlywheelMotor(double power) {
         if (power < -1 || power > 1) return;
-        telemetry.addData("Flywheel Motor Power", power);
         flywheelMotor.setPower(power);
     }
 
     public void setServosPower(double power) {
         if (power < -1 || power > 1) return;
-        telemetry.addData("Left & Right Servo Power", power);
         rightServo.setPower(power);
         leftServo.setPower(power);
     }
