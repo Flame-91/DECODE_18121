@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import android.annotation.SuppressLint;
-
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 public class DriveCommand extends CommandBase {

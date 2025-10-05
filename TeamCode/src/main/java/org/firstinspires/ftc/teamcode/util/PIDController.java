@@ -1,18 +1,12 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-
-import java.util.Calendar;
-
 public class PIDController {
     private final double Kp;
     private final double Ki;
     private final double Kd;
     private double previousError = 0;
     private double integralSum = 0;
-    private double outputLimit = 1.0; // Example: Max output value
-    private final TelemetryPacket packet = new TelemetryPacket();
+    private final double outputLimit; // Example: Max output value
 
     public PIDController(double Kp, double Ki, double Kd, double outputLimit) {
         this.Kp = Kp;
