@@ -1,22 +1,31 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
 public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
-    public LimelightSubsystem(HardwareMap hardwareMap) {
+    private final Telemetry telemetry;
+    private final FtcDashboard dashboard;
+    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+    public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
         limelight.pipelineSwitch(0);
+
+        this.telemetry = telemetry;
+        this.dashboard = dashboard;
     }
     public LLResult getLatestResult() { return limelight.getLatestResult(); }
 
@@ -35,6 +44,10 @@ public class LimelightSubsystem extends SubsystemBase {
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && !fiducials.isEmpty()) {
+                int tagID = fiducials.get(0).getFiducialId();
+                telemetry.addData("tagID", tagID);
+                telemetryPacket.put("tagID", tagID);
+                dashboard.sendTelemetryPacket(telemetryPacket);
                 return fiducials.get(0).getFiducialId();
             }
         }
@@ -68,7 +81,11 @@ public class LimelightSubsystem extends SubsystemBase {
         LLResult result = getLatestResult();
         if (hasTarget() && !isObelisk()) {
             Pose3D botPose = result.getBotpose();
-            return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+            double[] botPoseDouble = new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};
+            telemetry.addData("botPose", botPoseDouble);
+            telemetryPacket.put("botPose", botPoseDouble);
+            dashboard.sendTelemetryPacket(telemetryPacket);
+            return botPoseDouble;  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
     }

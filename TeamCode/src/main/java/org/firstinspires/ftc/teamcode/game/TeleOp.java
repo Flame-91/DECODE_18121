@@ -24,9 +24,9 @@ public class TeleOp extends OpMode {
     FlywheelSubsystem flywheelSubsystem;
 
     public void init() {
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap);
-        flywheelSubsystem = new FlywheelSubsystem(hardwareMap);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, dashboard);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, dashboard);
+        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, dashboard);
     }
 
     public void init_loop() {
@@ -35,18 +35,18 @@ public class TeleOp extends OpMode {
         telemetry.addData("team", team);
     }
 
-//    public void start() {}
     public void loop() {
         TelemetryPacket packet = new TelemetryPacket();
 
         if (gamepad1.a) { // can't run LLAlign & DriveCommand at once since they both use MecanumDrive Subsystem
-            CommandScheduler.getInstance().schedule(new LLAlignCommand(mecanumDriveSubsystem, limelightSubsystem, gamepad1, telemetry, dashboardTelemetry, packet, dashboard));
+            CommandScheduler.getInstance().schedule(new LLAlignCommand(gamepad1, mecanumDriveSubsystem, limelightSubsystem));
         } else {
-            CommandScheduler.getInstance().schedule(new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry));
-            if (gamepad1.y) CommandScheduler.getInstance().schedule(new FlywheelCommand(gamepad1, flywheelSubsystem, telemetry));
+            CommandScheduler.getInstance().schedule(new DriveCommand(gamepad1, mecanumDriveSubsystem));
+            if (gamepad1.y) CommandScheduler.getInstance().schedule(new FlywheelCommand(gamepad1, flywheelSubsystem));
         }
 
         dashboard.sendTelemetryPacket(packet);
+        telemetry.update();
 
         CommandScheduler.getInstance().run();
     }

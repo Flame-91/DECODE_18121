@@ -1,16 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
+import com.acmerobotics.dashboard.DashboardCore;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
-
-    public MecanumDriveSubsystem(HardwareMap hardwareMap) {
+    private final Telemetry telemetry;
+    private final FtcDashboard dashboard;
+    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, FtcDashboard dashboard) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -28,8 +37,11 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         imu.initialize(imuParams);
 
         this.imu = imu;
+        this.telemetry = telemetry;
+        this.dashboard = dashboard;
     }
 
+    @SuppressLint("DefaultLocale")
     public void drive(double x, double y, double rotation) {
         double headingRadians = -imu.getRobotYawPitchRollAngles().getYaw() * Math.PI / 180.0;
 
@@ -51,5 +63,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
+
+        String dataString = String.format("%.2f, %.2f, %.2f, %.2f", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+        telemetry.addData("FL, FR, BL, BR", dataString);
+        telemetryPacket.put("FL, FR, BL, BR", dataString);
+        dashboard.sendTelemetryPacket(telemetryPacket);
     }
 }
