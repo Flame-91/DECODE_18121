@@ -11,8 +11,6 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 public class LimelightSubsystem extends SubsystemBase {
