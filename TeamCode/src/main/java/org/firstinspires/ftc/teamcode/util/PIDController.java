@@ -16,8 +16,10 @@ public class PIDController {
     }
 
     public double calculate(double error, double deltaTime) {
+        integralSum += error * deltaTime;
+
         double proportional = calculateP(error);
-        double integral = calculateI(error, deltaTime);
+        double integral = calculateI();
         double derivative = calculateD(error, deltaTime);
 
         double output = proportional + integral + derivative;
@@ -31,9 +33,6 @@ public class PIDController {
     }
 
     public double calculateP(double error) { return Kp * error; }
-    public double calculateI(double error, double deltaTime) {
-        integralSum += error * deltaTime;
-        return Ki * integralSum;
-    }
-    public double calculateD(double error, double deltaTime) {return Kd * ((error - previousError) / deltaTime); }
+    public double calculateI() { return Ki * integralSum; }
+    public double calculateD(double error, double deltaTime) { return Kd * ((error - previousError) / deltaTime); }
 }

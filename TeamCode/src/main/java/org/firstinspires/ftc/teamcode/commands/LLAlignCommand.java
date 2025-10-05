@@ -55,7 +55,5 @@ public class LLAlignCommand extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        mecanumDriveSubsystem.drive(0, 0, 0); // stop rotation
-    }
+    public void end(boolean interrupted) {mecanumDriveSubsystem.drive(0, 0, 0);}
 }
