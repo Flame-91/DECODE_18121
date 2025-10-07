@@ -16,7 +16,6 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
     private final Telemetry telemetry;
-    private final FtcDashboard dashboard;
     private final TelemetryPacket telemetryPacket;
     public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -40,7 +39,19 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         this.telemetryPacket = telemetryPacket;
     }
 
-    @SuppressLint("DefaultLocale")
+    @Override
+    public void periodic() {
+        telemetry.addData("backLeftMotorPower", getBackLeftMotorPower());
+        telemetry.addData("backRightMotorPower", getBackRightMotorPower());
+        telemetry.addData("frontLeftMotorPower", getFrontLeftMotorPower());
+        telemetry.addData("frontRightMotorPower", getFrontRightMotorPower());
+
+        telemetryPacket.put("backLeftMotorPower", getBackLeftMotorPower());
+        telemetryPacket.put("backRightMotorPower", getBackRightMotorPower());
+        telemetryPacket.put("frontLeftMotorPower", getFrontLeftMotorPower());
+        telemetryPacket.put("frontRightMotorPower", getFrontRightMotorPower());
+    }
+
     public void drive(double x, double y, double rotation) {
         double headingRadians = -imu.getRobotYawPitchRollAngles().getYaw() * Math.PI / 180.0;
 
@@ -62,10 +73,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
-
-        String dataString = String.format("%.2f, %.2f, %.2f, %.2f", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-        telemetry.addData("FL, FR, BL, BR", dataString);
-        telemetryPacket.put("FL, FR, BL, BR", dataString);
-        dashboard.sendTelemetryPacket(telemetryPacket);
     }
+
+    public double getBackLeftMotorPower() { return backLeft.getPower(); }
+    public double getBackRightMotorPower() { return backRight.getPower(); }
+    public double getFrontLeftMotorPower() { return frontLeft.getPower(); }
+    public double getFrontRightMotorPower() { return frontRight.getPower(); }
 }

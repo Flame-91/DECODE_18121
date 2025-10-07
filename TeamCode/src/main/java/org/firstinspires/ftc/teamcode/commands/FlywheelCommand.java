@@ -21,7 +21,7 @@ public class FlywheelCommand extends CommandBase {
     @Override
     public void execute() {
         flywheelSubsystem.setServosPower(1);
-        flywheelSubsystem.setFlywheelMotor(1);
+        flywheelSubsystem.setFlywheelMotorPower(1);
     }
 
     @Override
@@ -32,6 +32,6 @@ public class FlywheelCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         flywheelSubsystem.setServosPower(0);
-        flywheelSubsystem.setFlywheelMotor(0);
+        flywheelSubsystem.setFlywheelMotorPower(0);
     }
 }

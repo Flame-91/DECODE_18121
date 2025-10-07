@@ -16,7 +16,6 @@ import java.util.List;
 public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     private final Telemetry telemetry;
-    private final FtcDashboard dashboard;
     private final TelemetryPacket telemetryPacket;
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
@@ -26,7 +25,6 @@ public class LimelightSubsystem extends SubsystemBase {
         limelight.pipelineSwitch(0);
 
         this.telemetry = telemetry;
-        this.dashboard = dashboard;
         this.telemetryPacket = telemetryPacket;
 
         dashboard.startCameraStream(limelight, 0);
@@ -35,6 +33,14 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
+
+        telemetry.addData("hasTarget", hasTarget());
+        telemetry.addData("getAprilTagID", getAprilTagID());
+        telemetry.addData("pitchError", getPitchError());
+
+        telemetryPacket.put("hasTarget", hasTarget());
+        telemetryPacket.put("getAprilTagID", getAprilTagID());
+        telemetryPacket.put("PitchError", getPitchError());
     }
 
     // Returns true if any target is visible
@@ -50,10 +56,6 @@ public class LimelightSubsystem extends SubsystemBase {
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && !fiducials.isEmpty()) {
-                int tagID = fiducials.get(0).getFiducialId();
-                telemetry.addData("tagID", tagID);
-                telemetryPacket.put("tagID", tagID);
-                dashboard.sendTelemetryPacket(telemetryPacket);
                 return fiducials.get(0).getFiducialId();
             }
         }
@@ -84,11 +86,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double[] getBotPose() {
         if (hasTarget() && !isObelisk()) {
             Pose3D botPose = result.getBotpose();
-            double[] botPoseDouble = new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};
-            telemetry.addData("botPose", botPoseDouble);
-            telemetryPacket.put("botPose", botPoseDouble);
-            dashboard.sendTelemetryPacket(telemetryPacket);
-            return botPoseDouble;  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+            return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
     }

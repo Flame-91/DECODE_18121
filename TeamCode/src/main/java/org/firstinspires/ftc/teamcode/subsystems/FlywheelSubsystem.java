@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,8 +15,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     private final DcMotor flywheelMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    double servoPower;
-    double flywheelMotorPower;
     public FlywheelSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         leftServo = hardwareMap.get(CRServo.class, "leftServo");
         rightServo = hardwareMap.get(CRServo.class, "rightServo");
@@ -29,26 +26,24 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        telemetry.addData("Flywheel Power", flywheelMotorPower);
-        telemetryPacket.put("Flywheel Power", flywheelMotorPower);
-        dashboard.sendTelemetryPacket(telemetryPacket);
+        telemetry.addData("flywheelPower", getFlywheelMotorPower());
+        telemetry.addData("servoPower", getServosPower());
 
-        telemetry.addData("Servo Power", servoPower);
-        telemetryPacket.put("Servo Power", servoPower);
-        dashboard.sendTelemetryPacket(telemetryPacket);
+        telemetryPacket.put("flywheelPower", getFlywheelMotorPower());
+        telemetryPacket.put("servoPower", getServosPower());
     }
 
-    public void setFlywheelMotor(double power) {
+    public void setFlywheelMotorPower(double power) {
         if (power < -1 || power > 1) return;
         flywheelMotor.setPower(power);
-        flywheelMotorPower = power;
     }
 
     public void setServosPower(double power) {
         if (power < -1 || power > 1) return;
         rightServo.setPower(power);
         leftServo.setPower(power);
-
-        servoPower = power;
     }
+
+    public double getFlywheelMotorPower() { return flywheelMotor.getPower(); }
+    public double getServosPower() { return rightServo.getPower(); }
 }
