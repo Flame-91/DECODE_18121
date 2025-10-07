@@ -23,6 +23,7 @@ public class LimelightSubsystem extends SubsystemBase {
         limelight.setPollRateHz(100);
         limelight.start();
         limelight.pipelineSwitch(0);
+        result = limelight.getLatestResult();
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
@@ -37,10 +38,12 @@ public class LimelightSubsystem extends SubsystemBase {
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
         telemetry.addData("pitchError", getPitchError());
+        telemetry.addData("botPose", getBotPose());
 
         telemetryPacket.put("hasTarget", hasTarget());
         telemetryPacket.put("getAprilTagID", getAprilTagID());
         telemetryPacket.put("PitchError", getPitchError());
+        telemetryPacket.put("botPose", getBotPose());
     }
 
     // Returns true if any target is visible
@@ -78,7 +81,7 @@ public class LimelightSubsystem extends SubsystemBase {
         return -361.0;
     }
 
-    public boolean isObelisk() {
+    private boolean isObelisk() {
          return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
     }
     // returns the robot's center's position on the field if limelight can see an april tag
