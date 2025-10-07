@@ -17,8 +17,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     DcMotor frontLeft, frontRight, backLeft, backRight;
     private final Telemetry telemetry;
     private final FtcDashboard dashboard;
-    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
-    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, FtcDashboard dashboard) {
+    private final TelemetryPacket telemetryPacket;
+    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -37,7 +37,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
         this.imu = imu;
         this.telemetry = telemetry;
-        this.dashboard = dashboard;
+        this.telemetryPacket = telemetryPacket;
     }
 
     @SuppressLint("DefaultLocale")

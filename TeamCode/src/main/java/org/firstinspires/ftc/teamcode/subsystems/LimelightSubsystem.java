@@ -17,8 +17,9 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     private final Telemetry telemetry;
     private final FtcDashboard dashboard;
-    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
-    public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, FtcDashboard dashboard) {
+    private final TelemetryPacket telemetryPacket;
+    LLResult result;
+    public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
@@ -26,13 +27,18 @@ public class LimelightSubsystem extends SubsystemBase {
 
         this.telemetry = telemetry;
         this.dashboard = dashboard;
+        this.telemetryPacket = telemetryPacket;
+
         dashboard.startCameraStream(limelight, 0);
     }
-    public LLResult getLatestResult() { return limelight.getLatestResult(); }
+
+    @Override
+    public void periodic() {
+        result = limelight.getLatestResult();
+    }
 
     // Returns true if any target is visible
     public boolean hasTarget() {
-        LLResult result = getLatestResult();
         if (result != null) {
             return result.isValid();
         }
@@ -41,7 +47,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns the first AprilTag ID detected, or -1 if none
     public int getAprilTagID() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && !fiducials.isEmpty()) {
@@ -57,7 +62,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYawError() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             return result.getTx();
         }
@@ -66,7 +70,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitchError() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             return result.getTy();
         }
@@ -79,7 +82,6 @@ public class LimelightSubsystem extends SubsystemBase {
     // returns the robot's center's position on the field if limelight can see an april tag
 
     public double[] getBotPose() {
-        LLResult result = getLatestResult();
         if (hasTarget() && !isObelisk()) {
             Pose3D botPose = result.getBotpose();
             double[] botPoseDouble = new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};
@@ -93,7 +95,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
-        LLResult result = getLatestResult();
         if (hasTarget() && !isObelisk()) {
             return result.getBotpose();
         }

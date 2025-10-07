@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -19,13 +20,14 @@ public class TeleOp extends OpMode {
     private FlywheelSubsystem flywheelSubsystem;
 
     private GamepadEx driver;
+    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
 
 
     @Override
     public void init() {
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, dashboard);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, dashboard);
-        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, dashboard);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
+        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
         driver = new GamepadEx(gamepad1);
 
         mecanumDriveSubsystem.setDefaultCommand(
@@ -65,5 +67,6 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().reset();
     }
 }
