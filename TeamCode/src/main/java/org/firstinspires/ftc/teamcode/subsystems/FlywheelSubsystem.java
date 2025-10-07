@@ -33,15 +33,23 @@ public class FlywheelSubsystem extends SubsystemBase {
         telemetryPacket.put("servoPower", getServosPower());
     }
 
+    private double clamp(double power) {
+        if (power < -1) {
+            return -1;
+        } else if (power > 1) {
+            return 1;
+        } else {
+            return power;
+        }
+    }
+
     public void setFlywheelMotorPower(double power) {
-        if (power < -1 || power > 1) return;
-        flywheelMotor.setPower(power);
+        flywheelMotor.setPower(clamp(power));
     }
 
     public void setServosPower(double power) {
-        if (power < -1 || power > 1) return;
-        rightServo.setPower(power);
-        leftServo.setPower(power);
+        rightServo.setPower(clamp(power));
+        leftServo.setPower(clamp(power));
     }
 
     public double getFlywheelMotorPower() { return flywheelMotor.getPower(); }
