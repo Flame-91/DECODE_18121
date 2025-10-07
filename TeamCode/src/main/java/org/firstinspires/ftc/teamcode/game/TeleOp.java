@@ -33,17 +33,7 @@ public class TeleOp extends OpMode {
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
         );
-    }
 
-    @Override
-    public void init_loop() {
-        if (gamepad1.right_bumper) team = "red";
-        if (gamepad1.left_bumper) team = "blue";
-        telemetry.addData("team", team);
-    }
-
-    @Override
-    public void start() {
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
                 () -> CommandScheduler.getInstance().schedule(
                         new LLAlignCommand(driver, mecanumDriveSubsystem, limelightSubsystem)
@@ -57,6 +47,12 @@ public class TeleOp extends OpMode {
         );
     }
 
+    @Override
+    public void init_loop() {
+        if (gamepad1.right_bumper) team = "red";
+        if (gamepad1.left_bumper) team = "blue";
+        telemetry.addData("team", team);
+    }
 
     @Override
     public void loop() {
