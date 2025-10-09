@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 public class TeleOp extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
-    public static String team = "";
-
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
@@ -48,14 +46,11 @@ public class TeleOp extends OpMode {
     }
 
     @Override
-    public void init_loop() {
-        if (gamepad1.right_bumper) team = "red";
-        if (gamepad1.left_bumper) team = "blue";
-        telemetry.addData("team", team);
-    }
+    public void init_loop() {}
 
     @Override
     public void loop() {
+        //FTC Dashboard
         CommandScheduler.getInstance().run();
         dashboard.sendTelemetryPacket(telemetryPacket);
         telemetry.update();
