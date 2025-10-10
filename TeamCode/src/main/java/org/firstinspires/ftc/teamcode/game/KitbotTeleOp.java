@@ -10,10 +10,11 @@ import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 public class KitbotTeleOp extends OpMode {
     OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
+
     @Override
     public void init() {
-        omniDriveSubsystem = new OmniDriveSubsystem(hardwareMap);
-        flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap);
+        omniDriveSubsystem = new OmniDriveSubsystem(hardwareMap, gamepad1);
+        flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, gamepad1);
     }
     @Override
     public void loop() {
