@@ -44,11 +44,11 @@ public class TeleOp extends OpMode {
                 )
         );
 
-        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
-                () -> CommandScheduler.getInstance().schedule(
-                        new FlywheelServoCommand(driver, flywheelSubsystem)
-                )
-        );
+//        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
+//                () -> CommandScheduler.getInstance().schedule(
+//                        new FlywheelServoCommand(driver, flywheelSubsystem)
+//                )
+//        );
     }
 
     @Override
