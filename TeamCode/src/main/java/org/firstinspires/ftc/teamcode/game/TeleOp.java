@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.game;
+/*package org.firstinspires.ftc.teamcode.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 
 public class TeleOp extends OpMode {
-
+/*
     private MecanumDriveSubsystem driveSubsystem;
     private DriveCommand driveCommand;
     private LLAlignCommand LLAlignCommand;
@@ -68,3 +68,4 @@ public class TeleOp extends OpMode {
         CommandScheduler.getInstance().cancelAll();
     }
 }
+ */

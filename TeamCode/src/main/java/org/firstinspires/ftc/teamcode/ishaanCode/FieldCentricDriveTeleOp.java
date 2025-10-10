@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "FieldCentricDriveIshaan")
 //adb connect 192.168.43.1:5555
-public class FieldCentricDriveTeleop extends OpMode {
+public class FieldCentricDriveTeleOp extends OpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     private IMU imu;
     public void initializeMotors() {
