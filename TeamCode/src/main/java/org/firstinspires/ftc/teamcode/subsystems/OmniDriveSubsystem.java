@@ -9,13 +9,11 @@ public class OmniDriveSubsystem extends SubsystemBase {
     DcMotor left, right;
     private final Gamepad gamepad;
     public OmniDriveSubsystem(HardwareMap hardwareMap, Gamepad gamepad) {
-//        must add motor names in config through driver station
         left = hardwareMap.get(DcMotor.class, "left");
         right = hardwareMap.get(DcMotor.class, "right");
         this.gamepad = gamepad;
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//         Put upside down and test if necessary
         left.setDirection(DcMotor.Direction.REVERSE);
         right.setDirection(DcMotor.Direction.REVERSE);
     }
