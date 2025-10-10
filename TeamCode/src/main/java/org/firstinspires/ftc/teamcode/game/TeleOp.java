@@ -1,59 +1,70 @@
 package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.LLAlignCommand;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
-import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import org.firstinspires.ftc.teamcode.commands.*;
+import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
-
 public class TeleOp extends OpMode {
-    MecanumDriveSubsystem mecanumDriveSubsystem;
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    Telemetry dashboardTelemetry = dashboard.getTelemetry();
-    TelemetryPacket packet = new TelemetryPacket();
-//    private LLAlignCommand LLAlignCommand;
-    private String team = "";
-    DriveCommand driveCommand;
-    LimelightSubsystem ll;
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    private MecanumDriveSubsystem mecanumDriveSubsystem;
+    private LimelightSubsystem limelightSubsystem;
+    private FlywheelSubsystem flywheelSubsystem;
 
+    private GamepadEx driver;
+    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+
+
+    @Override
     public void init() {
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-        driveCommand = new DriveCommand(gamepad1, mecanumDriveSubsystem, telemetry, dashboardTelemetry);
-//        LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
-        CommandScheduler.getInstance().schedule(driveCommand);
-        ll = new LimelightSubsystem(hardwareMap);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
+        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+        driver = new GamepadEx(gamepad1);
+
+        mecanumDriveSubsystem.setDefaultCommand(
+                new DriveCommand(driver, mecanumDriveSubsystem)
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+                () -> CommandScheduler.getInstance().schedule(
+                        new LLAlignCommand(driver, mecanumDriveSubsystem, limelightSubsystem)
+                )
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
+                () -> CommandScheduler.getInstance().schedule(
+                        new FlywheelCommand(driver, flywheelSubsystem)
+                )
+        );
+
+//        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
+//                () -> CommandScheduler.getInstance().schedule(
+//                        new FlywheelServoCommand(driver, flywheelSubsystem)
+//                )
+//        );
     }
 
-    public void init_loop() {
-        if (gamepad1.right_bumper) team = "red";
-        if (gamepad1.left_bumper) team = "blue";
-        telemetry.addData("team", team);
-    }
+    @Override
+    public void init_loop() {}
 
-//    public void start() {}
+    @Override
     public void loop() {
-        TelemetryPacket packet = new TelemetryPacket();
-
-        if (gamepad1.a) {
-            LLAlignCommand LLAlignCommand = new LLAlignCommand(mecanumDriveSubsystem, ll, gamepad1, telemetry, dashboardTelemetry, packet, dashboard);
-            CommandScheduler.getInstance().schedule(LLAlignCommand);
-        } else {
-            CommandScheduler.getInstance().schedule(driveCommand);
-        }
-
-        dashboard.sendTelemetryPacket(packet);
-
+        //FTC Dashboard
         CommandScheduler.getInstance().run();
+        dashboard.sendTelemetryPacket(telemetryPacket);
+        telemetry.update();
     }
 
+    @Override
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().reset();
     }
 }

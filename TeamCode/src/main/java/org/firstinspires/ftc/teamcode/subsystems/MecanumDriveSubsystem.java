@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
-
-    public MecanumDriveSubsystem(HardwareMap hardwareMap) {
+    private final Telemetry telemetry;
+    private final TelemetryPacket telemetryPacket;
+    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -28,6 +32,21 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         imu.initialize(imuParams);
 
         this.imu = imu;
+        this.telemetry = telemetry;
+        this.telemetryPacket = telemetryPacket;
+    }
+
+    @Override
+    public void periodic() {
+        telemetry.addData("backLeftMotorPower", getBackLeftMotorPower());
+        telemetry.addData("backRightMotorPower", getBackRightMotorPower());
+        telemetry.addData("frontLeftMotorPower", getFrontLeftMotorPower());
+        telemetry.addData("frontRightMotorPower", getFrontRightMotorPower());
+
+        telemetryPacket.put("backLeftMotorPower", getBackLeftMotorPower());
+        telemetryPacket.put("backRightMotorPower", getBackRightMotorPower());
+        telemetryPacket.put("frontLeftMotorPower", getFrontLeftMotorPower());
+        telemetryPacket.put("frontRightMotorPower", getFrontRightMotorPower());
     }
 
     public void drive(double x, double y, double rotation) {
@@ -52,4 +71,9 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
     }
+
+    public double getBackLeftMotorPower() { return backLeft.getPower(); }
+    public double getBackRightMotorPower() { return backRight.getPower(); }
+    public double getFrontLeftMotorPower() { return frontLeft.getPower(); }
+    public double getFrontRightMotorPower() { return frontRight.getPower(); }
 }

@@ -1,28 +1,53 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
 public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
-    public LimelightSubsystem(HardwareMap hardwareMap) {
+    private final Telemetry telemetry;
+    private final TelemetryPacket telemetryPacket;
+    LLResult result;
+    public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
         limelight.pipelineSwitch(0);
+        result = limelight.getLatestResult();
+
+        this.telemetry = telemetry;
+        this.telemetryPacket = telemetryPacket;
+
+        dashboard.startCameraStream(limelight, 0);
     }
-    public LLResult getLatestResult() { return limelight.getLatestResult(); }
+
+    @Override
+    public void periodic() {
+        result = limelight.getLatestResult();
+
+        telemetry.addData("hasTarget", hasTarget());
+        telemetry.addData("getAprilTagID", getAprilTagID());
+        telemetry.addData("pitchError", getPitchError());
+        telemetry.addData("botPose", getBotPose());
+
+        telemetryPacket.put("hasTarget", hasTarget());
+        telemetryPacket.put("getAprilTagID", getAprilTagID());
+        telemetryPacket.put("PitchError", getPitchError());
+        telemetryPacket.put("botPose", getBotPose());
+    }
 
     // Returns true if any target is visible
     public boolean hasTarget() {
-        LLResult result = getLatestResult();
         if (result != null) {
             return result.isValid();
         }
@@ -31,7 +56,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns the first AprilTag ID detected, or -1 if none
     public int getAprilTagID() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             if (fiducials != null && !fiducials.isEmpty()) {
@@ -43,7 +67,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYawError() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             return result.getTx();
         }
@@ -52,20 +75,18 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitchError() {
-        LLResult result = getLatestResult();
         if (hasTarget()) {
             return result.getTy();
         }
         return -361.0;
     }
 
-    public boolean isObelisk() {
+    private boolean isObelisk() {
          return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
     }
     // returns the robot's center's position on the field if limelight can see an april tag
 
     public double[] getBotPose() {
-        LLResult result = getLatestResult();
         if (hasTarget() && !isObelisk()) {
             Pose3D botPose = result.getBotpose();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
@@ -75,7 +96,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
-        LLResult result = getLatestResult();
         if (hasTarget() && !isObelisk()) {
             return result.getBotpose();
         }

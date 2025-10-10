@@ -4,47 +4,38 @@ import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
 public class LLAlignCommand extends CommandBase {
-    private final MecanumDriveSubsystem drive;
-    private final double maxYawSpeed = 1; // max rotation speed
-//    double yaw;
+    private final MecanumDriveSubsystem mecanumDriveSubsystem;
+    private final LimelightSubsystem limelightSubsystem;
+
+    private final GamepadEx gamepad;
+
+    PIDController PID; // Initialize pid controller
     long lastTime = System.nanoTime();
     double output;
-    private final Gamepad gamepad;
-    private final Telemetry telemetry;
-    private final Telemetry dashboardTelemetry;
-    private final TelemetryPacket packet;
-    private final FtcDashboard dashboard;
-    PIDController PID; // Initialize pid controller
-    private final LimelightSubsystem ll;
     double error = 0;
 
-    public LLAlignCommand(MecanumDriveSubsystem drive, LimelightSubsystem ll, Gamepad gamepad, Telemetry telemetry, Telemetry dashboardTelemetry, TelemetryPacket packet, FtcDashboard dashboard) {
-        this.drive = drive;
-        this.ll = ll;
+    public LLAlignCommand(GamepadEx gamepad, MecanumDriveSubsystem mecanumDriveSubsystem, LimelightSubsystem limelightSubsystem) {
+        this.mecanumDriveSubsystem = mecanumDriveSubsystem;
+        this.limelightSubsystem = limelightSubsystem;
         this.gamepad = gamepad;
-        this.telemetry = telemetry;
-        this.dashboardTelemetry = dashboardTelemetry;
-        this.packet = packet;
-        this.dashboard = dashboard;
-        PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed, dashboard);
-        addRequirements(drive);
+        double maxYawSpeed = 1;
+        PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed);
+        addRequirements(this.mecanumDriveSubsystem);
     }
 
     @Override
     public void execute() {
-        if (ll.hasTarget()) {
-            error = ll.getYawError(); // horizontal offset
+        if (limelightSubsystem.hasTarget()) {
+            error = limelightSubsystem.getYawError(); // horizontal offset
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
@@ -52,26 +43,14 @@ public class LLAlignCommand extends CommandBase {
 
             output = PID.calculate(error, deltaTime);
 
-            drive.drive(0, 0, -output);
-
-
-            telemetry.addData("Yaw Error", error);
-            telemetry.addData("Yaw Correction", output);
-            dashboardTelemetry.addData("Yaw Error", error);
-            dashboardTelemetry.addData("Yaw Correction", output);
-            packet.put("Yaw Error", error);
-            packet.put("Target", 0);
-            packet.put("Yaw Correction", output);
-            dashboard.sendTelemetryPacket(packet);
-            dashboardTelemetry.update();
-            telemetry.update();
+            mecanumDriveSubsystem.drive(0, 0, -output);
         }
     }
 
     @Override
     public boolean isFinished() {
         double tolerance = 10.0; // degrees tolerance
-        if (!gamepad.a) {
+        if (!gamepad.getButton(GamepadKeys.Button.A)) {
             return true;
         } else {
             return Math.abs(error) < tolerance;
@@ -79,7 +58,5 @@ public class LLAlignCommand extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        drive.drive(0, 0, 0); // stop rotation
-    }
+    public void end(boolean interrupted) {mecanumDriveSubsystem.drive(0, 0, 0);}
 }

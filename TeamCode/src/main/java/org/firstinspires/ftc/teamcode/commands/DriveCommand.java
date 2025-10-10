@@ -1,37 +1,24 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import android.annotation.SuppressLint;
-
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.command.CommandBase;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 public class DriveCommand extends CommandBase {
     private final MecanumDriveSubsystem drive;
-    private final Gamepad gamepad;
-    private final Telemetry telemetry;
-    private final Telemetry dashboardTelemetry;
+    private final GamepadEx gamepad;
 
-    public DriveCommand(Gamepad gamepad, MecanumDriveSubsystem drive, Telemetry telemetry, Telemetry dashboardTelemetry) {
+    public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive) {
         this.drive = drive;
         this.gamepad = gamepad;
-        this.telemetry = telemetry;
-        this.dashboardTelemetry = dashboardTelemetry;
         addRequirements(drive);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void execute() {
-        double x = gamepad.left_stick_x;
-        double y = gamepad.left_stick_y;
-        double rotation = -gamepad.right_stick_x;
-        telemetry.addData("Movement", String.format("x: %f, y: %f rotation: %f", x, y, rotation));
-        dashboardTelemetry.addData("Movement", String.format("x: %f, y: %f rotation: %f", x, y, rotation));
-        telemetry.update();
-        dashboardTelemetry.update();
+        double x = gamepad.getLeftX();
+        double y = -gamepad.getLeftY();
+        double rotation = -gamepad.getRightX();
         drive.drive(x, y, rotation);
     }
 
