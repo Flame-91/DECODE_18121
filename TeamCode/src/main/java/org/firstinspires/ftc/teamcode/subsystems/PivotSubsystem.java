@@ -16,6 +16,7 @@ public class PivotSubsystem extends SubsystemBase {
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         pivot = hardwareMap.get(DcMotor.class, "pivotMotor");
         pivot.setDirection(DcMotorSimple.Direction.FORWARD);
+        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
@@ -24,20 +25,23 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("pivotPower", getPivotPower());
+        telemetry.addData("currentPivotPosition", getCurrentPivotPosition());
+        telemetry.addData("targetPivotPosition", getTargetPivotPosition());
 
         telemetryPacket.put("pivotPower", getPivotPower());
-    }
-
-    private double clamp(double power) {
-        if (power > 1) return 1;
-        if (power < -1) return -1;
-        return power;
+        telemetryPacket.put("currentPivotPosition", getCurrentPivotPosition());
+        telemetryPacket.put("targetPivotPosition", getTargetPivotPosition());
     }
 
     public void setPivotPower(double power) {
-        pivot.setPower(clamp(power));
+        pivot.setPower(power);
+    }
+    public void setPivotPosition(int position) {
+        pivot.setTargetPosition(position);
     }
 
+    public double getCurrentPivotPosition() { return pivot.getCurrentPosition(); }
+    public double getTargetPivotPosition() { return pivot.getTargetPosition(); }
     public double getPivotPower() {
         return pivot.getPower();
     }

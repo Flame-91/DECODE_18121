@@ -15,6 +15,7 @@ public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
     private final LimelightSubsystem limelightSubsystem;
     private final PIDController pivotPIDController;
+    private double errorTolerance
 
     public PivotCommand(PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
         this.pivotSubsystem = pivotSubsystem;
