@@ -16,6 +16,12 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
+    double distanceFromFloorToTagMeters = .7051;
+    double limelightLensHeightMeters = 0.254;
+    double limelightMountAngleDegrees = 15;
+    double goalHeightMeters = 0.7493;
+
+
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -81,17 +87,15 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public double getPitchError(double offsetMeters) {
-        double distanceFromFloorToTagMeters = .7051;
-        double limelightLensHighMeters = 0.254;
-        double horizontalDistanceMeters = getHorizontalDistanceMeters();
-        return Math.atan(((distanceFromFloorToTagMeters - limelightLensHighMeters) + offsetMeters)/horizontalDistanceMeters);
+        if (hasTarget()) {
+            double horizontalDistanceMeters = getHorizontalDistanceMeters();
+            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters);
+        }
+        return -316.0;
     }
 
     public double getHorizontalDistanceMeters() {
         if (hasTarget()) {
-            double limelightMountAngleDegrees = 15;
-            double limelightLensHeightMeters = 0.254;
-            double goalHeightMeters = 0.7493;
             double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
             double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 

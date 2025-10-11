@@ -17,7 +17,6 @@ public class TeleOp extends OpMode {
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
     private PivotSubsystem pivotSubsystem;
-
     private GamepadEx driver;
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
 
