@@ -80,16 +80,24 @@ public class LimelightSubsystem extends SubsystemBase {
         return -361.0;
     }
 
-    public double getHorizontalDistance() {
+    public double getPitchError(double offsetMeters) {
+        double distanceFromFloorToTagMeters = .7051;
+        double limelightLensHighMeters = 0.254;
+        double horizontalDistanceMeters = getHorizontalDistanceMeters();
+        return Math.atan(((distanceFromFloorToTagMeters - limelightLensHighMeters) + offsetMeters)/horizontalDistanceMeters);
+    }
+
+    public double getHorizontalDistanceMeters() {
         if (hasTarget()) {
             double limelightMountAngleDegrees = 15;
-            double limelightLensHeightInches = 10;
-            double goalHeightInches = 29.5;
+            double limelightLensHeightMeters = 0.254;
+            double goalHeightMeters = 0.7493;
             double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
             double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
-            return (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+            return (goalHeightMeters - limelightLensHeightMeters) / Math.tan(angleToGoalRadians);
         }
+        return -1;
     }
 
     private boolean isObelisk() {
@@ -111,10 +119,6 @@ public class LimelightSubsystem extends SubsystemBase {
             return result.getBotpose();
         }
         return null;
-    }
-
-    public double horizontalDistance() {
-        NetworkTableEntry
     }
 
     // Returns the motif pattern based on AprilTag ID

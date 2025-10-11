@@ -17,6 +17,7 @@ public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
     private final LimelightSubsystem limelightSubsystem;
     private final PIDController pivotPIDController;
+    long lastTime = System.nanoTime();
 
     public PivotCommand(PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
         this.pivotSubsystem = pivotSubsystem;
@@ -30,13 +31,17 @@ public class PivotCommand extends CommandBase {
     @Override
     public void execute() {
         if (limelightSubsystem.hasTarget()) {
-
-            pivotPIDController.
+            double pitchError = limelightSubsystem.getPitchError(.2794);
+            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
+            pitchError -= pivotPositionAngle;
+            long currentTime = System.nanoTime();
+            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
+            lastTime = currentTime;
+            double output = pivotPIDController.calculate(pitchError, deltaTime);
+            pivotSubsystem.setPivotPower(output);
         }
     }
 
     @Override
-    public boolean isFinished() {
-        return false;
-    }
+    public boolean isFinished() { return false; }
 }

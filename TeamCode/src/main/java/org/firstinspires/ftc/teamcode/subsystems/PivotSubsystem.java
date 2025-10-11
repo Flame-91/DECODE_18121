@@ -14,6 +14,8 @@ public class PivotSubsystem extends SubsystemBase {
     private final DcMotor pivot;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
+    private final double encoderTicksM = 5;
+    private final double encoderTicksB = 5;
 
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         pivot = hardwareMap.get(DcMotor.class, "pivotMotor");
@@ -42,9 +44,11 @@ public class PivotSubsystem extends SubsystemBase {
         pivot.setTargetPosition(position);
     }
     public double convertPivotTicksToAngle(double ticks) {
-        double encoderTicksB = 1;
-        double encoderTicksM = 5;
-        return encoderTicksM * ticks + encoderTicksB;
+        return (ticks - encoderTicksB)/encoderTicksM;
+    }
+
+    public double convertPivotAngleToTicks(double angle) {
+        return (angle * encoderTicksM) + encoderTicksB;
     }
 
     public double getCurrentPivotPosition() { return pivot.getCurrentPosition(); }
