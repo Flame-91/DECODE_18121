@@ -17,7 +17,7 @@ public class PivotCommand extends CommandBase {
         this.gamepad = gamepad;
         this.pivotSubsystem = pivotSubsystem;
         this.limelightSubsystem = limelightSubsystem;
-        pivotPIDController =
+        pivotPIDController = new PIDController()
 
         addRequirements(pivotSubsystem);
     }
