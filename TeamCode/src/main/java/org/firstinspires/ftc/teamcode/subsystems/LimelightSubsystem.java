@@ -7,7 +7,6 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
@@ -81,6 +80,18 @@ public class LimelightSubsystem extends SubsystemBase {
         return -361.0;
     }
 
+    public double getHorizontalDistance() {
+        if (hasTarget()) {
+            double limelightMountAngleDegrees = 15;
+            double limelightLensHeightInches = 10;
+            double goalHeightInches = 29.5;
+            double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
+            double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+            return (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+        }
+    }
+
     private boolean isObelisk() {
          return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
     }
@@ -100,6 +111,10 @@ public class LimelightSubsystem extends SubsystemBase {
             return result.getBotpose();
         }
         return null;
+    }
+
+    public double horizontalDistance() {
+        NetworkTableEntry
     }
 
     // Returns the motif pattern based on AprilTag ID

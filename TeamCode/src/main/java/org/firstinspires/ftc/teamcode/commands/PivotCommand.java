@@ -14,14 +14,13 @@ import org.firstinspires.ftc.teamcode.util.PIDController;
 public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
     private final LimelightSubsystem limelightSubsystem;
-    private final GamepadEx gamepad;
     private final PIDController pivotPIDController;
 
-    public PivotCommand(GamepadEx gamepad, PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
-        this.gamepad = gamepad;
+    public PivotCommand(PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
         this.pivotSubsystem = pivotSubsystem;
         this.limelightSubsystem = limelightSubsystem;
         double maxPivotSpeed = 1;
+        double error =
         pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, maxPivotSpeed);
 
         addRequirements(this.pivotSubsystem);
