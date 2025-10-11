@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class FlyWheelSubsystem {
     private final DcMotor motorizedFlywheel;
-    private final CRServo rightFlyWheel;
-    private final CRServo leftFlyWheel;
+    private final CRServo rightFlyWheel, leftFlyWheel;
     private final Gamepad gamepad;
     public FlyWheelSubsystem(HardwareMap hardwareMap, Gamepad gamepad) {
         motorizedFlywheel = hardwareMap.get(DcMotor.class, "motorizedFlywheel");

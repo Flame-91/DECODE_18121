@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 public class OmniDriveSubsystem extends SubsystemBase {
-    DcMotor left, right;
+    private final DcMotor left, right;
     private final Gamepad gamepad;
     public OmniDriveSubsystem(HardwareMap hardwareMap, Gamepad gamepad) {
         left = hardwareMap.get(DcMotor.class, "left");
