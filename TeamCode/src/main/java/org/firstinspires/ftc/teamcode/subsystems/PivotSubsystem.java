@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,6 +9,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class PivotSubsystem extends SubsystemBase {
     private final DcMotor pivot;
     private final Telemetry telemetry;
@@ -38,6 +40,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
     public void setPivotPosition(int position) {
         pivot.setTargetPosition(position);
+    }
+    public double convertPivotTicksToAngle(double ticks) {
+        double encoderTicksB = 1;
+        double encoderTicksM = 5;
+        return encoderTicksM * ticks + encoderTicksB;
     }
 
     public double getCurrentPivotPosition() { return pivot.getCurrentPosition(); }
