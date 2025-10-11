@@ -14,9 +14,8 @@ public class PivotSubsystem extends SubsystemBase {
     private final DcMotor pivot;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    private final double encoderTicksM = 5;
-    private final double encoderTicksB = 5;
-
+    private final double encoderTicksM = 5;  //Not necessary to be stored as a variable as it is a constant only used in this class
+    private final double encoderTicksB = 5; // Not necessary to be stored as a variable as it is a constant only used in this class
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         pivot = hardwareMap.get(DcMotor.class, "pivotMotor");
         pivot.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -16,6 +16,7 @@ public class TeleOp extends OpMode {
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
+    private PivotSubsystem pivotSubsystem;
 
     private GamepadEx driver;
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
@@ -26,10 +27,16 @@ public class TeleOp extends OpMode {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+        pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
+
         driver = new GamepadEx(gamepad1);
 
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
+        );
+
+        pivotSubsystem.setDefaultCommand(
+                new PivotCommand(pivotSubsystem, limelightSubsystem)
         );
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
@@ -43,12 +50,6 @@ public class TeleOp extends OpMode {
                         new FlywheelCommand(driver, flywheelSubsystem)
                 )
         );
-
-//        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
-//                () -> CommandScheduler.getInstance().schedule(
-//                        new FlywheelServoCommand(driver, flywheelSubsystem)
-//                )
-//        );
     }
 
     @Override

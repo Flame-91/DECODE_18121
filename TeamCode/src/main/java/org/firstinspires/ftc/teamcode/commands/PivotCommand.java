@@ -40,7 +40,7 @@ public class PivotCommand extends CommandBase {
             double output = pivotPIDController.calculate(pitchError, deltaTime);
 
             pivotSubsystem.setPivotPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
-            pivotSubsystem.setPivotPower(output);
+            pivotSubsystem.setPivotPower(-output);
         }
     }
 
