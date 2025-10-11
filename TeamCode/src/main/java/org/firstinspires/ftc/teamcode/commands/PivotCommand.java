@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKI;
+import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKP;
+
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
@@ -17,13 +21,16 @@ public class PivotCommand extends CommandBase {
         this.gamepad = gamepad;
         this.pivotSubsystem = pivotSubsystem;
         this.limelightSubsystem = limelightSubsystem;
-        pivotPIDController = new PIDController()
+        double maxPivotSpeed = 1;
+        pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, maxPivotSpeed);
 
-        addRequirements(pivotSubsystem);
+        addRequirements(this.pivotSubsystem);
     }
 
     @Override
     public void execute() {
+        if (limelightSubsystem.hasTarget()) {
 
+        }
     }
 }
