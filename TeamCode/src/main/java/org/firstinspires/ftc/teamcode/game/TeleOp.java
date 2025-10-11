@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.game;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -15,7 +15,6 @@ public class TeleOp extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
-    private FlywheelSubsystem flywheelSubsystem;
 
     private GamepadEx driver;
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
@@ -23,32 +22,22 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
-        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+        //Gamepad
         driver = new GamepadEx(gamepad1);
 
+        //Subsystems
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
+
+        //Commands
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
         );
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
                 () -> CommandScheduler.getInstance().schedule(
-                        new LLAlignCommand(driver, mecanumDriveSubsystem, limelightSubsystem)
-                )
+                        new LLAlignCommand(driver, mecanumDriveSubsystem, limelightSubsystem))
         );
-
-        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
-                () -> CommandScheduler.getInstance().schedule(
-                        new FlywheelCommand(driver, flywheelSubsystem)
-                )
-        );
-
-//        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
-//                () -> CommandScheduler.getInstance().schedule(
-//                        new FlywheelServoCommand(driver, flywheelSubsystem)
-//                )
-//        );
     }
 
     @Override
@@ -56,8 +45,9 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        //FTC Dashboard
         CommandScheduler.getInstance().run();
+
+        telemetryPacket.put("Status", "Running TeleOp");
         dashboard.sendTelemetryPacket(telemetryPacket);
         telemetry.update();
     }
@@ -66,5 +56,7 @@ public class TeleOp extends OpMode {
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().reset();
+        telemetry.addData("Status", "Stopped");
+        telemetry.update();
     }
 }
