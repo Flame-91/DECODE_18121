@@ -38,6 +38,8 @@ public class PivotCommand extends CommandBase {
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
+
+            pivotSubsystem.setPivotPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
             pivotSubsystem.setPivotPower(output);
         }
     }

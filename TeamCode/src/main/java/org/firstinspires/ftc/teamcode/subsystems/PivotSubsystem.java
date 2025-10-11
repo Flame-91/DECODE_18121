@@ -47,6 +47,10 @@ public class PivotSubsystem extends SubsystemBase {
         return (ticks - encoderTicksB)/encoderTicksM;
     }
 
+    public int convertPivotAngleToTicks(double angle) {
+        return (int) Math.floor((angle * encoderTicksM) + encoderTicksB);
+    }
+
     public double getCurrentPivotPosition() { return pivot.getCurrentPosition(); }
     public double getTargetPivotPosition() { return pivot.getTargetPosition(); }
     public double getPivotPower() {
