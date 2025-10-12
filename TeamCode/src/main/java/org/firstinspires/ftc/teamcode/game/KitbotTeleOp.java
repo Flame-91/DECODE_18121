@@ -14,25 +14,21 @@ import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 public class KitbotTeleOp extends OpMode {
     OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
-    OmniDriveCommand omniDriveCommand;
-    FlyWheelCommand flyWheelCommand;
 
     @Override
     public void init() {
         omniDriveSubsystem = new OmniDriveSubsystem(hardwareMap, gamepad1);
-        flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, gamepad1);
-        omniDriveCommand = new OmniDriveCommand(omniDriveSubsystem);
-        flyWheelCommand = new FlyWheelCommand(flyWheelSubsystem);
-        CommandScheduler.getInstance().schedule(omniDriveCommand, flyWheelCommand);
+        flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, gamepad1, telemetry);
     }
 
     @Override
     public void loop() {
-        CommandScheduler.getInstance().run();
+        omniDriveSubsystem.OmniDrive();
+        flyWheelSubsystem.FlyWheelLaunch();
     }
 
-    @Override
-    public void stop() {
-        CommandScheduler.getInstance().cancelAll();
-    }
+//    @Override
+//    public void stop() {
+//        CommandScheduler.getInstance().cancelAll();
+//    }
 }
