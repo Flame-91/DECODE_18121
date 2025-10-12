@@ -62,7 +62,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        //FTC Dashboard
+        // FTC Dashboard
         CommandScheduler.getInstance().run();
         dashboard.sendTelemetryPacket(telemetryPacket);
         telemetry.update();
