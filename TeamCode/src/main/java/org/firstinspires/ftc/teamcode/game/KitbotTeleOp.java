@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.commands.OmniDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 
-@TeleOp
+@TeleOp (name = "Kit Bot TeleOp")
 public class KitbotTeleOp extends OpMode {
     OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
