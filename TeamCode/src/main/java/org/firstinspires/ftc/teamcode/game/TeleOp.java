@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.game;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -16,7 +17,8 @@ public class TeleOp extends OpMode {
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
-
+    private PivotSubsystem pivotSubsystem;
+    private IntakeSubsystem intakeSubsystem;
     private GamepadEx driver;
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
 
@@ -26,10 +28,20 @@ public class TeleOp extends OpMode {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+        pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
         driver = new GamepadEx(gamepad1);
 
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
+        );
+
+        pivotSubsystem.setDefaultCommand(
+                new PivotCommand(pivotSubsystem, limelightSubsystem)
+        );
+
+        intakeSubsystem.setDefaultCommand(
+                new IntakeCommand(intakeSubsystem)
         );
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
