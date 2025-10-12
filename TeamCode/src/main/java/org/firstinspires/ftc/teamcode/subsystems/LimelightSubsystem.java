@@ -7,7 +7,6 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
@@ -17,6 +16,12 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
+    double distanceFromFloorToTagMeters = .7051;
+    double limelightLensHeightMeters = 0.254;
+    double limelightMountAngleDegrees = 15;
+    double goalHeightMeters = 0.7493;
+
+
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -79,6 +84,24 @@ public class LimelightSubsystem extends SubsystemBase {
             return result.getTy();
         }
         return -361.0;
+    }
+
+    public double getPitchError(double offsetMeters) {
+        if (hasTarget()) {
+            double horizontalDistanceMeters = getHorizontalDistanceMeters();
+            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters);
+        }
+        return -316.0;
+    }
+
+    public double getHorizontalDistanceMeters() {
+        if (hasTarget()) {
+            double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
+            double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+            return (goalHeightMeters - limelightLensHeightMeters) / Math.tan(angleToGoalRadians);
+        }
+        return -1;
     }
 
     private boolean isObelisk() {
