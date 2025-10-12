@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.game;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -30,6 +29,7 @@ public class TeleOp extends OpMode {
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
+
         driver = new GamepadEx(gamepad1);
 
         mecanumDriveSubsystem.setDefaultCommand(
@@ -55,12 +55,6 @@ public class TeleOp extends OpMode {
                         new FlywheelCommand(driver, flywheelSubsystem)
                 )
         );
-
-//        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
-//                () -> CommandScheduler.getInstance().schedule(
-//                        new FlywheelServoCommand(driver, flywheelSubsystem)
-//                )
-//        );
     }
 
     @Override

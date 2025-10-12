@@ -6,7 +6,8 @@ import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.command.CommandBase;
+import com.seattlesolvers.solverslib.command.CommandBase;
+import com.seattlesolvers.solverslib.command.Subsystem;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
@@ -29,7 +30,8 @@ public class LLAlignCommand extends CommandBase {
         this.gamepad = gamepad;
         double maxYawSpeed = 1;
         PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed);
-        addRequirements(this.mecanumDriveSubsystem);
+
+        addRequirements((Subsystem) this.mecanumDriveSubsystem);
     }
 
     @Override
