@@ -15,7 +15,7 @@ public class TeleOp extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
-
+    private IntakeSubsystem intakeSubsystem;
     private GamepadEx driver;
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
 
@@ -28,10 +28,15 @@ public class TeleOp extends OpMode {
         //Subsystems
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
         //Commands
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
+        );
+
+        intakeSubsystem.setDefaultCommand(
+                new IntakeCommand(intakeSubsystem)
         );
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(

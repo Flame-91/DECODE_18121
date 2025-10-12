@@ -1,4 +1,25 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-public class IntakeCommand {
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.command.CommandBase;
+
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+
+public class IntakeCommand extends CommandBase {
+    private final IntakeSubsystem intakeSubsystem;
+    public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+        this.intakeSubsystem = intakeSubsystem;
+
+        addRequirements(intakeSubsystem);
+    }
+
+    @Override
+    public void execute() {
+        intakeSubsystem.setIntakeServoPower(1);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }
