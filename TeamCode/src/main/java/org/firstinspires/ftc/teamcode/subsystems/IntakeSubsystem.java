@@ -16,6 +16,8 @@ public class IntakeSubsystem extends SubsystemBase {
         this.telemetryPacket = telemetryPacket;
 
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+
+        register();
     }
 
     @Override

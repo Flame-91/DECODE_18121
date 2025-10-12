@@ -27,6 +27,8 @@ public class PivotSubsystem extends SubsystemBase {
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
+
+        register();
     }
 
     @Override

@@ -22,6 +22,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
+
+        register();
     }
 
     @Override

@@ -34,6 +34,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         this.imu = imu;
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
+
+        register();
     }
 
     @Override

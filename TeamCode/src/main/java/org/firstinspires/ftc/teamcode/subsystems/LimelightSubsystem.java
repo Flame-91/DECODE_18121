@@ -34,6 +34,8 @@ public class LimelightSubsystem extends SubsystemBase {
         this.telemetryPacket = telemetryPacket;
 
         dashboard.startCameraStream(limelight, 0);
+
+        register();
     }
 
     @Override
