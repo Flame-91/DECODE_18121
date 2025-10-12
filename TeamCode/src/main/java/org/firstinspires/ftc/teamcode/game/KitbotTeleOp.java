@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.commands.OmniDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 
@@ -11,11 +13,14 @@ import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 public class KitbotTeleOp extends OpMode {
     OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
+    OmniDriveCommand omniDriveCommand;
 
     @Override
     public void init() {
         omniDriveSubsystem = new OmniDriveSubsystem(hardwareMap, gamepad1);
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, gamepad1);
+        omniDriveCommand = new OmniDriveCommand(omniDriveSubsystem);
+        CommandScheduler.getInstance().schedule(omniDriveCommand);
     }
 
     @Override
