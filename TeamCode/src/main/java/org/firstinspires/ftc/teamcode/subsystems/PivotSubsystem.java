@@ -11,15 +11,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 public class PivotSubsystem extends SubsystemBase {
-    private final DcMotor pivot;
+    private final DcMotor leftPivotMotor;
+    private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
     private final double encoderTicksM = 5;  //Not necessary to be stored as a variable as it is a constant only used in this class
     private final double encoderTicksB = 5; // Not necessary to be stored as a variable as it is a constant only used in this class
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
-        pivot = hardwareMap.get(DcMotor.class, "pivotMotor");
-        pivot.setDirection(DcMotorSimple.Direction.FORWARD);
-        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
+        rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
+        leftPivotMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightPivotMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
@@ -37,10 +41,12 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setPivotPower(double power) {
-        pivot.setPower(power);
+        leftPivotMotor.setPower(power);
+        rightPivotMotor.setPower(power);
     }
     public void setPivotPosition(int position) {
-        pivot.setTargetPosition(position);
+        leftPivotMotor.setTargetPosition(position);
+        rightPivotMotor.setTargetPosition(position);
     }
     public double convertPivotTicksToAngle(double ticks) {
         return (ticks - encoderTicksB)/encoderTicksM;
@@ -50,9 +56,7 @@ public class PivotSubsystem extends SubsystemBase {
         return (int) Math.floor((angle * encoderTicksM) + encoderTicksB);
     }
 
-    public double getCurrentPivotPosition() { return pivot.getCurrentPosition(); }
-    public double getTargetPivotPosition() { return pivot.getTargetPosition(); }
-    public double getPivotPower() {
-        return pivot.getPower();
-    }
+    public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition(); }
+    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition(); }
+    public double getPivotPower() { return leftPivotMotor.getPower(); }
 }
