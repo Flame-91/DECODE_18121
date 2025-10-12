@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKD;
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKI;
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.LLAlignKP;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.LLAlignKD;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.LLAlignKI;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.LLAlignKP;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;

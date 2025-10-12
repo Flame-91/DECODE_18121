@@ -1,18 +1,15 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKD;
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKI;
-import static org.firstinspires.ftc.teamcode.util.PIDConstants.pivotKP;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKI;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKP;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
-@Config
 public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
     private final LimelightSubsystem limelightSubsystem;

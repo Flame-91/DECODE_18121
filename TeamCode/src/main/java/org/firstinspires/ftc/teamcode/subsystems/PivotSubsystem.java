@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.config.Config;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.encoderTicksB;
+import static org.firstinspires.ftc.teamcode.util.ConfigConstants.encoderTicksM;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,14 +11,11 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@Config
 public class PivotSubsystem extends SubsystemBase {
     private final DcMotor leftPivotMotor;
     private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    private final double encoderTicksM = 5;  //Not necessary to be stored as a variable as it is a constant only used in this class
-    private final double encoderTicksB = 5; // Not necessary to be stored as a variable as it is a constant only used in this class
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
