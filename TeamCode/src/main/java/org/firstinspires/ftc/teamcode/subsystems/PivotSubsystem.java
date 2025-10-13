@@ -16,6 +16,7 @@ public class PivotSubsystem extends SubsystemBase {
     private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
+    double offsetAngleFromLimelightToPivot = 0;
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
@@ -46,15 +47,15 @@ public class PivotSubsystem extends SubsystemBase {
         rightPivotMotor.setPower(power);
     }
     public void setPivotPosition(int position) {
-        leftPivotMotor.setTargetPosition(position);
-        rightPivotMotor.setTargetPosition(position);
+        leftPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
+        rightPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
     }
     public double convertPivotTicksToAngle(double ticks) {
-        return (ticks - encoderTicksB)/encoderTicksM;
+        return ticks * (360/384.5); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
     }
 
     public int convertPivotAngleToTicks(double angle) {
-        return (int) Math.floor((angle * encoderTicksM) + encoderTicksB);
+        return (int) (angle * (384.5/360));
     }
 
     public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition(); }
