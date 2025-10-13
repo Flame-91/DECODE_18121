@@ -5,11 +5,11 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
-public class FlyWheelCommand extends CommandBase {
+public class ServoCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    private final Gamepad gamepad;
+    private Gamepad gamepad;
 
-    public FlyWheelCommand(Gamepad gamepad, FlyWheelSubsystem flyWheelSubsystem) {
+    public ServoCommand( Gamepad gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.flyWheelSubsystem = flyWheelSubsystem;
         this.gamepad = gamepad;
         addRequirements(flyWheelSubsystem);
@@ -17,15 +17,16 @@ public class FlyWheelCommand extends CommandBase {
 
     @Override
     public void execute() {
-        flyWheelSubsystem.flyWheelLaunch();
+        flyWheelSubsystem.feed();
     }
 
     @Override
     public boolean isFinished() {
-        if (!gamepad.a) {
-            flyWheelSubsystem.reset();
+        if (!gamepad.x) {
+            flyWheelSubsystem.resetFeed();
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 }

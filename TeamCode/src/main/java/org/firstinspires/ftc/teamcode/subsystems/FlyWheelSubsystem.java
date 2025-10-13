@@ -22,14 +22,23 @@ public class FlyWheelSubsystem extends SubsystemBase {
         motorizedFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    public void FlyWheelLaunch() {
-        motorizedFlywheel.setPower(-1.0);
+    public void flyWheelLaunch() {
+        motorizedFlywheel.setPower(-0.85);
+//        rightFlyWheel.setPower(1.0);
+//        leftFlyWheel.setPower(1.0);
+    }
+    public void feed() {
         rightFlyWheel.setPower(1.0);
         leftFlyWheel.setPower(1.0);
     }
 
     public void reset() {
         motorizedFlywheel.setPower(0);
+//        rightFlyWheel.setPower(0);
+//        leftFlyWheel.setPower(0);
+    }
+
+    public void resetFeed() {
         rightFlyWheel.setPower(0);
         leftFlyWheel.setPower(0);
     }
