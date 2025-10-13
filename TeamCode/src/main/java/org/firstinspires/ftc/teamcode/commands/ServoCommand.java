@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
@@ -9,7 +10,7 @@ public class ServoCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     private Gamepad gamepad;
 
-    public ServoCommand( Gamepad gamepad, FlyWheelSubsystem flyWheelSubsystem) {
+    public ServoCommand(Gamepad gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.flyWheelSubsystem = flyWheelSubsystem;
         this.gamepad = gamepad;
         addRequirements(flyWheelSubsystem);
