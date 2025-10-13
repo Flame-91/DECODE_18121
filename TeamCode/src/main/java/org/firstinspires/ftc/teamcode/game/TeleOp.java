@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.FlyWheelCommand;
@@ -9,8 +8,8 @@ import org.firstinspires.ftc.teamcode.commands.OmniDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 
-@TeleOp (name = "Kit Bot TeleOp")
-public class KitbotTeleOp extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Kit Bot TeleOp")
+public class TeleOp extends OpMode {
     OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
     OmniDriveCommand omniDriveCommand;
