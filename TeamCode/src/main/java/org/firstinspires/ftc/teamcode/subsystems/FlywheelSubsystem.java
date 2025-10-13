@@ -10,16 +10,13 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FlywheelSubsystem extends SubsystemBase {
-    private final CRServo leftServo;
-    private final CRServo rightServo;
-    private final DcMotor flywheelMotor;
+    private final DcMotor leftFlywheelMotor;
+    private final DcMotor rightFlywheelMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
     public FlywheelSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
-        leftServo = hardwareMap.get(CRServo.class, "leftServo");
-        rightServo = hardwareMap.get(CRServo.class, "rightServo");
-        flywheelMotor = hardwareMap.get(DcMotor.class, "flywheelMotor");
-        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.leftFlywheelMotor = hardwareMap.get(DcMotor.class, "leftFlywheelMotor");
+        this.rightFlywheelMotor = hardwareMap.get(DcMotor.class, "rightFlywheelMotor");
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
 
@@ -28,32 +25,18 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        telemetry.addData("flywheelPower", getFlywheelMotorPower());
-        telemetry.addData("servoPower", getServosPower());
+        telemetry.addData("flywheelPower", getLeftFlywheelMotorPower());
+        telemetry.addData("servoPower", getRightFlywheelMotorPower());
 
-        telemetryPacket.put("flywheelPower", getFlywheelMotorPower());
-        telemetryPacket.put("servoPower", getServosPower());
-    }
-
-    private double clamp(double power) {
-        if (power < -1) {
-            return -1;
-        } else if (power > 1) {
-            return 1;
-        } else {
-            return power;
-        }
+        telemetryPacket.put("flywheelPower", getLeftFlywheelMotorPower());
+        telemetryPacket.put("servoPower", getRightFlywheelMotorPower());
     }
 
     public void setFlywheelMotorPower(double power) {
-        flywheelMotor.setPower(clamp(power));
+        leftFlywheelMotor.setPower(power);
+        rightFlywheelMotor.setPower(power);
     }
 
-    public void setServosPower(double power) {
-        rightServo.setPower(clamp(power));
-        leftServo.setPower(clamp(power));
-    }
-
-    public double getFlywheelMotorPower() { return flywheelMotor.getPower(); }
-    public double getServosPower() { return rightServo.getPower(); }
+    public double getLeftFlywheelMotorPower() { return leftFlywheelMotor.getPower(); }
+    public double getRightFlywheelMotorPower() { return rightFlywheelMotor.getPower(); }
 }
