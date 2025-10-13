@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
-    private final JoinedTelemetry telemetry;;
+    private final JoinedTelemetry telemetry;
     public MecanumDriveSubsystem(HardwareMap hardwareMap, JoinedTelemetry telemetry) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
