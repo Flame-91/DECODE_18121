@@ -49,9 +49,6 @@ public class TeleOp extends OpMode {
     public void loop() {
         CommandScheduler.getInstance().run();
 
-//        telemetryPacket.put("Status", "Running TeleOp");
-//        dashboard.sendTelemetryPacket(telemetryPacket);
-//        telemetry.update();
         joinedTelemetry.addData("Status", "Running TeleOp");
         joinedTelemetry.update();
     }
