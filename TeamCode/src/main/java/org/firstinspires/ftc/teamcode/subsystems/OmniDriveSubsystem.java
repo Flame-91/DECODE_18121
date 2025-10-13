@@ -17,11 +17,9 @@ public class OmniDriveSubsystem extends SubsystemBase {
         left.setDirection(DcMotor.Direction.REVERSE);
         right.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void OmniDrive() {
-        double y = -gamepad.left_stick_y;
-        double rotation = gamepad.right_stick_x;
-        double leftMotorPower = y + rotation;
-        double rightMotorPower = y - rotation;
+    public void OmniDrive(double forward, double rotation) {
+        double leftMotorPower = forward + rotation;
+        double rightMotorPower = forward - rotation;
 
         double max = Math.max(1, Math.max(Math.abs(leftMotorPower), Math.abs(rightMotorPower)));
 
