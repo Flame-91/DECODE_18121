@@ -20,6 +20,7 @@ public class LimelightSubsystem extends SubsystemBase {
     double limelightLensHeightMeters = 0.254;
     double limelightMountAngleDegrees = 15;
     double goalHeightMeters = 0.7493;
+    double limelightPitchOffset = 15;
 
 
     LLResult result;
@@ -83,7 +84,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitchError() {
         if (hasTarget()) {
-            return result.getTy();
+            return result.getTy() - limelightPitchOffset;
         }
         return -361.0;
     }
@@ -91,7 +92,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getPitchError(double offsetMeters) {
         if (hasTarget()) {
             double horizontalDistanceMeters = getHorizontalDistanceMeters();
-            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters);
+            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters) - limelightPitchOffset;
         }
         return -316.0;
     }
