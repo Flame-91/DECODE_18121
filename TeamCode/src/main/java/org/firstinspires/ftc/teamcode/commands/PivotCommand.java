@@ -36,7 +36,7 @@ public class PivotCommand extends CommandBase {
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
 
-            pivotSubsystem.setPivotPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
+            pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
             pivotSubsystem.setPivotPower(-output);
         }
     }

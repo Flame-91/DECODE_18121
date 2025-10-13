@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.util.ConfigConstants.encoderTicksB;
-import static org.firstinspires.ftc.teamcode.util.ConfigConstants.encoderTicksM;
-
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,7 +13,7 @@ public class PivotSubsystem extends SubsystemBase {
     private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    double offsetAngleFromLimelightToPivot = 0;
+    double offsetAngleFromLimelightToPivot = -5;
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
@@ -46,10 +43,12 @@ public class PivotSubsystem extends SubsystemBase {
         leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
     }
-    public void setPivotPosition(int position) {
+
+    public void setPivotTargetPosition(int position) {
         leftPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
         rightPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
     }
+
     public double convertPivotTicksToAngle(double ticks) {
         return ticks * (360/384.5); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
     }
@@ -58,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase {
         return (int) (angle * (384.5/360));
     }
 
-    public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition(); }
-    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition(); }
+    public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
+    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
     public double getPivotPower() { return leftPivotMotor.getPower(); }
 }
