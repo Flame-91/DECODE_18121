@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.bylazar.telemetry.JoinedTelemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -12,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 public class TeleOp extends OpMode {
-    private final FtcDashboard dashboard = FtcDashboard.getInstance();
+    private final JoinedTelemetry joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
 
@@ -26,8 +28,8 @@ public class TeleOp extends OpMode {
         driver = new GamepadEx(gamepad1);
 
         //Subsystems
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry, telemetryPacket);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap, telemetry, telemetryPacket, dashboard);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, joinedTelemetry);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, joinedTelemetry);
 
         //Commands
         mecanumDriveSubsystem.setDefaultCommand(
@@ -47,16 +49,18 @@ public class TeleOp extends OpMode {
     public void loop() {
         CommandScheduler.getInstance().run();
 
-        telemetryPacket.put("Status", "Running TeleOp");
-        dashboard.sendTelemetryPacket(telemetryPacket);
-        telemetry.update();
+//        telemetryPacket.put("Status", "Running TeleOp");
+//        dashboard.sendTelemetryPacket(telemetryPacket);
+//        telemetry.update();
+        joinedTelemetry.addData("Status", "Running TeleOp");
+        joinedTelemetry.update();
     }
 
     @Override
     public void stop() {
         CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().reset();
-        telemetry.addData("Status", "Stopped");
-        telemetry.update();
+        joinedTelemetry.addData("Status", "Stopped");
+        joinedTelemetry.update();
     }
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,9 +13,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
     DcMotor frontLeft, frontRight, backLeft, backRight;
-    private final Telemetry telemetry;
-    private final TelemetryPacket telemetryPacket;
-    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
+    private final JoinedTelemetry telemetry;;
+    public MecanumDriveSubsystem(HardwareMap hardwareMap, JoinedTelemetry telemetry) {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -33,7 +33,6 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
         this.imu = imu;
         this.telemetry = telemetry;
-        this.telemetryPacket = telemetryPacket;
     }
 
     @Override
@@ -42,11 +41,6 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         telemetry.addData("backRightMotorPower", getBackRightMotorPower());
         telemetry.addData("frontLeftMotorPower", getFrontLeftMotorPower());
         telemetry.addData("frontRightMotorPower", getFrontRightMotorPower());
-
-        telemetryPacket.put("backLeftMotorPower", getBackLeftMotorPower());
-        telemetryPacket.put("backRightMotorPower", getBackRightMotorPower());
-        telemetryPacket.put("frontLeftMotorPower", getFrontLeftMotorPower());
-        telemetryPacket.put("frontRightMotorPower", getFrontRightMotorPower());
     }
 
     public void drive(double x, double y, double rotation) {
