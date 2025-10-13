@@ -25,7 +25,6 @@ public class PIDController {
 
         double output = proportional + integral + derivative;
 
-        // Apply output limits if necessary
         if (output > outputLimit) output = outputLimit;
         if (output < -outputLimit) output = -outputLimit;
 
