@@ -68,6 +68,8 @@ public class TeleOp extends OpMode {
                         new FlywheelCommand(driver, flywheelSubsystem)
                 )
         );
+
+        pivotSubsystem.resetPivotEncoder();
     }
 
     @Override
