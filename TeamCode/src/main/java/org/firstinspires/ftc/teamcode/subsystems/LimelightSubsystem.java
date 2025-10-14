@@ -80,7 +80,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYawError() {
         if (hasTarget()) {
-            return result.getTx();
+            return Math.atan(Math.toRadians(getHorizontalDistanceMeters()/(getHorizontalDistanceMeters()*Math.tan(Math.toRadians(result.getTx())-limelightHorizontalOffsetMeters))));
         }
         return -361.0;
     }
@@ -96,7 +96,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getPitchError(double offsetMeters) {
         if (hasTarget()) {
             double horizontalDistanceMeters = getHorizontalDistanceMeters();
-            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters);
+            return Math.atan(Math.toRadians(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters));
         }
         return -361.0;
     }
