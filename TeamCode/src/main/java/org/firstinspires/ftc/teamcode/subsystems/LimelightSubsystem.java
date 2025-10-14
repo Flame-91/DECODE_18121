@@ -6,6 +6,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -16,14 +17,15 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    double distanceFromFloorToTagMeters = .7051;
-    double limelightLensHeightMeters = 0.254;
-    double limelightMountAngleDegrees = 15;
-    double goalHeightMeters = 0.7493;
+    private final double distanceFromFloorToTagMeters = .7051;
+    private final double limelightLensHeightMeters = 0.254;
+    private final double limelightMountAngleDegrees = 15;
+    private final double goalHeightMeters = 0.7493;
+    private final IMU imu;
 
 
     LLResult result;
-    public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
+    public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
@@ -32,6 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
+        this.imu = imu;
 
         dashboard.startCameraStream(limelight, 0);
 
@@ -41,6 +44,7 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
+        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw());
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
@@ -113,7 +117,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public double[] getBotPose() {
         if (hasTarget() && !isObelisk()) {
-            Pose3D botPose = result.getBotpose();
+            Pose3D botPose = result.getBotpose_MT2();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
@@ -122,7 +126,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
         if (hasTarget() && !isObelisk()) {
-            return result.getBotpose();
+            return result.getBotpose_MT2();
         }
         return null;
     }
