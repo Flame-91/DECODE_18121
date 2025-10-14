@@ -23,7 +23,8 @@ public class LimelightSubsystem extends SubsystemBase {
     double limelightLensHeightMeters = 0.254;
     double limelightMountAngleDegrees = 15;
     double goalHeightMeters = 0.7493;
-    double limelightPitchOffset = 15;
+    double limelightPitchOffsetAngle = 15;
+    double limelightHorizontalOffsetMeters = 15; // offset left or right from center of lens to center of robot in meters
     private final IMU imu;
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
@@ -85,6 +86,8 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYawError() {
         if (hasTarget()) {
+            double yawError = result.getTx();
+
             return result.getTx();
         }
         return -361.0;
@@ -93,7 +96,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitchError() {
         if (hasTarget()) {
-            return result.getTy() - limelightPitchOffset;
+            return result.getTy() - limelightPitchOffsetAngle;
         }
         return -361.0;
     }
@@ -101,7 +104,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getPitchError(double offsetMeters) {
         if (hasTarget()) {
             double horizontalDistanceMeters = getHorizontalDistanceMeters();
-            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters) - limelightPitchOffset;
+            return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters) - limelightPitchOffsetAngle;
         }
         return -316.0;
     }
@@ -109,7 +112,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getHorizontalDistanceMeters() {
         if (hasTarget()) {
             double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
-            double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+            double angleToGoalRadians = Math.toRadians(angleToGoalDegrees);
 
             return (goalHeightMeters - limelightLensHeightMeters) / Math.tan(angleToGoalRadians);
         }
