@@ -59,6 +59,12 @@ public class PivotSubsystem extends SubsystemBase {
         leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
     }
+    public void resetPivotEncoder() { // Should only be called if pivot is at rest DOWN
+        leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
     public int convertPivotAngleToTicks(double angle) {
         return (int) (angle * (537.7/360));
     }
