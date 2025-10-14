@@ -50,11 +50,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double convertPivotTicksToAngle(double ticks) {
-        return ticks * (360/384.5); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
+        return ticks * (360/537.7); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
     }
 
     public int convertPivotAngleToTicks(double angle) {
-        return (int) (angle * (384.5/360));
+        return (int) (angle * (537.7/360));
     }
 
     public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }

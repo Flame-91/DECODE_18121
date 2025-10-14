@@ -29,7 +29,7 @@ public class PivotCommand extends CommandBase {
     public void execute() {
         if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
-            double pitchError = limelightSubsystem.getPitchError(.2794) - pivotPositionAngle; // .2794 is how far up from the center of the april tag we need to shoot
+            double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
 
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
