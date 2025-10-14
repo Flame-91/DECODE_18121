@@ -5,10 +5,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import java.util.List;
 
@@ -21,10 +24,13 @@ public class LimelightSubsystem extends SubsystemBase {
     double limelightMountAngleDegrees = 15;
     double goalHeightMeters = 0.7493;
     double limelightPitchOffset = 15;
-
-
+    private final IMU imu;
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
+        this.imu = hardwareMap.get(IMU.class, "imu");
+        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
+        imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
+
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
@@ -42,6 +48,9 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
+
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        limelight.updateRobotOrientation(orientation.getYaw());
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
@@ -114,7 +123,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public double[] getBotPose() {
         if (hasTarget() && !isObelisk()) {
-            Pose3D botPose = result.getBotpose();
+            Pose3D botPose = result.getBotpose_MT2();
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
@@ -123,7 +132,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
         if (hasTarget() && !isObelisk()) {
-            return result.getBotpose();
+            return result.getBotpose_MT2();
         }
         return null;
     }
