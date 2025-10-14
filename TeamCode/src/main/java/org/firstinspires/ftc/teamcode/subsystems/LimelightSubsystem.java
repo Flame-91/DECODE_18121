@@ -21,6 +21,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private final double limelightLensHeightMeters = 0.254;
     private final double limelightMountAngleDegrees = 15;
     private final double goalHeightMeters = 0.7493;
+    double limelightHorizontalOffsetMeters = 15; // offset left or right from center of lens to center of robot in meters
     private final IMU imu;
 
 
@@ -97,7 +98,7 @@ public class LimelightSubsystem extends SubsystemBase {
             double horizontalDistanceMeters = getHorizontalDistanceMeters();
             return Math.atan(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters);
         }
-        return -316.0;
+        return -361.0;
     }
 
     public double getHorizontalDistanceMeters() {
