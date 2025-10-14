@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class MecanumDriveSubsystem extends SubsystemBase {
     IMU imu;
@@ -33,6 +30,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
         this.imu = imu;
         this.telemetry = telemetry;
+
+        register();
     }
 
     @Override

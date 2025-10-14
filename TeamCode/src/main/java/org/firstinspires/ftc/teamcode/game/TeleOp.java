@@ -7,18 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.FlyWheelCommand;
-import org.firstinspires.ftc.teamcode.commands.OmniDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.ServoCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystem;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Kit Bot TeleOp")
 public class TeleOp extends OpMode {
     private final JoinedTelemetry joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
 
-    OmniDriveSubsystem omniDriveSubsystem;
     FlyWheelSubsystem flyWheelSubsystem;
-    OmniDriveCommand omniDriveCommand;
     FlyWheelCommand flyWheelCommand;
     ServoCommand servoCommand;
     boolean pressedA = false;
@@ -30,14 +26,11 @@ public class TeleOp extends OpMode {
     public void init() {
         driver = new GamepadEx(gamepad1);
 
-        omniDriveSubsystem = new OmniDriveSubsystem(hardwareMap, gamepad1);
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, joinedTelemetry);
 
-        omniDriveCommand = new OmniDriveCommand(gamepad1, omniDriveSubsystem);
         flyWheelCommand = new FlyWheelCommand(gamepad1, flyWheelSubsystem);
         servoCommand = new ServoCommand(gamepad1, flyWheelSubsystem);
 
-        omniDriveSubsystem.setDefaultCommand(omniDriveCommand);
         joinedTelemetry.addData("Status", "Running");
         joinedTelemetry.update();
     }

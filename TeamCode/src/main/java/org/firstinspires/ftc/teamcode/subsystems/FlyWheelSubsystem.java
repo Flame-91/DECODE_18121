@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class FlyWheelSubsystem extends SubsystemBase {
     private final DcMotor motorizedFlywheel;
     private final CRServo rightFlyWheel, leftFlyWheel;
@@ -20,17 +19,23 @@ public class FlyWheelSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         rightFlyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         motorizedFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        register();
+    }
+
+    @Override
+    public void periodic() {
+        telemetry.addData("Flywheel Power", motorizedFlywheel.getPower());
+        telemetry.addData("Right Flywheel Power", rightFlyWheel.getPower());
+        telemetry.addData("Left Flywheel Power", leftFlyWheel.getPower());
     }
 
     public void flyWheelLaunch() {
         motorizedFlywheel.setPower(-0.85);
-        telemetry.addData("Flywheel Power", motorizedFlywheel.getPower());
     }
     public void feed() {
         rightFlyWheel.setPower(1.0);
         leftFlyWheel.setPower(1.0);
-        telemetry.addData("Right Flywheel Power", rightFlyWheel.getPower());
-        telemetry.addData("Left Flywheel Power", leftFlyWheel.getPower());
     }
 
     public void reset() {
