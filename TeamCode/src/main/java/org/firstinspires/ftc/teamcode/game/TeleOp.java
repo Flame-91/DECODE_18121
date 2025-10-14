@@ -50,7 +50,7 @@ public class TeleOp extends OpMode {
         );
 
         pivotSubsystem.setDefaultCommand(
-                new PivotCommand(pivotSubsystem, limelightSubsystem)
+                new PivotCommand(driver, pivotSubsystem, limelightSubsystem)
         );
 
         intakeSubsystem.setDefaultCommand(

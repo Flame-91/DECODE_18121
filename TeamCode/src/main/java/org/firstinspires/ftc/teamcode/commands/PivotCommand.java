@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
 
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
@@ -14,13 +16,16 @@ public class PivotCommand extends CommandBase {
     private final PivotSubsystem pivotSubsystem;
     private final LimelightSubsystem limelightSubsystem;
     private final PIDController pivotPIDController;
+    private final GamepadEx gamepad;
     long lastTime = System.nanoTime();
 
-    public PivotCommand(PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
+    public PivotCommand(GamepadEx gamepad, PivotSubsystem pivotSubsystem, LimelightSubsystem limelightSubsystem) {
         this.pivotSubsystem = pivotSubsystem;
         this.limelightSubsystem = limelightSubsystem;
         double maxPivotSpeed = 1;
         pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, maxPivotSpeed);
+
+        this.gamepad = gamepad;
 
         addRequirements(this.pivotSubsystem);
     }
@@ -38,6 +43,14 @@ public class PivotCommand extends CommandBase {
 
             pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
             pivotSubsystem.setPivotPower(-output);
+        }
+
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+            pivotSubsystem.movePivotWithoutEncoder(-0.3);
+        }
+
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
+            pivotSubsystem.resetPivotEncoder();
         }
     }
 }
