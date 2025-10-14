@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
@@ -15,6 +16,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     public FlywheelSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         this.leftFlywheelMotor = hardwareMap.get(DcMotor.class, "leftFlywheelMotor");
         this.rightFlywheelMotor = hardwareMap.get(DcMotor.class, "rightFlywheelMotor");
+
+        leftFlywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFlywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftFlywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFlywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
 
