@@ -27,6 +27,7 @@ public class FlyWheelSubsystemOG extends SubsystemBase {
         motorizedFlywheel = hardwareMap.get(DcMotor.class, "motorizedFlywheel");
         rightFlyWheel = hardwareMap.get(CRServo.class, "rightFlyWheel");
         leftFlyWheel = hardwareMap.get(CRServo.class, "leftFlyWheel");
+        motorizedFlywheel.setDirection(DcMotor.Direction.REVERSE);
         this.gamepad = gamepad;
         this.telemetry = telemetry;
         elapsedTime = new ElapsedTime();
@@ -38,7 +39,7 @@ public class FlyWheelSubsystemOG extends SubsystemBase {
 
     public void FlyWheelLaunch() {
         if (gamepad.a) {
-            motorizedFlywheel.setPower(-1.0);
+            motorizedFlywheel.setPower(1.0);
             if (firstButtonPress) {
                 elapsedTime.reset();
                 hasReset = true;
@@ -53,16 +54,12 @@ public class FlyWheelSubsystemOG extends SubsystemBase {
                 leftFlyWheel.setPower(1.0);
             }
             firstButtonPress = false;
-        } else if (gamepad.x && !gamepad.a) {
+        } else if (gamepad.x) {
             firstButtonPress = true;
             hasReset = false;
-            motorizedFlywheel.setPower(.5);
-            rightFlyWheel.setPower(1.0);
-            leftFlyWheel.setPower(-1.0);
-        } else if (gamepad.x) {
-            motorizedFlywheel.setPower(.5);
-            rightFlyWheel.setPower(1.0);
-            leftFlyWheel.setPower(-1.0);
+            motorizedFlywheel.setPower(-.25);
+            rightFlyWheel.setPower(.6);
+            leftFlyWheel.setPower(-.6);
         } else {
             firstButtonPress = true;
             hasReset = false;
