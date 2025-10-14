@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKD;
-import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKI;
-import static org.firstinspires.ftc.teamcode.util.ConfigConstants.pivotKP;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 

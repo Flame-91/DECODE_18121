@@ -11,6 +11,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.util.GlobalConstants;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
-        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + GlobalConstants.imuOffset);
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
@@ -79,7 +80,10 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
     public double getYawError() {
         if (hasTarget()) {
-            return Math.atan(Math.toRadians(getHorizontalDistanceMeters()/(getHorizontalDistanceMeters()*Math.tan(Math.toRadians(result.getTx())-limelightHorizontalOffsetMeters))));
+            double d = getHorizontalDistanceMeters();
+            double l = d * Math.tan(Math.toRadians(result.getTx()));
+            double w = l - limelightHorizontalOffsetMeters;
+            return Math.atan(Math.toRadians(d/w));
         }
         return -361.0;
     }

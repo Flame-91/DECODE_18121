@@ -3,7 +3,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 
 @Config
-public class ConfigConstants {
+public class GlobalConstants {
     public static double LLAlignKP = 0.1;
     public static double LLAlignKI = 0.01;
     public static double LLAlignKD = 0.00001;
@@ -11,5 +11,6 @@ public class ConfigConstants {
     public static double pivotKP = 0.05;
     public static double pivotKI = 0.01;
     public static double pivotKD = 0.0001;
-    public static double lastKnownHeading;
+
+    public static double imuOffset = 0;
 }

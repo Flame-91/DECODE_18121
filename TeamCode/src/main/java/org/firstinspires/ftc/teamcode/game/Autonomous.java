@@ -4,7 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.teamcode.util.ConfigConstants;
+import org.firstinspires.ftc.teamcode.util.GlobalConstants;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "game")
 public class Autonomous extends OpMode {
@@ -28,6 +28,6 @@ public class Autonomous extends OpMode {
 
     @Override
     public void stop() {
-        ConfigConstants.lastKnownHeading = imu.getRobotYawPitchRollAngles().getYaw();
+        GlobalConstants.imuOffset = imu.getRobotYawPitchRollAngles().getYaw();
     }
 }
