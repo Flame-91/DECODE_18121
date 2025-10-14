@@ -31,7 +31,9 @@ public class TeleOp extends OpMode {
     public void init() {
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParams = new IMU.Parameters(
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP
+                )
         );
         imu.initialize(imuParams);
 

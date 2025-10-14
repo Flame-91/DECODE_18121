@@ -11,4 +11,5 @@ public class ConfigConstants {
     public static double pivotKP = 0.05;
     public static double pivotKI = 0.01;
     public static double pivotKD = 0.0001;
+    public static double lastKnownHeading;
 }

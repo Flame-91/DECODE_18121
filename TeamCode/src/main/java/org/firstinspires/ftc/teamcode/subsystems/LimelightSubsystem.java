@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
@@ -21,10 +22,8 @@ public class LimelightSubsystem extends SubsystemBase {
     private final double limelightLensHeightMeters = 0.254;
     private final double limelightMountAngleDegrees = 15;
     private final double goalHeightMeters = 0.7493;
-    double limelightHorizontalOffsetMeters = 15; // offset left or right from center of lens to center of robot in meters
+    private final double limelightHorizontalOffsetMeters = 15; // offset left or right from center of lens to center of robot in meters
     private final IMU imu;
-
-
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -45,7 +44,7 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
-        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw());
+        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
