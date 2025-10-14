@@ -66,6 +66,8 @@ public class MecanumTeleOp extends OpMode {
 
     @Override
     public void stop() {
+        CommandScheduler.getInstance().reset();
+        CommandScheduler.getInstance().cancelAll();
         joinedTelemetry.addData("Status", "Stopped");
         joinedTelemetry.update();
     }
