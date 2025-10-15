@@ -21,9 +21,9 @@ public class LimelightSubsystem extends SubsystemBase {
     private final TelemetryPacket telemetryPacket;
     private final double distanceFromFloorToTagMeters = .7051; // correct (available in documentation)
     private final double limelightLensHeightMeters = 0.254; // v1
-    private final double limelightMountAngleDegrees = 15; // v1
+    private final double limelightMountAngleDegrees = 15; // v1 (angle back)
     private final double goalHeightMeters = 0.7493; // correct (available in documentation)
-    private final double limelightHorizontalOffsetMeters = 15; // v1 offset left or right from center of lens to center of robot in meters
+    private final double limelightHorizontalOffsetMeters = 0.196; // v1 offset left or right from center of lens to center of robot in meters
     private final IMU imu;
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
