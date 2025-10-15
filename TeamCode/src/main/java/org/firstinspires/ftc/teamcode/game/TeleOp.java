@@ -43,7 +43,7 @@ public class TeleOp extends OpMode {
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
-        driver = new GamepadEx(gamepad1);
+        driver = new GamepadEx(gamepad1); // All keybindings are in readme
 
         mecanumDriveSubsystem.setDefaultCommand(
                 new DriveCommand(driver, mecanumDriveSubsystem)
