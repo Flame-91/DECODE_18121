@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
+
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 public class DriveCommand extends CommandBase {
@@ -18,10 +20,10 @@ public class DriveCommand extends CommandBase {
     public void execute() {
         double x = gamepad.getLeftX();
         double y = -gamepad.getLeftY();
-        double rotation = -gamepad.getRightX();
-        drive.drive(x, y, rotation);
+        double rotation = gamepad.getRightX();
+        drive.MecanumDriveKitBot(x, y, rotation);
     }
 
     @Override
-    public void end(boolean interrupted) { drive.drive(0, 0, 0); }
+    public void end(boolean interrupted) { drive.MecanumDriveKitBot(0, 0, 0); }
 }

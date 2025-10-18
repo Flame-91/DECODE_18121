@@ -7,12 +7,12 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class OmniDriveSubsystemOG extends SubsystemBase {
+public class OmniDriveSubsystem extends SubsystemBase {
     private final DcMotor left, right;
     private final Gamepad gamepad;
     private final Telemetry telemetry;
 
-    public OmniDriveSubsystemOG(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
+    public OmniDriveSubsystem(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
         left = hardwareMap.get(DcMotor.class, "left");
         right = hardwareMap.get(DcMotor.class, "right");
         left.setDirection(DcMotor.Direction.REVERSE);

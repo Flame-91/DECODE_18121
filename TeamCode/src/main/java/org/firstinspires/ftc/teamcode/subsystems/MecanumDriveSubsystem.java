@@ -1,59 +1,52 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.bylazar.telemetry.JoinedTelemetry;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class MecanumDriveSubsystem extends SubsystemBase {
-    IMU imu;
-    DcMotor frontLeft, frontRight, backLeft, backRight;
-    private final JoinedTelemetry telemetry;
-    public MecanumDriveSubsystem(HardwareMap hardwareMap, JoinedTelemetry telemetry) {
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+    private final DcMotor backLeft, backRight, frontLeft, frontRight;
+    private final Telemetry telemetry;
+//    private final IMU imu;
+    public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters imuParams = new IMU.Parameters(
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(imuParams);
-
-        this.imu = imu;
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.telemetry = telemetry;
-
+//        IMU imu = hardwareMap.get(IMU.class, "imu");
+//        IMU.Parameters imuParams = new IMU.Parameters(
+//                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+//        imu.initialize(imuParams);
+//        this.imu = imu;
         register();
     }
 
     @Override
     public void periodic() {
-        telemetry.addData("backLeftMotorPower", getBackLeftMotorPower());
-        telemetry.addData("backRightMotorPower", getBackRightMotorPower());
-        telemetry.addData("frontLeftMotorPower", getFrontLeftMotorPower());
-        telemetry.addData("frontRightMotorPower", getFrontRightMotorPower());
+        telemetry.addData("frontLeftPower", getFrontLeftPower());
+        telemetry.addData("frontRightPower", getFrontRightPower());
+        telemetry.addData("backLeftPower", getBackLeftPower());
+        telemetry.addData("backRightPower", getBackRightPower());
     }
+    public void MecanumDriveKitBot(double x, double y, double rotation) {
+//        double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-    public void drive(double x, double y, double rotation) {
-        double headingRadians = -imu.getRobotYawPitchRollAngles().getYaw() * Math.PI / 180.0;
+//        y = x * Math.cos(heading) - y * Math.sin(heading);
+//        x = x * Math.sin(heading) + y * Math.cos(heading);
 
-        double rotatedX = x * Math.cos(headingRadians) - y * Math.sin(headingRadians);
-        double rotatedY = x * Math.sin(headingRadians) + y * Math.cos(headingRadians);
+        double frontLeftPower = y + x + rotation;
+        double frontRightPower = y - x - rotation;
+        double backLeftPower = y - x + rotation;
+        double backRightPower = y + x - rotation;
 
-        double frontLeftPower = rotatedY + rotatedX + rotation;
-        double frontRightPower = rotatedY - rotatedX - rotation;
-        double backLeftPower = rotatedY - rotatedX + rotation;
-        double backRightPower = rotatedY + rotatedX - rotation;
+        double max = Math.max(1, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
 
-        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
         frontLeftPower /= max;
         frontRightPower /= max;
         backLeftPower /= max;
@@ -65,8 +58,19 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backRight.setPower(backRightPower);
     }
 
-    public double getBackLeftMotorPower() { return backLeft.getPower(); }
-    public double getBackRightMotorPower() { return backRight.getPower(); }
-    public double getFrontLeftMotorPower() { return frontLeft.getPower(); }
-    public double getFrontRightMotorPower() { return frontRight.getPower(); }
+    public double getFrontLeftPower() {
+        return frontLeft.getPower();
+    }
+
+    public double getFrontRightPower() {
+        return frontRight.getPower();
+    }
+
+    public double getBackLeftPower() {
+        return backLeft.getPower();
+    }
+
+    public double getBackRightPower() {
+        return backRight.getPower();
+    }
 }
