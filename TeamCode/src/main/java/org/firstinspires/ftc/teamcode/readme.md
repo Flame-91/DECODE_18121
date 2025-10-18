@@ -1,3 +1,12 @@
+## CONTROLLER KEYBINDINGS
+
+1) Left joystick - Forward, backward, strafe left, strafe right
+2) Right joystick - Turn left, turn right
+3) A - Align to April Tag using Limelight
+4) Y - Start flywheels
+5) DPAD DOWN - Move pivot down manually (should not be used unless pivot is malfunctioning)
+6) DPAD UP - Reset pivot encoder (shouldn't be used unless pivot is malfunctioning)
+
 ## TeamCode Module
 
 Welcome!

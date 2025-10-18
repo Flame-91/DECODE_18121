@@ -15,6 +15,7 @@ public class PIDController {
         this.outputLimit = outputLimit;
     }
 
+
     public double calculate(double error, double deltaTime) {
         integralSum += error * deltaTime;
 
@@ -24,7 +25,6 @@ public class PIDController {
 
         double output = proportional + integral + derivative;
 
-        // Apply output limits if necessary
         if (output > outputLimit) output = outputLimit;
         if (output < -outputLimit) output = -outputLimit;
 
