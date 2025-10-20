@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -17,15 +16,12 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 public class TeleOp extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
-
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
     private PivotSubsystem pivotSubsystem;
     private IntakeSubsystem intakeSubsystem;
-
     private GamepadEx driver;
-
     private IMU imu;
 
     @Override

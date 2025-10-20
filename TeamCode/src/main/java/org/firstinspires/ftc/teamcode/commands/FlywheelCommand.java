@@ -15,7 +15,7 @@ public class FlywheelCommand extends CommandBase {
         this.flywheelSubsystem = flywheelSubsystem;
         this.gamepad = gamepad;
 
-        addRequirements(flywheelSubsystem);
+        addRequirements(this.flywheelSubsystem);
     }
 
     @Override

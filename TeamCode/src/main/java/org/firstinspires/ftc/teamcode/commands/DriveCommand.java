@@ -11,7 +11,7 @@ public class DriveCommand extends CommandBase {
     public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive) {
         this.drive = drive;
         this.gamepad = gamepad;
-        addRequirements(drive);
+        addRequirements(this.drive);
     }
 
     @Override
