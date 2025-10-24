@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-//import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -28,7 +27,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
     }
 
     public void runFlywheelServos(double power) {
-        rightFlyWheel.setPower(power);
+        rightFlyWheel.setPower(-power);
         leftFlyWheel.setPower(power);
     }
 
