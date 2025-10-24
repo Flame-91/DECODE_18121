@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.seattlesolvers.solverslib.command.CommandBase;
+//import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
-public class FlywheelCommand extends CommandBase {
+public class FlywheelCommandAutomatic extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     private final GamepadEx gamepad;
     private final ElapsedTime elapsedTime;
@@ -15,7 +16,7 @@ public class FlywheelCommand extends CommandBase {
     private boolean hasReset;
     private boolean activateServos;
 
-    public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
+    public FlywheelCommandAutomatic(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
         this.flyWheelSubsystem = flyWheelSubsystem;
         firstButtonPress = true;
@@ -36,8 +37,10 @@ public class FlywheelCommand extends CommandBase {
                 elapsedTime.reset();
                 hasReset = true;
             }
-            if (hasReset && elapsedTime.seconds() > 1) activateServos = true;
-            if (activateServos) flyWheelSubsystem.runFlywheelServos(1.0);
+            if (hasReset && elapsedTime.seconds() > 1)
+                activateServos = true;
+            if (activateServos)
+                flyWheelSubsystem.runFlywheelServos(1.0);
             firstButtonPress = false;
         } else if (x) {
             firstButtonPress = true;

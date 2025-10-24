@@ -1,35 +1,36 @@
 package org.firstinspires.ftc.teamcode.game;
 
 //import com.pedropathing.ftc.drivetrains.Mecanum;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
+import org.firstinspires.ftc.teamcode.commands.FlywheelCommandAutomatic;
+import org.firstinspires.ftc.teamcode.commands.FlywheelCommandManual;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystems.OmniDriveSubsystemOG;
-
-@TeleOp (name = "Kit Bot TeleOp real")
+@TeleOp (name = "Kit Bot TeleOp")
 public class KitBotTeleOp extends OpMode {
     FlyWheelSubsystem flyWheelSubsystem;
 //    OmniDriveSubsystemOG omniDriveSubsystem;
     MecanumDriveSubsystem mecanumDriveSubsystem;
     DriveCommand driveCommand;
-    FlywheelCommand flywheelCommand;
+//    FlywheelCommandAutomatic flywheelCommandAutomatic;
+    FlywheelCommandManual flywheelCommandManual;
 
     @Override
     public void init() {
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
 //        omniDriveSubsystem = new OmniDriveSubsystemOG(hardwareMap, gamepad1, telemetry);
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
-        flywheelCommand = new FlywheelCommand((new GamepadEx(gamepad1)), flyWheelSubsystem);
+//        flywheelCommandAutomatic = new FlywheelCommandAutomatic((new GamepadEx(gamepad1)), flyWheelSubsystem);
+        flywheelCommandManual = new FlywheelCommandManual((new GamepadEx(gamepad1)), flyWheelSubsystem);
         driveCommand = new DriveCommand((new GamepadEx(gamepad1)), mecanumDriveSubsystem);
         mecanumDriveSubsystem.setDefaultCommand(driveCommand);
-        flyWheelSubsystem.setDefaultCommand(flywheelCommand);
+//        flyWheelSubsystem.setDefaultCommand(flywheelCommandAutomatic);
+        flyWheelSubsystem.setDefaultCommand(flywheelCommandManual);
     }
 
     @Override
@@ -40,6 +41,7 @@ public class KitBotTeleOp extends OpMode {
 
     @Override
     public void stop() {
+        CommandScheduler.getInstance().reset();
         CommandScheduler.getInstance().cancelAll();
     }
 }

@@ -18,6 +18,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
         this.telemetry = telemetry;
 //        IMU imu = hardwareMap.get(IMU.class, "imu");
 //        IMU.Parameters imuParams = new IMU.Parameters(
@@ -40,10 +41,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 //        y = x * Math.cos(heading) - y * Math.sin(heading);
 //        x = x * Math.sin(heading) + y * Math.cos(heading);
 
-        double frontLeftPower = y + x + rotation;
-        double frontRightPower = y - x - rotation;
-        double backLeftPower = y - x + rotation;
-        double backRightPower = y + x - rotation;
+        double frontLeftPower = (y + x + rotation);
+        double backLeftPower = (y - x + rotation);
+        double frontRightPower = (y - x - rotation);
+        double backRightPower = (y + x - rotation);
 
         double max = Math.max(1, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
 
