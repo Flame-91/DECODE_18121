@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.bylazar.telemetry.JoinedTelemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,8 +16,9 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 public class TeleOp extends OpMode {
-    private final FtcDashboard dashboard = FtcDashboard.getInstance();
-    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+//    private final FtcDashboard dashboard = FtcDashboard.getInstance();
+//    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+    private final JoinedTelemetry joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
 
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
@@ -37,7 +40,7 @@ public class TeleOp extends OpMode {
         );
         imu.initialize(imuParams);
 
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, telemetry, telemetryPacket);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, joinedTelemetry);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
@@ -79,8 +82,9 @@ public class TeleOp extends OpMode {
     public void loop() {
         // FTC Dashboard
         CommandScheduler.getInstance().run();
-        dashboard.sendTelemetryPacket(telemetryPacket);
-        telemetry.update();
+//        dashboard.sendTelemetryPacket(telemetryPacket);
+//        telemetry.update();
+        joinedTelemetry.update();
     }
 
     @Override
