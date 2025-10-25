@@ -28,7 +28,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
     }
 
     public void runFlywheelServos(double power) {
-        rightFlyWheel.setPower(-power);
+        rightFlyWheel.setPower(power);
         leftFlyWheel.setPower(power);
     }
 

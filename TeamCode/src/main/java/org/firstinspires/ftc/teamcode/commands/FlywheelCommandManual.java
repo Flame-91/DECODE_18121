@@ -20,7 +20,7 @@ public class FlywheelCommandManual extends CommandBase {
     @Override
     public void execute() {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
-            flyWheelSubsystem.runFlywheel(.35);
+            flyWheelSubsystem.runFlywheel(.75);
         }
         else {
             flyWheelSubsystem.runFlywheel(0);
