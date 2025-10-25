@@ -21,7 +21,7 @@ public class DriveCommand extends CommandBase {
     public void execute() {
         double x = -gamepad.getLeftX();
         double y = -gamepad.getLeftY();
-        double rotation = gamepad.getRightX();
+        double rotation = -gamepad.getRightX();
         drive.MecanumDriveKitBot(x, y, rotation);
         if (gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
             drive.resetIMU();
