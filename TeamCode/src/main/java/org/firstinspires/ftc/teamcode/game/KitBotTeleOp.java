@@ -30,7 +30,7 @@ public class KitBotTeleOp extends OpMode {
         imu.initialize(imuParams);
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
 //        omniDriveSubsystem = new OmniDriveSubsystemOG(hardwareMap, gamepad1, telemetry);
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, telemetry);
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
 //        flywheelCommandAutomatic = new FlywheelCommandAutomatic((new GamepadEx(gamepad1)), flyWheelSubsystem);
         flywheelCommandManual = new FlywheelCommandManual((new GamepadEx(gamepad1)), flyWheelSubsystem);
         driveCommand = new DriveCommand((new GamepadEx(gamepad1)), mecanumDriveSubsystem);
