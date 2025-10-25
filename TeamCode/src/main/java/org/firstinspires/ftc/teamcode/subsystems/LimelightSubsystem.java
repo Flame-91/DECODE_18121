@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -17,8 +18,7 @@ import java.util.List;
 
 public class LimelightSubsystem extends SubsystemBase {
     private final Limelight3A limelight;
-    private final Telemetry telemetry;
-    private final TelemetryPacket telemetryPacket;
+    private final JoinedTelemetry telemetry;
     private final double distanceFromFloorToTagMeters = .7051; // correct (available in documentation)
     private final double limelightLensHeightMeters = 0.254; // v1
     private final double limelightMountAngleDegrees = 15; // v1 (angle back)
@@ -26,7 +26,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private final double limelightHorizontalOffsetMeters = 0.196; // v1 offset left or right from center of lens to center of robot in meters
     private final IMU imu;
     LLResult result;
-    public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
+    public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, JoinedTelemetry telemetry) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
@@ -34,10 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
         result = limelight.getLatestResult();
 
         this.telemetry = telemetry;
-        this.telemetryPacket = telemetryPacket;
         this.imu = imu;
-
-        dashboard.startCameraStream(limelight, 0);
 
         register();
     }
@@ -51,11 +48,6 @@ public class LimelightSubsystem extends SubsystemBase {
         telemetry.addData("getAprilTagID", getAprilTagID());
         telemetry.addData("pitchError", getPitchError());
         telemetry.addData("botPose", getBotPose());
-
-        telemetryPacket.put("hasTarget", hasTarget());
-        telemetryPacket.put("getAprilTagID", getAprilTagID());
-        telemetryPacket.put("PitchError", getPitchError());
-        telemetryPacket.put("botPose", getBotPose());
     }
 
     // Returns true if any target is visible

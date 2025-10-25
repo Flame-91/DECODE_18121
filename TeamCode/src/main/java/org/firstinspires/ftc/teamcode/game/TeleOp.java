@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "game")
 public class TeleOp extends OpMode {
-//    private final FtcDashboard dashboard = FtcDashboard.getInstance();
-//    private final TelemetryPacket telemetryPacket = new TelemetryPacket();
     private final JoinedTelemetry joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
 
     private MecanumDriveSubsystem mecanumDriveSubsystem;
@@ -41,10 +39,10 @@ public class TeleOp extends OpMode {
         imu.initialize(imuParams);
 
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, joinedTelemetry);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
-        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
-        pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, joinedTelemetry);
+        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, joinedTelemetry);
+        pivotSubsystem = new PivotSubsystem(hardwareMap, joinedTelemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, joinedTelemetry);
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
 

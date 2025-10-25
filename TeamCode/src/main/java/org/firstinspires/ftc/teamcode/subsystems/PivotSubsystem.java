@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,10 +12,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class PivotSubsystem extends SubsystemBase {
     private final DcMotor leftPivotMotor;
     private final DcMotor rightPivotMotor;
-    private final Telemetry telemetry;
-    private final TelemetryPacket telemetryPacket;
+    private final JoinedTelemetry telemetry;
     double offsetAngleFromLimelightToPivot = -5;
-    public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
+    public PivotSubsystem(HardwareMap hardwareMap, JoinedTelemetry telemetry) {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
         leftPivotMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -23,7 +23,6 @@ public class PivotSubsystem extends SubsystemBase {
         rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         this.telemetry = telemetry;
-        this.telemetryPacket = telemetryPacket;
 
         register();
     }
@@ -33,10 +32,6 @@ public class PivotSubsystem extends SubsystemBase {
         telemetry.addData("pivotPower", getPivotPower());
         telemetry.addData("currentPivotPosition", getCurrentPivotPosition());
         telemetry.addData("targetPivotPosition", getTargetPivotPosition());
-
-        telemetryPacket.put("pivotPower", getPivotPower());
-        telemetryPacket.put("currentPivotPosition", getCurrentPivotPosition());
-        telemetryPacket.put("targetPivotPosition", getTargetPivotPosition());
     }
 
     public void setPivotPower(double power) {
