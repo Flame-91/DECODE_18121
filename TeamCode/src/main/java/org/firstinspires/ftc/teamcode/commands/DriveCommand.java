@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
@@ -22,6 +23,10 @@ public class DriveCommand extends CommandBase {
         double y = -gamepad.getLeftY();
         double rotation = gamepad.getRightX();
         drive.MecanumDriveKitBot(x, y, rotation);
+
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+            drive.resetIMU();
+        }
     }
 
     @Override

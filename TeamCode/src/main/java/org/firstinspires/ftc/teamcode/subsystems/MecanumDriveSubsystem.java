@@ -64,6 +64,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backRight.setPower(backRightPower);
     }
 
+    public void resetIMU() {
+        imu.resetYaw();
+    }
+
     public double getFrontLeftPower() {
         return frontLeft.getPower();
     }
