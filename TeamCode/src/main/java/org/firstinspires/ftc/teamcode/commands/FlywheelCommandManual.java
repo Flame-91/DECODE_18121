@@ -21,17 +21,14 @@ public class FlywheelCommandManual extends CommandBase {
     public void execute() {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
             flyWheelSubsystem.runFlywheel(.35);
-        }
-        else {
+        } else {
             flyWheelSubsystem.runFlywheel(0);
         }
         if (gamepad.getButton(GamepadKeys.Button.A)) {
             flyWheelSubsystem.runFlywheelServos(1.0);
-        }
-        else if (gamepad.getButton(GamepadKeys.Button.X)) {
+        } else if (gamepad.getButton(GamepadKeys.Button.X)) {
             flyWheelSubsystem.runFlywheelServos(-1.0);
-        }
-        else {
+        } else {
             flyWheelSubsystem.runFlywheelServos(0);
         }
     }
