@@ -19,17 +19,21 @@ public class FlywheelCommandManual extends CommandBase {
 
     @Override
     public void execute() {
-        double rightTrigger = gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
-        boolean a = gamepad.getButton(GamepadKeys.Button.A);
-        boolean x = gamepad.getButton(GamepadKeys.Button.X);
-        if (rightTrigger > .5)
-            flyWheelSubsystem.runFlywheel(.35);
-        if (a)
+        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
+            flyWheelSubsystem.runFlywheel(.75);
+        }
+        else {
+            flyWheelSubsystem.runFlywheel(0);
+        }
+        if (gamepad.getButton(GamepadKeys.Button.A)) {
             flyWheelSubsystem.runFlywheelServos(1.0);
-        else if (x)
+        }
+        else if (gamepad.getButton(GamepadKeys.Button.X)) {
             flyWheelSubsystem.runFlywheelServos(-1.0);
-        else
+        }
+        else {
             flyWheelSubsystem.runFlywheelServos(0);
+        }
     }
 
     @Override
