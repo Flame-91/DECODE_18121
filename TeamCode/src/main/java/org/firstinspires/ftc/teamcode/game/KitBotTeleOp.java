@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.game;
 
-//import com.pedropathing.ftc.drivetrains.Mecanum;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,22 +13,17 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 @TeleOp (name = "Kit Bot TeleOp")
 public class KitBotTeleOp extends OpMode {
     FlyWheelSubsystem flyWheelSubsystem;
-//    OmniDriveSubsystemOG omniDriveSubsystem;
     MecanumDriveSubsystem mecanumDriveSubsystem;
     DriveCommand driveCommand;
-//    FlywheelCommandAutomatic flywheelCommandAutomatic;
     FlywheelCommandManual flywheelCommandManual;
 
     @Override
     public void init() {
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
-//        omniDriveSubsystem = new OmniDriveSubsystemOG(hardwareMap, gamepad1, telemetry);
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
-//        flywheelCommandAutomatic = new FlywheelCommandAutomatic((new GamepadEx(gamepad1)), flyWheelSubsystem);
         flywheelCommandManual = new FlywheelCommandManual((new GamepadEx(gamepad1)), flyWheelSubsystem);
         driveCommand = new DriveCommand((new GamepadEx(gamepad1)), mecanumDriveSubsystem);
         mecanumDriveSubsystem.setDefaultCommand(driveCommand);
-//        flyWheelSubsystem.setDefaultCommand(flywheelCommandAutomatic);
         flyWheelSubsystem.setDefaultCommand(flywheelCommandManual);
     }
 
