@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.game;
 
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -10,18 +9,19 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.FlywheelCommandManual;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
+import com.seattlesolvers.solverslib.util.Timing;
+
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "Auton")
 public class Auton extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
-
+    private boolean score;
     private final Pose startPose = new Pose(56.000, 8.000, 180);
     private final Pose scorePose = new Pose(98.369, 101.922, 45);
     private final Pose reloadPose = new Pose(10.847, 10.099, 90);
@@ -63,6 +63,17 @@ public class Auton extends OpMode {
         scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
     }
 
+    public boolean score() {
+        flyWheelSubsystem.runFlywheel(1);
+        Timing.Timer timer = new Timing.Timer(3, TimeUnit.SECONDS);
+        if (timer.done()) {
+            Timing.Timer newTimer = new Timing.Timer(1, TimeUnit.SECONDS);
+            flyWheelSubsystem.runFlywheelServos(1);
+            return newTimer.done();
+        }
+        return false;
+    }
+
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
@@ -73,56 +84,28 @@ public class Auton extends OpMode {
 
             case 1:
                 actionTimer.resetTimer();
-                if (!follower.isBusy())
+                score = score();
+                if (!follower.isBusy() && !score)
                     setPathState(2);
                 break;
 
             case 2:
                 if (!follower.isBusy()) {
-                    flyWheelSubsystem.runFlywheelServos(1);
-                    if (actionTimer.getElapsedTimeSeconds() > 3) {
-                        flyWheelSubsystem.runFlywheelServos(0);
-                        flyWheelSubsystem.runFlywheel(0);
-                        follower.followPath(reload);
-                        setPathState(3);
-                    }
+                    follower.followPath(scoreReload);
+                    if (!follower.isBusy()) setPathState(3);
                 }
                 break;
 
             case 3:
-                actionTimer.resetTimer();
-                if (!follower.isBusy())
-                    setPathState(4);
+                if (!follower.isBusy()) {
+                    score = score();
+                    if (!score) {
+                        setPathState(4);
+                    }
+                }
                 break;
 
             case 4:
-                if (!follower.isBusy()) {
-                    if (actionTimer.getElapsedTimeSeconds() > 3) {
-                        flyWheelSubsystem.runFlywheel(1);
-                        follower.followPath(scoreReload);
-                        setPathState(5);
-                    }
-                }
-                break;
-
-            case 5:
-                actionTimer.resetTimer();
-                if (!follower.isBusy())
-                    setPathState(6);
-                break;
-
-            case 6:
-                if (!follower.isBusy()) {
-                    flyWheelSubsystem.runFlywheelServos(1);
-                    if (actionTimer.getElapsedTimeSeconds() > 3) {
-                        flyWheelSubsystem.runFlywheelServos(0);
-                        flyWheelSubsystem.runFlywheel(0);
-                        setPathState(7);
-                    }
-                }
-                break;
-
-            case 7:
                 if (!follower.isBusy()) {
                     follower.followPath(reload);
                     setPathState(-1);
@@ -130,8 +113,8 @@ public class Auton extends OpMode {
         }
     }
 
-    public void setPathState(int pState) {
-        pathState = pState;
+    public void setPathState(int pathState) {
+        this.pathState = pathState;
         pathTimer.resetTimer();
     }
 }

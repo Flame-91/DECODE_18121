@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -18,10 +20,11 @@ public class KitBotTeleOp extends OpMode {
     MecanumDriveSubsystem mecanumDriveSubsystem;
     DriveCommand driveCommand;
     FlywheelCommandManual flywheelCommandManual;
+    IMU imu;
 
     @Override
     public void init() {
-        IMU imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParams = new IMU.Parameters(
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         imu.initialize(imuParams);
@@ -35,6 +38,9 @@ public class KitBotTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("robotYaw: ", imu.getRobotYawPitchRollAngles().getYaw());
+        telemetry.addData("Robot x: ", follower.getPose().getX());
+        telemetry.addData("Robot y: ", follower.getPose().getY());
         telemetry.update();
         CommandScheduler.getInstance().run();
     }
