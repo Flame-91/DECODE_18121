@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(3); // need to find this out
+            .mass(5.5); // this is correct for kitbot 11/1/25 (with laser)
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -36,8 +36,8 @@ public class Constants {
     public static OTOSConstants localizerConstants = new OTOSConstants()
             .hardwareMapName("otos")
             .linearUnit(DistanceUnit.INCH)
-            .angleUnit(AngleUnit.DEGREES)
-            .offset(new SparkFunOTOS.Pose2D(0.75, 4.375, 90));
+            .angleUnit(AngleUnit.RADIANS)
+            .offset(new SparkFunOTOS.Pose2D(-0.25,-4.375 , Math.PI/2));
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

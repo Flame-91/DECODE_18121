@@ -68,7 +68,7 @@ public class Auton extends OpMode {
         Timing.Timer timer = new Timing.Timer(3, TimeUnit.SECONDS);
         if (timer.done()) {
             Timing.Timer newTimer = new Timing.Timer(1, TimeUnit.SECONDS);
-            flyWheelSubsystem.runFlywheelServos(1);
+            flyWheelSubsystem.runFlywheelServos(.55);
             return newTimer.done();
         }
         return false;
