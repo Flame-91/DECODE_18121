@@ -12,21 +12,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
-import com.seattlesolvers.solverslib.util.Timing;
-
-import java.util.concurrent.TimeUnit;
 
 @Autonomous(name = "Auton")
 public class Auton extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
-    private boolean score1;
-    private boolean score2;
-    private boolean score3;
     private final Pose startPose = new Pose(56, 8, 90);
     private final Pose scorePose = new Pose(115, 125, 215);
     private final Pose reloadPose = new Pose(15, 20, 45);
+    private boolean score;
     private Path scorePreload;
     private Path reload;
     private Path scoreReload;
@@ -61,18 +56,18 @@ public class Auton extends OpMode {
         scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
     }
 
-    public boolean score(long timerLength) {
-        flyWheelSubsystem.runFlywheel(1);
-        Timing.Timer timer = new Timing.Timer(timerLength, TimeUnit.SECONDS);
-        if (timer.done()) {
-            Timing.Timer newTimer = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-            flyWheelSubsystem.runFlywheelServos(.567);
-            return newTimer.done();
+    public boolean score(double elapsedTime, double runTime) { // elapsed time is how much time it has been since score was first called, and run time is how uch time it should run the motor
+        if (runTime < elapsedTime) {
+            flyWheelSubsystem.runFlywheel(0.567); // runs motor as long as elapsed time is less than specified runtime
+        } else if (runTime + 0.25 < elapsedTime) {
+            flyWheelSubsystem.runFlywheelServos(1); // runs servos for 0.25 secs after motor runs
+        } else {
+            return true;
         }
         return false;
     }
 
-    public void stopFlywheelMotor() {
+    public void stopFlywheel() {
         flyWheelSubsystem.runFlywheel(0);
         flyWheelSubsystem.runFlywheelServos(0);
     }
@@ -81,36 +76,63 @@ public class Auton extends OpMode {
         switch (pathState) {
             case 0:
                 follower.followPath(scorePreload);
-                setPathState(1);
+                if (!follower.isBusy()) {
+                    actionTimer.resetTimer(); // resets timer for next case
+                    setPathState(1);
+                }
                 break;
             case 1:
-                score1 = score(3);
-                if (!score1) {
-                    break;
-                }
-                if (!follower.isBusy() && !score)
+                score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
                     setPathState(2);
+                }
                 break;
-
             case 2:
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
+                    setPathState(3);
+                }
+            case 3:
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
+                    setPathState(4);
+                }
+            case 4:
+                if (!follower.isBusy()) {
+                    follower.followPath(reload);
+                    if (!follower.isBusy()) setPathState(5);
+                }
+                break;
+            case 5:
                 if (!follower.isBusy()) {
                     follower.followPath(scoreReload);
-                    if (!follower.isBusy()) setPathState(3);
-                }
-                break;
-
-            case 3:
-                if (!follower.isBusy()) {
-                    score = score();
-                    if (!score) {
-                        setPathState(4);
+                    if (!follower.isBusy()) {
+                        actionTimer.resetTimer();
+                        setPathState(6);
                     }
                 }
                 break;
 
-            case 4:
-                if (!follower.isBusy()) {
-                    follower.followPath(reload);
+            case 6:
+                score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
+                    setPathState(7);
+                }
+                break;
+            case 7:
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
+                    setPathState(8);
+                }
+            case 8:
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
+                if (!follower.isBusy() && score) {
+                    actionTimer.resetTimer();
                     setPathState(-1);
                 }
         }
