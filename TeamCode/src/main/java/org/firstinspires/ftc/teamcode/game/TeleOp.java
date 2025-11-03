@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 public class TeleOp extends OpMode {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
-
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
@@ -29,8 +28,9 @@ public class TeleOp extends OpMode {
     public void init() {
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters imuParams = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP
+                new RevHubOrientationOnRobot (
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
                 )
         );
         imu.initialize(imuParams);
