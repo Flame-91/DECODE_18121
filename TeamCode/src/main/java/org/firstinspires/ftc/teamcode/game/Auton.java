@@ -83,55 +83,59 @@ public class Auton extends OpMode {
                 break;
             case 1:
                 score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
-                if (!follower.isBusy() && score) {
+                if (score) {
                     actionTimer.resetTimer();
                     setPathState(2);
                 }
                 break;
             case 2:
-                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact
-                if (!follower.isBusy() && score) {
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact (less runtime since motor is already spinning but we still want a little break so artifacts dont hit each other mid air)
+                if (score) {
                     actionTimer.resetTimer();
                     setPathState(3);
                 }
             case 3:
                 score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
-                if (!follower.isBusy() && score) {
+                if (score) {
+                    stopFlywheel();
                     actionTimer.resetTimer();
                     setPathState(4);
                 }
             case 4:
+                follower.followPath(reload);
                 if (!follower.isBusy()) {
-                    follower.followPath(reload);
-                    if (!follower.isBusy()) setPathState(5);
+                    actionTimer.resetTimer();
+                    setPathState(5);
                 }
                 break;
             case 5:
-                if (!follower.isBusy()) {
-                    follower.followPath(scoreReload);
-                    if (!follower.isBusy()) {
-                        actionTimer.resetTimer();
-                        setPathState(6);
-                    }
+                if (actionTimer.getElapsedTime() > 3) { // gives human player time to put artifacts in
+                    setPathState(6);
                 }
-                break;
-
             case 6:
-                score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
-                if (!follower.isBusy() && score) {
+                follower.followPath(scoreReload);
+                if (!follower.isBusy()) {
                     actionTimer.resetTimer();
                     setPathState(7);
                 }
                 break;
             case 7:
-                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact
-                if (!follower.isBusy() && score) {
+                score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
+                if (score) {
                     actionTimer.resetTimer();
                     setPathState(8);
                 }
+                break;
             case 8:
+                score = score(actionTimer.getElapsedTime(), 0.5); // scores second artifact
+                if (score) {
+                    actionTimer.resetTimer();
+                    setPathState(9);
+                }
+            case 9:
                 score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
-                if (!follower.isBusy() && score) {
+                if (score) {
+                    stopFlywheel();
                     actionTimer.resetTimer();
                     setPathState(-1);
                 }
