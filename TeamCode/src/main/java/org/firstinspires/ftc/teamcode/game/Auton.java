@@ -21,22 +21,20 @@ public class Auton extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
-    private boolean score;
-    private final Pose startPose = new Pose(56.000, 8.000, 180);
-    private final Pose scorePose = new Pose(98.369, 101.922, 45);
-    private final Pose reloadPose = new Pose(10.847, 10.099, 90);
-
+    private boolean score1;
+    private boolean score2;
+    private boolean score3;
+    private final Pose startPose = new Pose(56, 8, 90);
+    private final Pose scorePose = new Pose(115, 125, 215);
+    private final Pose reloadPose = new Pose(15, 20, 45);
     private Path scorePreload;
     private Path reload;
     private Path scoreReload;
-
     FlyWheelSubsystem flyWheelSubsystem;
-
     @Override
     public void init() {
         pathTimer = new Timer();
         opmodeTimer = new Timer();
-        opmodeTimer.resetTimer();
         actionTimer = new Timer();
 
         follower = Constants.createFollower(hardwareMap);
@@ -63,28 +61,33 @@ public class Auton extends OpMode {
         scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
     }
 
-    public boolean score() {
+    public boolean score(long timerLength) {
         flyWheelSubsystem.runFlywheel(1);
-        Timing.Timer timer = new Timing.Timer(3, TimeUnit.SECONDS);
+        Timing.Timer timer = new Timing.Timer(timerLength, TimeUnit.SECONDS);
         if (timer.done()) {
-            Timing.Timer newTimer = new Timing.Timer(1, TimeUnit.SECONDS);
-            flyWheelSubsystem.runFlywheelServos(.55);
+            Timing.Timer newTimer = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+            flyWheelSubsystem.runFlywheelServos(.567);
             return newTimer.done();
         }
         return false;
     }
 
+    public void stopFlywheelMotor() {
+        flyWheelSubsystem.runFlywheel(0);
+        flyWheelSubsystem.runFlywheelServos(0);
+    }
+
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                flyWheelSubsystem.runFlywheel(1);
                 follower.followPath(scorePreload);
                 setPathState(1);
                 break;
-
             case 1:
-                actionTimer.resetTimer();
-                score = score();
+                score1 = score(3);
+                if (!score1) {
+                    break;
+                }
                 if (!follower.isBusy() && !score)
                     setPathState(2);
                 break;
