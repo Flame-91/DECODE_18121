@@ -62,6 +62,7 @@ public class Auton extends OpMode {
         } else if (runTime + 0.25 < elapsedTime) {
             flyWheelSubsystem.runFlywheelServos(1); // runs servos for 0.25 secs after motor runs
         } else {
+            flyWheelSubsystem.runFlywheelServos(0); // stops running servos but keeps motor running until stopFlywheel in psm
             return true;
         }
         return false;
@@ -75,7 +76,7 @@ public class Auton extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload);
+                follower.followPath(scorePreload); // goes to goal to score preloads
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer(); // resets timer for next case
                     setPathState(1);
@@ -94,15 +95,17 @@ public class Auton extends OpMode {
                     actionTimer.resetTimer();
                     setPathState(3);
                 }
+                break;
             case 3:
                 score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
                 if (score) {
-                    stopFlywheel();
+                    stopFlywheel(); // stops flywheels
                     actionTimer.resetTimer();
                     setPathState(4);
                 }
+                break;
             case 4:
-                follower.followPath(reload);
+                follower.followPath(reload); // goes to human player zone
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer();
                     setPathState(5);
@@ -112,8 +115,9 @@ public class Auton extends OpMode {
                 if (actionTimer.getElapsedTime() > 3) { // gives human player time to put artifacts in
                     setPathState(6);
                 }
+                break;
             case 6:
-                follower.followPath(scoreReload);
+                follower.followPath(scoreReload); // goes to score area
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer();
                     setPathState(7);
@@ -132,13 +136,15 @@ public class Auton extends OpMode {
                     actionTimer.resetTimer();
                     setPathState(9);
                 }
+                break;
             case 9:
                 score = score(actionTimer.getElapsedTime(), 0.5); // scores last artifact
                 if (score) {
-                    stopFlywheel();
+                    stopFlywheel(); // stops flywheels
                     actionTimer.resetTimer();
                     setPathState(-1);
                 }
+                break;
         }
     }
 
