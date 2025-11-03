@@ -6,8 +6,8 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.*;
 import org.firstinspires.ftc.teamcode.subsystems.*;
@@ -22,9 +22,7 @@ public class TeleOp extends OpMode {
     private FlywheelSubsystem flywheelSubsystem;
     private PivotSubsystem pivotSubsystem;
     private IntakeSubsystem intakeSubsystem;
-
     private GamepadEx driver;
-
     private IMU imu;
 
     @Override

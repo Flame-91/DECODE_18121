@@ -4,10 +4,10 @@ import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKP;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.Subsystem;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
