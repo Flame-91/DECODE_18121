@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.commands.PivotCommand;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
@@ -19,6 +25,7 @@ import com.pedropathing.util.Timer;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlywheelSubsystem;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "game")
 public class Autonomous extends OpMode {
@@ -37,10 +44,12 @@ public class Autonomous extends OpMode {
     private Path intakeOne;
     private Path intakeTwo;
     private Path scoreReload;
+    private long lastTime;
     FlywheelSubsystem flyWheelSubsystem;
     IntakeSubsystem intakeSubsystem;
     LimelightSubsystem limelightSubsystem;
     PivotSubsystem pivotSubsystem;
+    PIDController pivotPIDController;
     @Override
     public void init() {
         imu = hardwareMap.get(IMU.class, "imu");
@@ -63,12 +72,16 @@ public class Autonomous extends OpMode {
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
+
+        pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, 0.5);
     }
 
     @Override
     public void loop() {
         dashboard.sendTelemetryPacket(telemetryPacket);
         telemetry.update();
+        updateLimelight();
+        executePivot();
         follower.update();
         autonomousPathUpdate();
     }
@@ -97,6 +110,34 @@ public class Autonomous extends OpMode {
             return true;
         }
         return false;
+    }
+
+    public void executePivot() {
+        if (limelightSubsystem.hasTarget()) {
+            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
+            double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
+
+            long currentTime = System.nanoTime();
+            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
+            lastTime = currentTime;
+            double output = pivotPIDController.calculate(pitchError, deltaTime);
+
+            pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
+            pivotSubsystem.setPivotPower(-output);
+        }
+    }
+
+    public void updateLimelight() {
+        if (limelightSubsystem.hasTarget()) {
+            Pose3D currentPosition = limelightSubsystem.getBotPosePose3D(); // gets position of robot using limelight MT2 (very very accurate)
+            if (currentPosition != null) { // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
+                double xInches = currentPosition.getPosition().x * 39.3701; // converts meters to inches
+                double yInches = currentPosition.getPosition().y * 39.3701;
+                double heading = Math.toDegrees(currentPosition.getOrientation().getYaw()); // check if its radians
+                Pose currentPose = new Pose(xInches, yInches, heading);
+                follower.setPose(currentPose);
+            }
+        }
     }
 
     public void stopFlywheel() {
@@ -137,13 +178,13 @@ public class Autonomous extends OpMode {
                 break;
             case 4:
                 follower.followPath(intakeOne); // goes to artifact to reload
-                if (!follower.isBusy() && actionTimer.getElapsedTime() > 0.5) { // gives time for intake to intake
+                if (!follower.isBusy()) {
                     actionTimer.resetTimer();
                     setPathState(5);
                 }
                 break;
             case 5:
-                if (actionTimer.getElapsedTime() > 3) { // gives human player time to put artifacts in
+                if (actionTimer.getElapsedTime() > 0.5) {  // gives time for intake to intake
                     setPathState(6);
                 }
                 break;
