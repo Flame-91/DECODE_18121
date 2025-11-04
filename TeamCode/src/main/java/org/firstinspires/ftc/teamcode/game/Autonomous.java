@@ -6,6 +6,9 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.util.GlobalConstants;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -35,7 +38,9 @@ public class Autonomous extends OpMode {
     private Path intakeTwo;
     private Path scoreReload;
     FlywheelSubsystem flyWheelSubsystem;
-
+    IntakeSubsystem intakeSubsystem;
+    LimelightSubsystem limelightSubsystem;
+    PivotSubsystem pivotSubsystem;
     @Override
     public void init() {
         imu = hardwareMap.get(IMU.class, "imu");
@@ -55,7 +60,9 @@ public class Autonomous extends OpMode {
         follower.setStartingPose(startPose);
 
         flyWheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
-        intakeSub
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
+        limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
+        pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
     }
 
     @Override
