@@ -26,11 +26,13 @@ public class Autonomous extends OpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
     private final Pose startPose = new Pose(56, 8, 90);
-    private final Pose scorePose = new Pose(115, 125, 215);
-    private final Pose reloadPose = new Pose(15, 20, 45);
+    private final Pose scorePose = new Pose(70, 14, 63);
+    private final Pose intakePoseOne = new Pose(34.678899082568805, 35.5045871559633, 180);
+    private final Pose intakePoseTwo = new Pose(24.605504587155963, 35.6697247706422, 180);
     private boolean score;
     private Path scorePreload;
-    private Path reload;
+    private Path intakeOne;
+    private Path intakeTwo;
     private Path scoreReload;
     FlywheelSubsystem flyWheelSubsystem;
 
@@ -53,6 +55,7 @@ public class Autonomous extends OpMode {
         follower.setStartingPose(startPose);
 
         flyWheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+        intakeSub
     }
 
     @Override
@@ -67,16 +70,19 @@ public class Autonomous extends OpMode {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-        reload = new Path(new BezierLine(scorePose, reloadPose));
-        reload.setLinearHeadingInterpolation(scorePose.getHeading(), reloadPose.getHeading());
+        intakeOne = new Path(new BezierLine(scorePose, intakePoseOne));
+        intakeOne.setLinearHeadingInterpolation(scorePose.getHeading(), intakePoseOne.getHeading());
 
-        scoreReload = new Path(new BezierLine(reloadPose, scorePose));
-        scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
+        intakeTwo = new Path(new BezierLine(intakePoseOne, intakePoseTwo));
+        intakeTwo.setLinearHeadingInterpolation(intakePoseOne.getHeading(), intakePoseTwo.getHeading());
+
+        scoreReload = new Path(new BezierLine(intakePoseTwo, scorePose));
+        scoreReload.setLinearHeadingInterpolation(intakePoseTwo.getHeading(), scorePose.getHeading());
     }
 
     public boolean score(double elapsedTime, double runTime) { // elapsed time is how much time it has been since score was first called, and run time is how uch time it should run the motor
         if (runTime < elapsedTime) {
-            flyWheelSubsystem.setFlywheelMotorPower(0.567); // runs motor as long as elapsed time is less than specified runtime
+            flyWheelSubsystem.setFlywheelMotorPower(1); // runs motor as long as elapsed time is less than specified runtime
         } else if (runTime + 0.25 < elapsedTime) {
             flyWheelSubsystem.setFlywheelServoPower(1); // runs servos for 0.25 secs after motor runs
         } else {
@@ -123,8 +129,8 @@ public class Autonomous extends OpMode {
                 }
                 break;
             case 4:
-                follower.followPath(reload); // goes to human player zone
-                if (!follower.isBusy()) {
+                follower.followPath(intakeOne); // goes to artifact to reload
+                if (!follower.isBusy() && actionTimer.getElapsedTime() > 0.5) { // gives time for intake to intake
                     actionTimer.resetTimer();
                     setPathState(5);
                 }
