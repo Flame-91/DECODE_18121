@@ -133,7 +133,7 @@ public class Autonomous extends OpMode {
             if (currentPosition != null) { // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
                 double xInches = currentPosition.getPosition().x * 39.3701; // converts meters to inches
                 double yInches = currentPosition.getPosition().y * 39.3701;
-                double heading = Math.toDegrees(currentPosition.getOrientation().getYaw()); // check if its radians
+                double heading = currentPosition.getOrientation().getYaw(); // outputs in degrees
                 Pose currentPose = new Pose(xInches, yInches, heading);
                 follower.setPose(currentPose);
             }
