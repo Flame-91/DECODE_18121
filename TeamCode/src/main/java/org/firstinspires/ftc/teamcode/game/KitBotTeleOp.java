@@ -8,7 +8,7 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.FlywheelCommandManual;
+import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 @TeleOp (name = "Kit Bot TeleOp")
@@ -16,7 +16,7 @@ public class KitBotTeleOp extends OpMode {
     FlyWheelSubsystem flyWheelSubsystem;
     MecanumDriveSubsystem mecanumDriveSubsystem;
     DriveCommand driveCommand;
-    FlywheelCommandManual flywheelCommandManual;
+    FlywheelCommand flywheelCommandManual;
     IMU imu;
 
     @Override
@@ -27,7 +27,7 @@ public class KitBotTeleOp extends OpMode {
         imu.initialize(imuParams);
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
-        flywheelCommandManual = new FlywheelCommandManual((new GamepadEx(gamepad1)), flyWheelSubsystem);
+        flywheelCommandManual = new FlywheelCommand((new GamepadEx(gamepad1)), flyWheelSubsystem);
         driveCommand = new DriveCommand((new GamepadEx(gamepad1)), mecanumDriveSubsystem);
         mecanumDriveSubsystem.setDefaultCommand(driveCommand);
         flyWheelSubsystem.setDefaultCommand(flywheelCommandManual);

@@ -1,18 +1,16 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-//import com.seattlesolvers.solverslib.command.CommandBase;
-
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
-public class FlywheelCommandManual extends CommandBase {
+public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     private final GamepadEx gamepad;
 
-    public FlywheelCommandManual(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
+    public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
         this.flyWheelSubsystem = flyWheelSubsystem;
         addRequirements(flyWheelSubsystem);
