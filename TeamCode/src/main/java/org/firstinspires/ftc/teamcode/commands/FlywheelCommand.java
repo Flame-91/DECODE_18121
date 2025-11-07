@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -9,10 +10,16 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     private final GamepadEx gamepad;
+    private final ElapsedTime elapsedTime;
+    private final ElapsedTime elapsedTime2;
+    private boolean firstPress = true;
+    private boolean hasReset = false;
 
     public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
         this.flyWheelSubsystem = flyWheelSubsystem;
+        elapsedTime = new ElapsedTime();
+        elapsedTime2 = new ElapsedTime();
         addRequirements(flyWheelSubsystem);
     }
 
@@ -27,11 +34,32 @@ public class FlywheelCommand extends CommandBase {
         }
 
         if (gamepad.getButton(GamepadKeys.Button.A)) {
-            flyWheelSubsystem.runFlywheelServos(1.0);
+            if (firstPress) {
+                if (!hasReset) {
+                    elapsedTime.reset();
+                    hasReset = true;
+                }
+                flyWheelSubsystem.runFlywheelServos(1.0);
+                if (elapsedTime.seconds() >= 0.5) {
+                    firstPress = false;
+                    hasReset = false;
+                    flyWheelSubsystem.runFlywheelServos(0);
+                    elapsedTime2.reset();
+                }
+            } else {
+                if (elapsedTime2.seconds() >= 0.3) {
+                    firstPress = true;
+                    hasReset = false;
+                }
+            }
         } else if (gamepad.getButton(GamepadKeys.Button.X)) {
             flyWheelSubsystem.runFlywheelServos(-1.0);
+            firstPress = true;
+            hasReset = false;
         } else {
             flyWheelSubsystem.runFlywheelServos(0);
+            firstPress = true;
+            hasReset = false;
         }
     }
 
