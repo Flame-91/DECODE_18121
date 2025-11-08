@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
@@ -16,6 +17,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
         leftFlyWheel = hardwareMap.get(CRServo.class, "leftFlyWheel");
         flywheelMotor = hardwareMap.get(DcMotor.class, "flywheelMotor");
         flywheelMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftFlyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         this.telemetry = telemetry;
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }

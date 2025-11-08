@@ -19,7 +19,7 @@ public class DriveCommand extends CommandBase {
     @Override
     public void execute() {
         if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
-            if (centric == "field centric")
+            if (centric.equals("field centric"))
                 centric = "robot centric";
             else
                 centric = "field centric";
@@ -27,7 +27,7 @@ public class DriveCommand extends CommandBase {
         double x = -gamepad.getLeftX();
         double y = -gamepad.getLeftY();
         double rotation = -gamepad.getRightX();
-        if (centric == "robot centric")
+        if (centric.equals("robot centric"))
             drive.MecanumRobotCentricKitbot(x, y, rotation);
         else
             drive.MecanumDriveKitBot(x, y, rotation);

@@ -28,6 +28,7 @@ dependencies {
     implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
     implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // pedroPathing
     implementation "com.bylazar:fullpanels:1.0.6" // panels
+    implementation "com.bylazar:configurables:1.0.4"
 }
 
 repositories {
