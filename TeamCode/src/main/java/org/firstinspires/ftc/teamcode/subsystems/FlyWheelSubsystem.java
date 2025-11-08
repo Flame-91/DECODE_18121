@@ -17,7 +17,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
         leftFlyWheel = hardwareMap.get(CRServo.class, "leftFlyWheel");
         flywheelMotor = hardwareMap.get(DcMotor.class, "flywheelMotor");
         flywheelMotor.setDirection(DcMotor.Direction.REVERSE);
-        leftFlyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFlyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         this.telemetry = telemetry;
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -29,7 +29,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
     }
 
     public void runFlywheelServos(double power) {
-        rightFlyWheel.setPower(-power);
+        rightFlyWheel.setPower(power);
         leftFlyWheel.setPower(power);
     }
 
