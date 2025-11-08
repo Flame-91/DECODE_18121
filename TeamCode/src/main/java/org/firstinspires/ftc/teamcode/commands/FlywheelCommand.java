@@ -48,6 +48,7 @@ public class FlywheelCommand extends CommandBase {
                 }
             } else {
                 if (elapsedTime2.seconds() >= 0.3) {
+                    flyWheelSubsystem.runFlywheelServos(0);
                     firstPress = true;
                     hasReset = false;
                 }
