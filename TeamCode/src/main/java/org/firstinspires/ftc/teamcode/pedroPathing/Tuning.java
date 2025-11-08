@@ -528,7 +528,6 @@ class LateralVelocityTuner extends OpMode {
 class ForwardZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
     public static double VELOCITY = 30;
-
     private double previousVelocity;
     private long previousTimeNano;
 
@@ -688,6 +687,7 @@ class LateralZeroPowerAccelerationTuner extends OpMode {
                 }
             } else {
                 double currentVelocity = Math.abs(follower.getVelocity().dot(heading));
+                telemetryM.debug("Velocity:", currentVelocity);
                 accelerations.add((currentVelocity - previousVelocity) / ((System.nanoTime() - previousTimeNano) / Math.pow(10.0, 9)));
                 previousVelocity = currentVelocity;
                 previousTimeNano = System.nanoTime();
