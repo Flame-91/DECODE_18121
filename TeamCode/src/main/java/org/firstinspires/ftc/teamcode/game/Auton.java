@@ -20,8 +20,8 @@ public class Auton extends OpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
 
-    private final Pose startPose = new Pose(56.000, 8.000, 180);
-    private final Pose scorePose = new Pose(98.369, 101.922, 45);
+    private final Pose startPose = new Pose(56.000, 8.000, 90);
+    private final Pose scorePose = new Pose(117.63380281690141, 123.26760563380282, 215);
     private final Pose reloadPose = new Pose(10.847, 10.099, 90);
 
     private Path scorePreload;

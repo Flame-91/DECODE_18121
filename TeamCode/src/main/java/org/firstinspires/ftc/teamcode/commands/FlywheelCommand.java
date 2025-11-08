@@ -26,9 +26,9 @@ public class FlywheelCommand extends CommandBase {
     @Override
     public void execute() {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
-            flyWheelSubsystem.runFlywheel(.530);
+            flyWheelSubsystem.runFlywheel(.550);
         } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .5) {
-            flyWheelSubsystem.runFlywheel(-.530);
+            flyWheelSubsystem.runFlywheel(-.55);
         } else {
             flyWheelSubsystem.runFlywheel(0);
         }
@@ -40,14 +40,14 @@ public class FlywheelCommand extends CommandBase {
                     hasReset = true;
                 }
                 flyWheelSubsystem.runFlywheelServos(1.0);
-                if (elapsedTime.seconds() >= 0.5) {
+                if (elapsedTime.seconds() >= 0.2) {
                     firstPress = false;
                     hasReset = false;
                     flyWheelSubsystem.runFlywheelServos(0);
                     elapsedTime2.reset();
                 }
             } else {
-                if (elapsedTime2.seconds() >= 0.3) {
+                if (elapsedTime2.seconds() >= 1) {
                     flyWheelSubsystem.runFlywheelServos(0);
                     firstPress = true;
                     hasReset = false;
