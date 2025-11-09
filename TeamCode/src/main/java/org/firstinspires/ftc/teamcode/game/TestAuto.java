@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+@Autonomous(name = "test auto", group = "Autonomous")
 @Configurable // Panels
 public class TestAuto extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
@@ -24,7 +24,7 @@ public class TestAuto extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
 
         paths = new Paths(follower); // Build paths
         pathState = 0;
@@ -54,7 +54,7 @@ public class TestAuto extends OpMode {
             Path1 = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(72.000, 72.000), new Pose(72.000, 25.000))
+                            new BezierLine(new Pose(72.000, 72.000), new Pose(72.000, 25))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();
@@ -65,7 +65,7 @@ public class TestAuto extends OpMode {
         switch (pathState) {
             case 0:
                 follower.followPath(paths.Path1);
-                pathState ++;
+//                pathState ++;
                 break;
         }
         // Add your state machine Here
