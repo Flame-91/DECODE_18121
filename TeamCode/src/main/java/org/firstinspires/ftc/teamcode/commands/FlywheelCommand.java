@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = .520; // public static for panels
-    public static double flywheelServoRuntime = 0.15;
-    public static double flywheelMotorRuntime = 1;
+    public static double flywheelMotorPower = .550; // public static for panels
+    public static double flywheelServoRuntime = 0.175;
+    public static double flywheelServoBreaktime = 1.7;
     private final GamepadEx gamepad;
     private final ElapsedTime elapsedTime;
     private final ElapsedTime elapsedTime2;
@@ -52,7 +52,7 @@ public class FlywheelCommand extends CommandBase {
                     elapsedTime2.reset();
                 }
             } else {
-                if (elapsedTime2.seconds() >= flywheelMotorRuntime) {
+                if (elapsedTime2.seconds() >= flywheelServoBreaktime) {
                     flyWheelSubsystem.runFlywheelServos(0);
                     firstPress = true;
                     hasReset = false;
