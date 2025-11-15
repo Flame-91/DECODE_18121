@@ -95,6 +95,8 @@ public class FlywheelCommand extends CommandBase {
                 break;
         }
 
+        // dont delete comments yet in case state machine doesn't work
+
 //        if (gamepad.getButton(GamepadKeys.Button.B)) {
 //            firstArtifact = false;
 //        }
