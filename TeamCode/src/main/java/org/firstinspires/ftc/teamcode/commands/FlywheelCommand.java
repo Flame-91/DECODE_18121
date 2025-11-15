@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = .5496767; // public static for panels
-    public static double flywheelServoRuntime = 0.23;
+    public static double flywheelMotorPower = 0.52596767; // public static for panels
+    public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 1;
     public static double flywheelServoBreaktime2 = 1.5;
     private final GamepadEx gamepad;
@@ -20,6 +20,7 @@ public class FlywheelCommand extends CommandBase {
     private final ElapsedTime elapsedTime2;
     private boolean firstPress = true;
     private boolean hasReset = false;
+    private boolean firstArtifact = false;
 
     public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
@@ -39,6 +40,10 @@ public class FlywheelCommand extends CommandBase {
             flyWheelSubsystem.runFlywheel(0);
         }
 
+        if (gamepad.getButton(GamepadKeys.Button.B)) {
+            firstArtifact = false;
+        }
+
         if (gamepad.getButton(GamepadKeys.Button.A)) {
             if (firstPress) {
                 if (!hasReset) {
@@ -53,10 +58,16 @@ public class FlywheelCommand extends CommandBase {
                     elapsedTime2.reset();
                 }
             } else {
-                if (elapsedTime2.seconds() >= flywheelServoBreaktime1) {
+                if (elapsedTime2.seconds() >= flywheelServoBreaktime1 && !firstArtifact) {
                     flyWheelSubsystem.runFlywheelServos(0);
                     firstPress = true;
                     hasReset = false;
+                    firstArtifact = true;
+                } else if (elapsedTime2.seconds() >= flywheelServoBreaktime2 && firstArtifact) {
+                    flyWheelSubsystem.runFlywheelServos(0);
+                    firstPress = true;
+                    hasReset = false;
+                    firstArtifact = false;
                 }
             }
         } else if (gamepad.getButton(GamepadKeys.Button.X)) {

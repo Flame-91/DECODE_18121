@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.game;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -14,13 +15,23 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
 @Autonomous(name = "Auton")
+@Configurable
 public class Auton extends OpMode {
+    public static double startPoseX = 56;
+    public static double startPoseY = 8;
+    public static double startPoseHeading = 90;
+    public static double scorePoseX = 115;
+    public static double scorePoseY = 145;
+    public static double scorePoseHeading = 90;
+    public static double reloadPoseX = 15;
+    public static double reloadPoseY = 20;
+    public static double reloadHeading = 45;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
-    private final Pose startPose = new Pose(56, 8, 90);
-    private final Pose scorePose = new Pose(115, 125, 215);
-    private final Pose reloadPose = new Pose(15, 20, 45);
+    private final Pose startPose = new Pose(startPoseX, startPoseY, startPoseHeading);
+    private final Pose scorePose = new Pose(scorePoseX, scorePoseY, scorePoseHeading);
+    private final Pose reloadPose = new Pose(reloadPoseX, reloadPoseY, reloadHeading);
     private boolean score;
     private Path scorePreload;
     private Path reload;
@@ -81,7 +92,9 @@ public class Auton extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload); // goes to goal to score preloads
+                follower.followPath(scorePreload);
+//                telemetry.addData("");
+                // goes to goal to score preloads
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer(); // resets timer for next case
                     setPathState(1);
