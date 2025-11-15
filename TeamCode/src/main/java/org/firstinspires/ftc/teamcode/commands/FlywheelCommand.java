@@ -17,68 +17,123 @@ public class FlywheelCommand extends CommandBase {
     public static double flywheelServoBreaktime2 = 1.5;
     private final GamepadEx gamepad;
     private final ElapsedTime elapsedTime;
-    private final ElapsedTime elapsedTime2;
     private boolean firstPress = true;
     private boolean hasReset = false;
     private boolean firstArtifact = false;
-
+    private enum ServoState {IDLE, RUNNING1, RUNNING2, RUNNING3, REVERSE, BREAK1, BREAK2};
+    private ServoState currentState = ServoState.IDLE;
     public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
         this.flyWheelSubsystem = flyWheelSubsystem;
         elapsedTime = new ElapsedTime();
-        elapsedTime2 = new ElapsedTime();
         addRequirements(flyWheelSubsystem);
     }
 
     @Override
     public void execute() {
-        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
+        gamepad.readButtons();
+
+        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5) {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower);
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .5) {
+        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5) {
             flyWheelSubsystem.runFlywheel(-flywheelMotorPower);
         } else {
             flyWheelSubsystem.runFlywheel(0);
         }
 
-        if (gamepad.getButton(GamepadKeys.Button.B)) {
-            firstArtifact = false;
+        elapsedTime.reset();
+
+        switch (currentState) {
+            case IDLE:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (gamepad.wasJustPressed(GamepadKeys.Button.A)) {
+                    elapsedTime.reset();
+                    currentState = ServoState.RUNNING1;
+                }
+                if (gamepad.getButton(GamepadKeys.Button.X)) {
+                    currentState = ServoState.REVERSE;
+                }
+                break;
+            case RUNNING1:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (elapsedTime.seconds() >= flywheelServoRuntime) {
+                    elapsedTime.reset();
+                    currentState = ServoState.BREAK1;
+                }
+                break;
+            case BREAK1:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (elapsedTime.seconds() >= flywheelServoBreaktime1) {
+                    elapsedTime.reset();
+                    currentState = ServoState.RUNNING2;
+                }
+                break;
+            case RUNNING2:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (elapsedTime.seconds() >= flywheelServoRuntime) {
+                    elapsedTime.reset();
+                    currentState = ServoState.BREAK2;
+                }
+            case BREAK2:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (elapsedTime.seconds() >= flywheelServoBreaktime1) {
+                    elapsedTime.reset();
+                    currentState = ServoState.RUNNING3;
+                }
+                break;
+            case RUNNING3:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (elapsedTime.seconds() >= flywheelServoRuntime) {
+                    elapsedTime.reset();
+                    currentState = ServoState.IDLE;
+                }
+            case REVERSE:
+                flyWheelSubsystem.runFlywheelServos(-1);
+                if (!gamepad.getButton(GamepadKeys.Button.X)) {
+                    currentState = ServoState.IDLE;
+                }
+                break;
         }
 
-        if (gamepad.getButton(GamepadKeys.Button.A)) {
-            if (firstPress) {
-                if (!hasReset) {
-                    elapsedTime.reset();
-                    hasReset = true;
-                }
-                flyWheelSubsystem.runFlywheelServos(1.0);
-                if (elapsedTime.seconds() >= flywheelServoRuntime) {
-                    firstPress = false;
-                    hasReset = false;
-                    flyWheelSubsystem.runFlywheelServos(0);
-                    elapsedTime2.reset();
-                }
-            } else {
-                if (elapsedTime2.seconds() >= flywheelServoBreaktime1 && !firstArtifact) {
-                    flyWheelSubsystem.runFlywheelServos(0);
-                    firstPress = true;
-                    hasReset = false;
-                    firstArtifact = true;
-                } else if (elapsedTime2.seconds() >= flywheelServoBreaktime2 && firstArtifact) {
-                    flyWheelSubsystem.runFlywheelServos(0);
-                    firstPress = true;
-                    hasReset = false;
-                    firstArtifact = false;
-                }
-            }
-        } else if (gamepad.getButton(GamepadKeys.Button.X)) {
-            flyWheelSubsystem.runFlywheelServos(-1.0);
-            firstPress = true;
-            hasReset = false;
-        } else {
-            flyWheelSubsystem.runFlywheelServos(0);
-            firstPress = true;
-            hasReset = false;
-        }
+//        if (gamepad.getButton(GamepadKeys.Button.B)) {
+//            firstArtifact = false;
+//        }
+//
+//        if (gamepad.getButton(GamepadKeys.Button.A)) {
+//            if (firstPress) {
+//                if (!hasReset) {
+//                    elapsedTime.reset();
+//                    hasReset = true;
+//                }
+//                flyWheelSubsystem.runFlywheelServos(1.0);
+//                if (elapsedTime.seconds() >= flywheelServoRuntime) {
+//                    firstPress = false;
+//                    hasReset = false;
+//                    flyWheelSubsystem.runFlywheelServos(0);
+//                    elapsedTime2.reset();
+//                }
+//            } else {
+//                if (elapsedTime2.seconds() >= flywheelServoBreaktime1 && !firstArtifact) {
+//                    flyWheelSubsystem.runFlywheelServos(0);
+//                    firstPress = true;
+//                    hasReset = false;
+//                    firstArtifact = true;
+//                } else if (elapsedTime2.seconds() >= flywheelServoBreaktime2 && firstArtifact) {
+//                    flyWheelSubsystem.runFlywheelServos(0);
+//                    firstPress = true;
+//                    hasReset = false;
+//                    firstArtifact = false;
+//                }
+//            }
+//        } else if (gamepad.getButton(GamepadKeys.Button.X)) {
+//            flyWheelSubsystem.runFlywheelServos(-1.0);
+//            firstPress = true;
+//            hasReset = false;
+//        } else {
+//            flyWheelSubsystem.runFlywheelServos(0);
+//            firstPress = true;
+//            hasReset = false;
+//        }
     }
 
     @Override
