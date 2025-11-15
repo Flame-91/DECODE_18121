@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = 0.57; // public static for panels
+    public static double flywheelMotorPower = 0.575; // public static for panels
     public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 1;
     public static double flywheelServoBreaktime2 = 1.5;
