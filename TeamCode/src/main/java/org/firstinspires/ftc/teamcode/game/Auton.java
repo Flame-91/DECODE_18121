@@ -44,28 +44,42 @@ public class Auton extends OpMode {
         follower.update();
         autonomousPathUpdate();
     }
+    private void EndConstraints(Path p) {
+        p.setTranslationalConstraint(1.5);         // inches
+        p.setHeadingConstraint(Math.toRadians(5));  // radians
+        p.setVelocityConstraint(2);                 // inches/sec
+        p.setTValueConstraint(0.98);                // percent of path
+        p.setTimeoutConstraint(300);                // ms
+    }
 
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        EndConstraints(scorePreload);
 
         reload = new Path(new BezierLine(scorePose, reloadPose));
         reload.setLinearHeadingInterpolation(scorePose.getHeading(), reloadPose.getHeading());
+        EndConstraints(reload);
 
         scoreReload = new Path(new BezierLine(reloadPose, scorePose));
         scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
+        EndConstraints(scoreReload);
     }
 
-    public boolean score(double elapsedTime, double runTime) { // elapsed time is how much time it has been since score was first called, and run time is how uch time it should run the motor
-        if (runTime < elapsedTime) {
-            flyWheelSubsystem.runFlywheel(0.567); // runs motor as long as elapsed time is less than specified runtime
-        } else if (runTime + 0.25 < elapsedTime) {
-            flyWheelSubsystem.runFlywheelServos(1); // runs servos for 0.25 secs after motor runs
-        } else {
-            flyWheelSubsystem.runFlywheelServos(0); // stops running servos but keeps motor running until stopFlywheel in psm
-            return true;
+    public boolean score(double elapsedTime, double runTime) {
+        // 1) Run flywheel until time hits "runTime"
+        if (elapsedTime < runTime) {
+            flyWheelSubsystem.runFlywheel(0.567);
+            return false;
         }
-        return false;
+        // 2) After flywheel is at speed, run servos for 0.25s
+        if (elapsedTime < runTime + 0.25) {
+            flyWheelSubsystem.runFlywheelServos(1);
+            return false;
+        }
+        // 3) Scoring complete
+        flyWheelSubsystem.runFlywheelServos(0);
+        return true;
     }
 
     public void stopFlywheel() {

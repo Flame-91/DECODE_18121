@@ -31,7 +31,12 @@ public class Constants {
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(
+            2.0,
+            4.0,
+            Math.toRadians(360),
+            Math.toRadians(360)
+    );
 
     public static OTOSConstants localizerConstants = new OTOSConstants()
             .hardwareMapName("otos")
