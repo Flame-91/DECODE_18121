@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = 0.52596767; // public static for panels
+    public static double flywheelMotorPower = 0.57; // public static for panels
     public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 1;
     public static double flywheelServoBreaktime2 = 1.5;
@@ -94,48 +94,6 @@ public class FlywheelCommand extends CommandBase {
                 }
                 break;
         }
-
-        // dont delete comments yet in case state machine doesn't work
-
-//        if (gamepad.getButton(GamepadKeys.Button.B)) {
-//            firstArtifact = false;
-//        }
-//
-//        if (gamepad.getButton(GamepadKeys.Button.A)) {
-//            if (firstPress) {
-//                if (!hasReset) {
-//                    elapsedTime.reset();
-//                    hasReset = true;
-//                }
-//                flyWheelSubsystem.runFlywheelServos(1.0);
-//                if (elapsedTime.seconds() >= flywheelServoRuntime) {
-//                    firstPress = false;
-//                    hasReset = false;
-//                    flyWheelSubsystem.runFlywheelServos(0);
-//                    elapsedTime2.reset();
-//                }
-//            } else {
-//                if (elapsedTime2.seconds() >= flywheelServoBreaktime1 && !firstArtifact) {
-//                    flyWheelSubsystem.runFlywheelServos(0);
-//                    firstPress = true;
-//                    hasReset = false;
-//                    firstArtifact = true;
-//                } else if (elapsedTime2.seconds() >= flywheelServoBreaktime2 && firstArtifact) {
-//                    flyWheelSubsystem.runFlywheelServos(0);
-//                    firstPress = true;
-//                    hasReset = false;
-//                    firstArtifact = false;
-//                }
-//            }
-//        } else if (gamepad.getButton(GamepadKeys.Button.X)) {
-//            flyWheelSubsystem.runFlywheelServos(-1.0);
-//            firstPress = true;
-//            hasReset = false;
-//        } else {
-//            flyWheelSubsystem.runFlywheelServos(0);
-//            firstPress = true;
-//            hasReset = false;
-//        }
     }
 
     @Override
