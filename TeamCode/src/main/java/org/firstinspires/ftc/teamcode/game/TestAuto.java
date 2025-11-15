@@ -1,76 +1,200 @@
-package org.firstinspires.ftc.teamcode.game; // this code is STRAIGHT FROM VISUALIZER, so if this doesn't work idk
+package org.firstinspires.ftc.teamcode.game;
 
-import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
+import com.pedropathing.paths.Path;
+import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "test auto", group = "Autonomous")
-@Configurable // Panels
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
+
+@Autonomous(name = "Auton")
 public class TestAuto extends OpMode {
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
-    public Follower follower; // Pedro Pathing follower instance
-    private int pathState; // Current autonomous path state (state machine)
-    private Paths paths; // Paths defined in the Paths class
+
+    private Follower follower;
+
+    private Timer stateTimer;     // resets on each state transition
+
+    private State state;
+
+    private final Pose startPose = new Pose(56, 8, 90);
+    private final Pose scorePose = new Pose(115, 125, 215);
+    private final Pose reloadPose = new Pose(15, 20, 45);
+
+    private Path scorePreload;
+    private Path reload;
+    private Path scoreReload;
+
+    FlyWheelSubsystem flyWheelSubsystem;
+
+    private enum State {
+        DRIVE_PRELOAD,
+        SCORE1,
+        SCORE2,
+        SCORE3,
+        DRIVE_RELOAD,
+        WAIT_RELOAD,
+        DRIVE_SCORE_RELOAD,
+        SCORE4,
+        SCORE5,
+        SCORE6,
+        IDLE
+    }
 
     @Override
     public void init() {
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
 
-        paths = new Paths(follower); // Build paths
-        pathState = 0;
+        stateTimer = new Timer();
 
-        panelsTelemetry.debug("Status", "Initialized");
-        panelsTelemetry.update(telemetry);
+        buildPaths();
+        follower.setStartingPose(startPose);
+
+        switchState(State.DRIVE_PRELOAD);
     }
 
     @Override
     public void loop() {
-        follower.update(); // Update Pedro Pathing
-        pathState = autonomousPathUpdate(); // Update autonomous state machine
-
-        // Log values to Panels and Driver Station
-        panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-        panelsTelemetry.update(telemetry);
+        follower.update();
+        updateState();
     }
 
-    public static class Paths {
+    // Switch state and reset timer
+    private void switchState(State newState) {
+        state = newState;
+        stateTimer.resetTimer();
+    }
 
-        public PathChain Path1;
+    private double stateTime() {
+        return stateTimer.getElapsedTime();
+    }
 
-        public Paths(Follower follower) {
-            Path1 = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(72.000, 72.000), new Pose(72.000, 25))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180), 0.8)
-                    .build();
+    private void EndConstraints(Path p) {
+        p.setTranslationalConstraint(1.5);
+        p.setHeadingConstraint(Math.toRadians(5));
+        p.setVelocityConstraint(2);
+        p.setTValueConstraint(0.98);
+        p.setTimeoutConstraint(300);
+    }
+
+    private void buildPaths() {
+        scorePreload = new Path(new BezierLine(startPose, scorePose));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        EndConstraints(scorePreload);
+
+        reload = new Path(new BezierLine(scorePose, reloadPose));
+        reload.setLinearHeadingInterpolation(scorePose.getHeading(), reloadPose.getHeading());
+        EndConstraints(reload);
+
+        scoreReload = new Path(new BezierLine(reloadPose, scorePose));
+        scoreReload.setLinearHeadingInterpolation(reloadPose.getHeading(), scorePose.getHeading());
+        EndConstraints(scoreReload);
+    }
+
+    public boolean score(double elapsedTime, double runTime) {
+        if (elapsedTime < runTime) {
+            flyWheelSubsystem.runFlywheel(0.567);
+            return false;
         }
+
+        if (elapsedTime < runTime + 0.25) {
+            flyWheelSubsystem.runFlywheelServos(1);
+            return false;
+        }
+
+        flyWheelSubsystem.runFlywheelServos(0);
+        return true;
     }
 
-    public int autonomousPathUpdate() {
-        switch (pathState) {
-            case 0:
-                follower.followPath(paths.Path1);
-//                pathState ++;
+    public void stopFlywheel() {
+        flyWheelSubsystem.runFlywheel(0);
+        flyWheelSubsystem.runFlywheelServos(0);
+    }
+
+    private void updateState() {
+
+        switch (state) {
+
+            case DRIVE_PRELOAD:
+                if (stateTime() == 0)
+                    follower.followPath(scorePreload);
+
+                if (!follower.isBusy())
+                    switchState(State.SCORE1);
+                break;
+
+            case SCORE1:
+                if (score(stateTime(), 3))
+                    switchState(State.SCORE2);
+                break;
+
+            case SCORE2:
+                if (score(stateTime(), 0.5))
+                    switchState(State.SCORE3);
+                break;
+
+            case SCORE3:
+                if (score(stateTime(), 0.5)) {
+                    stopFlywheel();
+                    switchState(State.DRIVE_RELOAD);
+                }
+                break;
+
+            case DRIVE_RELOAD:
+                if (stateTime() == 0)
+                    follower.followPath(reload);
+
+                if (!follower.isBusy())
+                    switchState(State.WAIT_RELOAD);
+                break;
+
+            case WAIT_RELOAD:
+                if (!follower.isBusy()) {
+                    // must wait 3 SECONDS AFTER arrival
+                    if (stateTime() > 3)
+                        switchState(State.DRIVE_SCORE_RELOAD);
+                } else {
+                    // Still moving — restart wait timer
+                    stateTimer.resetTimer();
+                }
+                break;
+
+            case DRIVE_SCORE_RELOAD:
+                if (stateTime() == 0)
+                    follower.followPath(scoreReload);
+
+                if (!follower.isBusy())
+                    switchState(State.SCORE4);
+                break;
+
+            case SCORE4:
+                if (score(stateTime(), 3))
+                    switchState(State.SCORE5);
+                break;
+
+            case SCORE5:
+                if (score(stateTime(), 0.5))
+                    switchState(State.SCORE6);
+                break;
+
+            case SCORE6:
+                if (score(stateTime(), 0.5)) {
+                    stopFlywheel();
+                    switchState(State.IDLE);
+                }
+                break;
+
+            case IDLE:
                 break;
         }
-        // Add your state machine Here
-        // Access paths with paths.pathName
-        // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
-        return pathState;
+
+        telemetry.addData("State", state);
+        telemetry.addData("State Time", stateTime());
+        telemetry.addData("Follower Busy", follower.isBusy());
+        telemetry.update();
     }
 }
