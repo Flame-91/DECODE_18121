@@ -23,7 +23,9 @@ public class Constants {
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0, 0.00001, 1, 0.01))
             .centripetalScaling(0.000001)
             .mass(5.5); // this is correct for kitbot 11/1/25 (with laser)
-//    public static PathConstraints pathConstraints = new PathConstraints();
+//    public static PathConstraints pathConstraints = new PathConstraints(
+//
+//    );
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
