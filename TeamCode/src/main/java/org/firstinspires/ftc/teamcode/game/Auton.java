@@ -6,6 +6,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -36,6 +37,7 @@ public class Auton extends OpMode {
     private Path scorePreload;
     private Path reload;
     private Path scoreReload;
+    private Paths paths;
     FlyWheelSubsystem flyWheelSubsystem;
     @Override
     public void init() {
@@ -106,7 +108,7 @@ public class Auton extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload);
+                follower.followPath(paths.Path1);
 //                telemetry.addData("");
                 // goes to goal to score preloads
                 if (!follower.isBusy()) {
@@ -183,5 +185,17 @@ public class Auton extends OpMode {
     public void setPathState(int pathState) {
         this.pathState = pathState;
         pathTimer.resetTimer();
+    }
+
+    public static class Paths {
+        public PathChain Path1;
+
+        public Paths(Follower follower) {
+            Path1 = follower
+                    .pathBuilder()
+                    .addPath(new BezierLine(new Pose(startPoseX, startPoseY), new Pose(scorePoseX, scorePoseY)))
+                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(220))
+                    .build();
+        }
     }
 }

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
-@Autonomous(name = "Auton")
+@Autonomous(name = "nandnaAuton")
 public class TestAuto extends OpMode {
 
     private Follower follower;
