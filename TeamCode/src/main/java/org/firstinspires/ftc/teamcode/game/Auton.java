@@ -42,6 +42,11 @@ public class Auton extends OpMode {
     @Override
     public void loop() {
         follower.update();
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getHeading());
+        telemetry.addData("current state", pathState);
+        telemetry.update();
         autonomousPathUpdate();
     }
 
