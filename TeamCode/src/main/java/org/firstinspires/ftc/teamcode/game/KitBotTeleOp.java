@@ -35,7 +35,8 @@ public class KitBotTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("robotYaw: ", imu.getRobotYawPitchRollAngles().getYaw());
+//        telemetry.addData("robotYaw: ", imu.getRobotYawPitchRollAngles().getYaw());
+        telemetry.addData("timers", flywheelCommandManual.getTimes());
         telemetry.update();
         CommandScheduler.getInstance().run();
     }

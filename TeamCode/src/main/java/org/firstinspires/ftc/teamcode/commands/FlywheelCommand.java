@@ -11,57 +11,105 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = 0.57067; // public static for panels
+    public static double flywheelMotorPower = 0.5175; // public static for panels
     public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 1;
-    public static double flywheelServoBreaktime2 = 1.5;
+    public static double flywheelServoBreaktime2 = 1.3;
     private final GamepadEx gamepad;
-    private final ElapsedTime timer;
-    private final ElapsedTime elapsedTime2;
-    private boolean toggle = false;
-    private boolean firstShotDone = false;
+    private final ElapsedTime servoElapsedTime;
+    private final ElapsedTime motorElapsedTime;
+    private enum ServoState { IDLE, REVERSE, RUN1, BREAK1, RUN2, BREAK2, RUN3 }
+    private ServoState currentState = ServoState.IDLE;
 
     public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
         this.gamepad = gamepad;
         this.flyWheelSubsystem = flyWheelSubsystem;
-        timer = new ElapsedTime();
-        elapsedTime2 = new ElapsedTime();
+        servoElapsedTime = new ElapsedTime();
+        motorElapsedTime = new ElapsedTime();
         addRequirements(flyWheelSubsystem);
     }
 
     @Override
     public void execute() {
-        // ** Motor Logic **
-        if (gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            toggle = !toggle;
-        }
-        if (toggle) {
+        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower);
+            if (motorElapsedTime.seconds() > 2.75) {
+                gamepad.gamepad.rumble(1, 1, 300);
+                motorElapsedTime.reset();
+            }
+        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .5) {
+            flyWheelSubsystem.runFlywheel(-flywheelMotorPower);
         } else {
             flyWheelSubsystem.runFlywheel(0);
+            motorElapsedTime.reset();
         }
 
-        // ** Servo Logic **
-        if (!gamepad.getButton(GamepadKeys.Button.A)) {
-            firstShotDone = false;
-            flyWheelSubsystem.runFlywheelServos(0);
-            return;
-        }
-        if (!firstShotDone) {
-            flyWheelSubsystem.runFlywheelServos(1);
-            firstShotDone = true;
-            timer.reset();
-            return;
-        }
-        if (timer.seconds() > 1.5) {
-            flyWheelSubsystem.runFlywheelServos(1);
-            timer.reset();
+        gamepad.readButtons();
+        switch (currentState) {
+            case IDLE:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (gamepad.getButton(GamepadKeys.Button.A)) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.RUN1;
+                }
+                if (gamepad.getButton(GamepadKeys.Button.X)) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.REVERSE;
+                }
+                break;
+            case RUN1:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.BREAK1;
+
+                }
+                break;
+            case BREAK1:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.RUN2;
+
+                }
+                break;
+            case RUN2:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.BREAK2;
+                }
+                break;
+            case BREAK2:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.RUN3;
+
+                }
+                break;
+            case RUN3:
+                flyWheelSubsystem.runFlywheelServos(1);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                    servoElapsedTime.reset();
+                    currentState = ServoState.IDLE;
+
+                }
+                break;
+            case REVERSE:
+                flyWheelSubsystem.runFlywheelServos(-1);
+                if (!gamepad.getButton(GamepadKeys.Button.X)) currentState = ServoState.IDLE;
+                break;
         }
     }
 
-//        @Override
-//        public void end (boolean interrupted) {
-//            flyWheelSubsystem.runFlywheel(0);
-//            flyWheelSubsystem.runFlywheelServos(0);
-//        }
+    public double getTimes() {
+        return servoElapsedTime.seconds();
     }
+
+    @Override
+    public void end (boolean interrupted) {
+        flyWheelSubsystem.runFlywheel(0);
+        flyWheelSubsystem.runFlywheelServos(0);
+    }
+}
