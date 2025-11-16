@@ -63,7 +63,7 @@ public class CompAutoRed extends OpMode {
 
         // Initialize Pedro Pathing Follower
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(88, 8, Math.toRadians(90)));
         paths = new Paths(follower);
 
         telemetry.addData("Status", "Initialized");

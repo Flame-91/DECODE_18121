@@ -6,7 +6,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 public class Paths {
-
     public PathChain preload_score_red;
     public PathChain to_reload_red;
     public PathChain to_score_red;
@@ -15,7 +14,7 @@ public class Paths {
     public PathChain to_score_blue;
     public Paths(Follower follower) {
         preload_score_red = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(56,8), new Pose(119,123)))
+                .addPath(new BezierLine(new Pose(88,8), new Pose(119,123)))
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(220))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
@@ -44,7 +43,7 @@ public class Paths {
                 .setTimeoutConstraint(300)
                 .build();
         preload_score_blue = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(88,8), new Pose(24,126)))
+                .addPath(new BezierLine(new Pose(56,8), new Pose(24,126)))
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(320))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))

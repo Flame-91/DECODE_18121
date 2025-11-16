@@ -37,8 +37,6 @@ public class FlywheelCommand extends CommandBase {
                 gamepad.gamepad.rumble(1, 1, 300);
                 motorElapsedTime.reset();
             }
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .5) {
-            flyWheelSubsystem.runFlywheel(-flywheelMotorPower);
         } else {
             flyWheelSubsystem.runFlywheel(0);
             motorElapsedTime.reset();
@@ -98,6 +96,7 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case REVERSE:
                 flyWheelSubsystem.runFlywheelServos(-1);
+                flyWheelSubsystem.runFlywheel(-1);
                 if (!gamepad.getButton(GamepadKeys.Button.X)) currentState = ServoState.IDLE;
                 break;
         }
