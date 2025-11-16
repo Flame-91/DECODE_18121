@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import android.widget.Switch;
 
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
@@ -43,6 +44,7 @@ public class CompAuto extends OpMode {
         reloadTime = new Timer();
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
         follower = Constants.createFollower(hardwareMap);
+        follower.setPose(new Pose(61, 11, Math.toRadians(90)));
         paths = new Paths(follower);
     }
 
