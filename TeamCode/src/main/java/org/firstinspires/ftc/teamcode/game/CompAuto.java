@@ -23,8 +23,9 @@ public class CompAuto extends OpMode {
     FlyWheelSubsystem flyWheelSubsystem;
     Paths paths;
     Timer scoreTimer;
-    private boolean firstShotDone = false;
+    Timer reloadTime;
     private int shotCount = 0;
+    private boolean pathStarted = false; // Needed to make the paths run once (instead of being called every loop)
 
 
     private enum AutoState {
@@ -39,6 +40,7 @@ public class CompAuto extends OpMode {
 
     public void init() {
         scoreTimer = new Timer();
+        reloadTime = new Timer();
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
@@ -55,40 +57,58 @@ public class CompAuto extends OpMode {
         autoStateUpdate();
     }
 
-    // ** STATE MACHINE **
+    // ** Switch States **
     private void autoStateUpdate() {
         switch (currentState) {
+            // -- GO TO PRELOAD SCORE --
             case GO_TO_PRELOAD_SCORE:
-                follower.followPath(paths.preload_score);
+                if (!pathStarted) {
+                    follower.followPath(paths.preload_score);
+                    pathStarted = true;
+                }
                 if (!follower.isBusy()) {
+                    pathStarted = false;
                     currentState = AutoState.SCORE_1;
                 }
+                break;
+            //  -- SCORE FIRST 3 RINGS --
             case SCORE_1:
                 if (scoreAuto()) {
                     shotCount = 0;
-                }
-                if (!follower.isBusy()) {
                     currentState = AutoState.DRIVE_TO_RELOAD;
                 }
                 break;
+            // -- DRIVE TO RELOAD --
             case DRIVE_TO_RELOAD:
-                follower.followPath(paths.to_reload);
+                if (!pathStarted) {
+                    follower.followPath(paths.to_reload);
+                    pathStarted = true;
+                }
                 if (!follower.isBusy()) {
+                    pathStarted = false;
+                    reloadTime.resetTimer();
                     currentState = AutoState.DRIVE_TO_SCORE;
                 }
                 break;
+            // -- DRIVE TO SCORE --
             case DRIVE_TO_SCORE:
-                follower.followPath(paths.to_score);
-                if (!follower.isBusy()) {
-                    currentState = AutoState.DRIVE_TO_RELOAD;
+                if (!pathStarted && reloadTime.getElapsedTimeSeconds() > 2) {
+                    follower.followPath(paths.to_score);
+                    pathStarted = true;
+                }
+
+                if (pathStarted && !follower.isBusy()) {
+                    pathStarted = false;
+                    currentState = AutoState.SCORE_1;
                 }
                 break;
+                // -- IDLE --
             case IDLE:
                 break;
         }
     }
 
-    // ** HELPER METHODS **
+    // ** HELPER METHOD(S) **
     private boolean scoreAuto() {
         if (shotCount == 0) {
             flyWheelSubsystem.runFlywheelServos(1);
