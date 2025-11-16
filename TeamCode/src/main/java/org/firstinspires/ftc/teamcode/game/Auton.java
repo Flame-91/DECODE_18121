@@ -101,7 +101,6 @@ public class Auton extends OpMode {
         flyWheelSubsystem.runFlywheelServos(0);
         return true;
     }
-
     public void stopFlywheel() {
         flyWheelSubsystem.runFlywheel(0);
         flyWheelSubsystem.runFlywheelServos(0);

@@ -13,6 +13,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
@@ -23,7 +24,7 @@ public class CompAuto extends OpMode {
     private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
     FlyWheelSubsystem flyWheelSubsystem;
     Paths paths;
-    Timer scoreTimer;
+    ElapsedTime elapsedTime;
     Timer reloadTime;
     private int shotCount = 0;
     private boolean pathStarted = false; // Needed to make the paths run once (instead of being called every loop)
@@ -40,11 +41,11 @@ public class CompAuto extends OpMode {
     }
 
     public void init() {
-        scoreTimer = new Timer();
+        elapsedTime = new ElapsedTime();
         reloadTime = new Timer();
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
         follower = Constants.createFollower(hardwareMap);
-        follower.setPose(new Pose(61, 11, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(56, 8, Math.toRadians(90)));
         paths = new Paths(follower);
     }
 
@@ -114,14 +115,14 @@ public class CompAuto extends OpMode {
     private boolean scoreAuto() {
         if (shotCount == 0) {
             flyWheelSubsystem.runFlywheelServos(1);
-            scoreTimer.resetTimer();
+            elapsedTime.reset();
             shotCount++;
             return false;
         }
 
-        if (scoreTimer.getElapsedTimeSeconds() > 1.5) {
+        if (elapsedTime.seconds() > 1.5) {
             flyWheelSubsystem.runFlywheelServos(1);
-            scoreTimer.resetTimer();
+            elapsedTime.reset();
             shotCount++;
 
             if (shotCount >= 3) {
