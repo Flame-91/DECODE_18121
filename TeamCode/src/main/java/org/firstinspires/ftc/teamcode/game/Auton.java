@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.game;
 
 
-import com.bylazar.configurables.annotations.Configurable;
+//import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 
 @Autonomous(name = "Auton")
-@Configurable
+//@Configurable
 public class Auton extends OpMode {
     public static double startPoseX = 56;
     public static double startPoseY = 8;
@@ -29,7 +29,7 @@ public class Auton extends OpMode {
     public static double reloadHeading = 45;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
-    private int pathState;
+    private int  pathState;
     private final Pose startPose = new Pose(startPoseX, startPoseY, startPoseHeading);
     private final Pose scorePose = new Pose(scorePoseX, scorePoseY, scorePoseHeading);
     private final Pose reloadPose = new Pose(reloadPoseX, reloadPoseY, reloadHeading);
@@ -37,7 +37,7 @@ public class Auton extends OpMode {
     private Path scorePreload;
     private Path reload;
     private Path scoreReload;
-    private Paths paths;
+    private PathsIn paths;
     FlyWheelSubsystem flyWheelSubsystem;
     @Override
     public void init() {
@@ -46,11 +46,13 @@ public class Auton extends OpMode {
         actionTimer = new Timer();
 
         follower = Constants.createFollower(hardwareMap);
+        paths = new PathsIn(follower);
         buildPaths();
         follower.setStartingPose(startPose);
 
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
     }
+
 
     @Override
     public void loop() {
@@ -187,14 +189,21 @@ public class Auton extends OpMode {
         pathTimer.resetTimer();
     }
 
-    public static class Paths {
-        public PathChain Path1;
+    public static class PathsIn {
+        public PathChain Path1, Path2;
 
-        public Paths(Follower follower) {
+        public PathsIn(Follower follower) {
             Path1 = follower
                     .pathBuilder()
                     .addPath(new BezierLine(new Pose(startPoseX, startPoseY), new Pose(scorePoseX, scorePoseY)))
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(220))
+                    .build();
+            Path2 = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(119.388, 123.245), new Pose(17.082, 16.531))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(220), Math.toRadians(40))
                     .build();
         }
     }
