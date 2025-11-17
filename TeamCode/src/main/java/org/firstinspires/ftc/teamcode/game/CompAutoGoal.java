@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.game;
 
-import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorPower;
-
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -32,7 +30,6 @@ public class CompAutoGoal extends OpMode {
 
     @Override
     public void init() {
-        // Initialize members in init()
         elapsedTime = new ElapsedTime();
         scoreState = ScoreState.BREAK0;
         flywheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
@@ -45,7 +42,7 @@ public class CompAutoGoal extends OpMode {
 
     @Override
     public void loop() {
-        // Only run the flywheel motor if we are not in the DONE state.
+        // Only run the flywheel motor if we are not in the done state.
         if (scoreState != ScoreState.DONE) {
             flywheelSubsystem.runFlywheel(motorPower);
         }
