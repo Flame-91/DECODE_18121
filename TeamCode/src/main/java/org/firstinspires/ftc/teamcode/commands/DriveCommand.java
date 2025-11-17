@@ -18,7 +18,7 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
+        if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
             if (centric.equals("field centric"))
                 centric = "robot centric";
             else

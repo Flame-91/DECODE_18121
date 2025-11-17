@@ -52,11 +52,9 @@ public class CompAutoGoal extends OpMode {
 
         switch (scoreState) {
             case BREAK0:
-                // FIX: You MUST command the servos to their initial state.
-                // This ensures they are at position 0 before the first "RUN" state.
                 flywheelSubsystem.runFlywheelServos(0);
 
-                if (elapsedTime.seconds() >= breakTime) { // Wait for flywheel spin-up
+                if (elapsedTime.seconds() >= breakTime) { // Wait for flywheel
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN1;
                 }
@@ -98,7 +96,6 @@ public class CompAutoGoal extends OpMode {
                 flywheelSubsystem.runFlywheelServos(1);
                 if (elapsedTime.seconds() >= runTime) {
                     elapsedTime.reset();
-                    // Transition to the DONE state after the final action
                     scoreState = ScoreState.DONE;
                 }
                 break;
@@ -108,18 +105,16 @@ public class CompAutoGoal extends OpMode {
                 flywheelSubsystem.runFlywheel(0);
                 flywheelSubsystem.runFlywheelServos(0);
 
-                // End the OpMode gracefully after completion
                 requestOpModeStop();
                 break;
         }
 
-        // Optional: Provide feedback on the current state
+
         telemetry.addData("Score State", scoreState);
         telemetry.addData("Time in State", elapsedTime.seconds());
         telemetry.update();
     }
 
-    // Good practice: Stop motors when the OpMode ends (like when requestOpModeStop() is called)
     @Override
     public void stop() {
         if (flywheelSubsystem != null) {
