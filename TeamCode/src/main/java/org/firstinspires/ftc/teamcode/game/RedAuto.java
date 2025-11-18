@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.commands.PivotCommand;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
@@ -27,8 +26,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlywheelSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "game")
-public class Autonomous extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "RedAuto")
+public class RedAuto extends OpMode {
     private IMU imu;
     private Follower follower;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
