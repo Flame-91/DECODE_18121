@@ -123,21 +123,19 @@ public class Autonomous extends OpMode {
             double output = pivotPIDController.calculate(pitchError, deltaTime);
 
             pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
-            pivotSubsystem.setPivotPower(-output);
+            pivotSubsystem.setPivotPower(-output); // opposite so pivot corrects in right direction
         }
     }
 
     public void updateLimelight() {
-        if (limelightSubsystem.hasTarget()) {
-            Pose3D currentPosition = limelightSubsystem.getBotPosePose3D(); // gets position of robot using limelight MT2 (very very accurate)
-            if (currentPosition != null) { // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
-                double xInches = currentPosition.getPosition().x * 39.3701; // converts meters to inches
-                double yInches = currentPosition.getPosition().y * 39.3701;
-                double heading = currentPosition.getOrientation().getYaw(); // outputs in degrees
-                Pose currentPose = new Pose(xInches, yInches, heading);
-                follower.setPose(currentPose);
-            }
-        }
+        if (!limelightSubsystem.hasTarget()) return;
+        Pose3D currentPosition = limelightSubsystem.getBotPosePose3D(); // gets position of robot using limelight MT2 (very very accurate)
+        if (currentPosition == null) return; // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
+        double xInches = (currentPosition.getPosition().x * 39.3701) + 72; // converts meters to inches and adding 72 for pedro coordinates
+        double yInches = (currentPosition.getPosition().y * 39.3701) + 72;
+        double heading = Math.toRadians(currentPosition.getOrientation().getYaw()); // outputs in degrees, so converting to radians for pedro
+        Pose currentPose = new Pose(xInches, yInches, heading);
+        follower.setPose(currentPose);
     }
 
     public void stopFlywheel() {
@@ -155,7 +153,7 @@ public class Autonomous extends OpMode {
                 }
                 break;
             case 1:
-                score = score(actionTimer.getElapsedTime(), 3); // scores first artifact
+                score = score(actionTimer.getElapsedTime(), 3.25); // scores first artifact
                 if (score) {
                     actionTimer.resetTimer();
                     setPathState(2);
