@@ -61,10 +61,8 @@ public class TeleOp extends OpMode {
                 )
         );
 
-        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
-                () -> CommandScheduler.getInstance().schedule(
-                        new FlywheelCommand(driver, flywheelSubsystem)
-                )
+        flywheelSubsystem.setDefaultCommand(
+                new FlywheelCommand(driver, flywheelSubsystem)
         );
 
         pivotSubsystem.resetPivotEncoder();
