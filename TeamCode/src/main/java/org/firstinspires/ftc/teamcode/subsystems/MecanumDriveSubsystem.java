@@ -41,7 +41,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         telemetry.addData("backLeftPower", getBackLeftPower());
         telemetry.addData("backRightPower", getBackRightPower());
     }
-    public void MecanumDriveKitBot(double x, double y, double rx) {
+    public void MecanumDriveKitBot(double x, double y, double rx, double speed) {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -54,12 +54,12 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        frontLeft.setPower(frontLeftPower);
-        frontRight.setPower(frontRightPower);
-        backLeft.setPower(backLeftPower);
-        backRight.setPower(backRightPower);
+        frontLeft.setPower(frontLeftPower * speed);
+        frontRight.setPower(frontRightPower * speed);
+        backLeft.setPower(backLeftPower * speed);
+        backRight.setPower(backRightPower * speed);
     }
-    public void MecanumRobotCentricKitbot(double x, double y, double rx) {
+    public void MecanumRobotCentricKitbot(double x, double y, double rx, double speed) {
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
         double frontLeftPower = (y + x + rx) / denominator;
@@ -67,10 +67,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
 
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
+        frontLeft.setPower(frontLeftPower * speed);
+        backLeft.setPower(backLeftPower * speed);
+        frontRight.setPower(frontRightPower * speed);
+        backRight.setPower(backRightPower * speed);
     }
 
     public void resetIMU() {
