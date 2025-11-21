@@ -11,22 +11,24 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CRServo intakeServo;
     private final Telemetry telemetry;
     private final HardwareMap hardwareMap;
-    private double intakeServoPower;
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
-        intakeServoPower = 0;
         this.telemetry = telemetry;
         intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
     public void periodic() {
-        telemetry.addData("intakeServoPower", intakeServoPower);
+        telemetry.addData("intakeServoPower", getIntakeServoPower());
+        telemetry.update();
     }
 
     public void setIntakeServoPower(double power) {
         intakeServo.setPower(power);
-        intakeServoPower = power;
+    }
+
+    public double getIntakeServoPower() {
+        return intakeServo.getPower();
     }
 }

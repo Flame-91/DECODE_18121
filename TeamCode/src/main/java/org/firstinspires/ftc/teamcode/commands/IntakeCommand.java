@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import com.bylazar.gamepad.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
@@ -17,7 +16,7 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        intakeSubsystem.setIntakeServoPower(1);
+        intakeSubsystem.setIntakeServoPower(1.0);
     }
 
     @Override
