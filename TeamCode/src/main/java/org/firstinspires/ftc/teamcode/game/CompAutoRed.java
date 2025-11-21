@@ -11,12 +11,10 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.util.Paths;
 
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime1;
-import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime2;
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoRuntime;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
-
-@Autonomous(name="CompAutoRed")
+@Autonomous(name="CompAutored")
 public class CompAutoRed extends OpMode {
     private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
     private ScoreState currentScoreState = ScoreState.RUN1;
@@ -33,6 +31,8 @@ public class CompAutoRed extends OpMode {
     private enum AutoState {
         GO_TO_PRELOAD_SCORE,
         DRIVE_TO_RELOAD,
+        DRIVE_TO_RELOAD1,
+        DRIVE_TO_RELOAD2,
         DRIVE_TO_SCORE,
         SCORE_1,
         IDLE
@@ -42,33 +42,26 @@ public class CompAutoRed extends OpMode {
         RUN1,
         BREAK1,
         RUN2,
-        BREAK2,
-        RUN3
     }
 
     public void init() {
         servoElapsedTime = new ElapsedTime();
         reloadTime = new Timer();
 
-        // Use the inherited hardwareMap and telemetry from OpMode
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
 
-        // Initialize Pedro Pathing Follower
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(88, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(56, 8, Math.toRadians(90)));
         paths = new Paths(follower);
 
         telemetry.addData("Status", "Initialized");
     }
 
     public void loop() {
-        // Keep the flywheel motor running constantly
         flyWheelSubsystem.runFlywheel(0.57067);
 
-        // Update the pathing follower (mandatory)
         follower.update();
 
-        // Run the state machine logic
         autoStateUpdate();
 
         // Telemetry updates for debugging
@@ -84,12 +77,10 @@ public class CompAutoRed extends OpMode {
         switch (currentState) {
             case GO_TO_PRELOAD_SCORE:
                 if (!pathStarted) {
-                    // Start the path once
                     follower.followPath(paths.preload_score_red);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
-                    // Path is complete
                     pathStarted = false;
                     servoElapsedTime.reset();
                     currentState = AutoState.SCORE_1;
@@ -110,9 +101,31 @@ public class CompAutoRed extends OpMode {
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     reloadTime.resetTimer();
-                    currentState = AutoState.DRIVE_TO_SCORE;
+                    currentState = AutoState.DRIVE_TO_RELOAD1;
                 }
                 break;
+
+            case DRIVE_TO_RELOAD1:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_reload_red_1);
+                    pathStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    reloadTime.resetTimer();
+                    currentState = AutoState.DRIVE_TO_RELOAD2;
+                }
+
+            case DRIVE_TO_RELOAD2:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_reload_red_2);
+                    pathStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    reloadTime.resetTimer();
+                    currentState = AutoState.DRIVE_TO_SCORE;
+                }
 
             case DRIVE_TO_SCORE:
                 if (!pathStarted && reloadTime.getElapsedTimeSeconds() > 2) {
@@ -127,7 +140,7 @@ public class CompAutoRed extends OpMode {
                 break;
 
             case IDLE:
-                flyWheelSubsystem.runFlywheel(0);
+                flyWheelSubsystem.runFlywheel(0); // Stop the flywheel
                 break;
         }
     }
@@ -152,22 +165,6 @@ public class CompAutoRed extends OpMode {
                 flyWheelSubsystem.runFlywheelServos(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
-                    currentScoreState = ScoreState.BREAK2;
-                }
-                return false; // Not finished
-            case BREAK2:
-                flyWheelSubsystem.runFlywheelServos(0);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.RUN3;
-                }
-                return false;
-            case RUN3:
-                flyWheelSubsystem.runFlywheelServos(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.RUN1;
-                    shotCount++;
                     return true;
                 }
                 return false;

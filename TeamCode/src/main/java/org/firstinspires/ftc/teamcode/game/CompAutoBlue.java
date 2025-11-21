@@ -32,6 +32,8 @@ public class CompAutoBlue extends OpMode {
     private enum AutoState {
         GO_TO_PRELOAD_SCORE,
         DRIVE_TO_RELOAD,
+        DRIVE_TO_RELOAD1,
+        DRIVE_TO_RELOAD2,
         DRIVE_TO_SCORE,
         SCORE_1,
         IDLE
@@ -41,8 +43,6 @@ public class CompAutoBlue extends OpMode {
         RUN1,
         BREAK1,
         RUN2,
-        BREAK2,
-        RUN3
     }
 
     public void init() {
@@ -78,7 +78,6 @@ public class CompAutoBlue extends OpMode {
         switch (currentState) {
             case GO_TO_PRELOAD_SCORE:
                 if (!pathStarted) {
-                    // Start the path once
                     follower.followPath(paths.preload_score_blue);
                     pathStarted = true;
                 }
@@ -103,9 +102,31 @@ public class CompAutoBlue extends OpMode {
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     reloadTime.resetTimer();
-                    currentState = AutoState.DRIVE_TO_SCORE;
+                    currentState = AutoState.DRIVE_TO_RELOAD1;
                 }
                 break;
+
+            case DRIVE_TO_RELOAD1:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_reload_blue_1);
+                    pathStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    reloadTime.resetTimer();
+                    currentState = AutoState.DRIVE_TO_RELOAD2;
+                }
+
+            case DRIVE_TO_RELOAD2:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_reload_blue_2);
+                    pathStarted = true;
+                }
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    reloadTime.resetTimer();
+                    currentState = AutoState.DRIVE_TO_SCORE;
+                }
 
             case DRIVE_TO_SCORE:
                 if (!pathStarted && reloadTime.getElapsedTimeSeconds() > 2) {
@@ -145,22 +166,6 @@ public class CompAutoBlue extends OpMode {
                 flyWheelSubsystem.runFlywheelServos(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
-                    currentScoreState = ScoreState.BREAK2;
-                }
-                return false;
-            case BREAK2:
-                flyWheelSubsystem.runFlywheelServos(0);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.RUN3;
-                }
-                return false;
-            case RUN3:
-                flyWheelSubsystem.runFlywheelServos(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.RUN1;
-                    shotCount++;
                     return true;
                 }
                 return false;

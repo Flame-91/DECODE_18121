@@ -18,7 +18,7 @@ public class FlywheelCommand extends CommandBase {
     private final GamepadEx gamepad;
     private final ElapsedTime servoElapsedTime;
     private final ElapsedTime motorElapsedTime;
-    private enum ServoState { IDLE, REVERSE, RUN1, BREAK1, RUN2, BREAK2, RUN3 }
+    private enum ServoState { IDLE, REVERSE, RUN1, BREAK1, RUN2}
     private ServoState currentState = ServoState.IDLE;
 
     public FlywheelCommand(GamepadEx gamepad, FlyWheelSubsystem flyWheelSubsystem) {
@@ -75,23 +75,7 @@ public class FlywheelCommand extends CommandBase {
                 flyWheelSubsystem.runFlywheelServos(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
-                    currentState = ServoState.BREAK2;
-                }
-                break;
-            case BREAK2:
-                flyWheelSubsystem.runFlywheelServos(0);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
-                    servoElapsedTime.reset();
-                    currentState = ServoState.RUN3;
-
-                }
-                break;
-            case RUN3:
-                flyWheelSubsystem.runFlywheelServos(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
-                    servoElapsedTime.reset();
                     currentState = ServoState.IDLE;
-
                 }
                 break;
             case REVERSE:
@@ -107,7 +91,7 @@ public class FlywheelCommand extends CommandBase {
     }
 
     @Override
-    public void end (boolean interrupted) {
+    public void end(boolean interrupted) {
         flyWheelSubsystem.runFlywheel(0);
         flyWheelSubsystem.runFlywheelServos(0);
     }

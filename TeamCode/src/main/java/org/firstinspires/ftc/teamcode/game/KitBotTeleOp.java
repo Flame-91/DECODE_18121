@@ -9,28 +9,36 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
+import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 @TeleOp (name = "Kit Bot TeleOp")
 public class KitBotTeleOp extends OpMode {
     FlyWheelSubsystem flyWheelSubsystem;
     MecanumDriveSubsystem mecanumDriveSubsystem;
+    IntakeSubsystem intakeSubsystem;
     DriveCommand driveCommand;
     FlywheelCommand flywheelCommandManual;
+    IntakeCommand intakeCommand;
     IMU imu;
-
+    GamepadEx gamepadEx;
     @Override
     public void init() {
         imu = hardwareMap.get(IMU.class, "imu");
+        gamepadEx = new GamepadEx(gamepad1);
         IMU.Parameters imuParams = new IMU.Parameters(
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         imu.initialize(imuParams);
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
-        flywheelCommandManual = new FlywheelCommand((new GamepadEx(gamepad1)), flyWheelSubsystem);
-        driveCommand = new DriveCommand((new GamepadEx(gamepad1)), mecanumDriveSubsystem);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
+        flywheelCommandManual = new FlywheelCommand(gamepadEx, flyWheelSubsystem);
+        driveCommand = new DriveCommand(gamepadEx, mecanumDriveSubsystem);
+        intakeCommand = new IntakeCommand(gamepadEx, intakeSubsystem);
         mecanumDriveSubsystem.setDefaultCommand(driveCommand);
         flyWheelSubsystem.setDefaultCommand(flywheelCommandManual);
+        intakeSubsystem.setDefaultCommand(intakeCommand);
     }
 
     @Override

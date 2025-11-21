@@ -1,0 +1,32 @@
+package org.firstinspires.ftc.teamcode.subsystems;
+
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+public class IntakeSubsystem extends SubsystemBase {
+    private final CRServo intakeServo;
+    private final Telemetry telemetry;
+    private final HardwareMap hardwareMap;
+    private double intakeServoPower;
+    public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.hardwareMap = hardwareMap;
+        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        intakeServoPower = 0;
+        this.telemetry = telemetry;
+        intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    @Override
+    public void periodic() {
+        telemetry.addData("intakeServoPower", intakeServoPower);
+    }
+
+    public void setIntakeServoPower(double power) {
+        intakeServo.setPower(power);
+        intakeServoPower = power;
+    }
+}
