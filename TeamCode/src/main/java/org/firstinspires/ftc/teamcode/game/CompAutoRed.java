@@ -8,18 +8,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.Paths;
 
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime1;
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime2;
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoRuntime;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
-@Autonomous(name="CompAutored")
+@Autonomous(name="CompAutoRed")
 public class CompAutoRed extends OpMode {
     private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
     private ScoreState currentScoreState = ScoreState.RUN1;
 
     FlyWheelSubsystem flyWheelSubsystem;
+    IntakeSubsystem intakeSubsystem;
     Paths paths;
     ElapsedTime servoElapsedTime;
     Timer reloadTime;
@@ -49,6 +52,7 @@ public class CompAutoRed extends OpMode {
         reloadTime = new Timer();
 
         flyWheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(56, 8, Math.toRadians(90)));
@@ -59,6 +63,7 @@ public class CompAutoRed extends OpMode {
 
     public void loop() {
         flyWheelSubsystem.runFlywheel(0.57067);
+        intakeSubsystem.setIntakeServoPower(1);
 
         follower.update();
 
