@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.Paths;
 
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime1;
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime2;
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoRuntime;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
@@ -19,7 +20,6 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 public class CompAutoBlue extends OpMode {
     private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE_1;
     private ScoreState currentScoreState = ScoreState.RUN1;
-
     FlyWheelSubsystem flyWheelSubsystem;
     IntakeSubsystem intakeSubsystem;
     Paths paths;
@@ -44,6 +44,8 @@ public class CompAutoBlue extends OpMode {
         RUN1,
         BREAK1,
         RUN2,
+        BREAK2,
+        RUN3,
     }
 
     public void init() {
@@ -167,6 +169,20 @@ public class CompAutoBlue extends OpMode {
                 return false;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                    servoElapsedTime.reset();
+                    currentScoreState = ScoreState.BREAK2;
+                }
+                return false;
+            case BREAK2:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
+                    servoElapsedTime.reset();
+                    currentScoreState = ScoreState.RUN3;
+                }
+                return false;
+            case RUN3:
+                flyWheelSubsystem.runFlywheelServos(1.0);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     return true;
