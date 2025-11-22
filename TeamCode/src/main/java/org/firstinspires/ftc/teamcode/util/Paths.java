@@ -11,8 +11,8 @@ public class Paths {
     public PathChain to_reload_red_1;
     public PathChain to_reload_red_2;
     public PathChain to_score_red;
-    public PathChain preload_score_blue;
-    public PathChain to_reload_blue;
+    public PathChain preload_score_blue_1;
+    public PathChain preload_score_blue_2;
     public PathChain to_reload_blue_1;
     public PathChain to_reload_blue_2;
     public PathChain to_score_blue;
@@ -65,8 +65,6 @@ public class Paths {
                 .setTValueConstraint(0.98)
                 .setTimeoutConstraint(300)
                 .build();
-
-
         to_score_red = follower.pathBuilder()
                 .addPath(new BezierLine(new Pose(16,16), new Pose(119,123)))
                 .setLinearHeadingInterpolation(Math.toRadians(40), Math.toRadians(220))
@@ -76,8 +74,13 @@ public class Paths {
                 .setTValueConstraint(0.98)
                 .setTimeoutConstraint(300)
                 .build();
-        preload_score_blue = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(56,8), new Pose(24,126)))
+
+
+        preload_score_blue_1 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(56.000, 8.000), new Pose(42.141, 103.211))
+                )
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(320))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
@@ -85,21 +88,24 @@ public class Paths {
                 .setTValueConstraint(0.98)
                 .setTimeoutConstraint(300)
                 .build();
-        to_reload_blue = follower
+        preload_score_blue_2 = follower
                 .pathBuilder()
-                .addPath(new BezierLine(new Pose(24.000, 126.000), new Pose(115.431, 30.550)))
-                .setLinearHeadingInterpolation(Math.toRadians(320), Math.toRadians(125))
+                .addPath(
+                        new BezierLine(new Pose(42.141, 103.211), new Pose(22.000, 124.000))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(320), Math.toRadians(320))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
                 .setVelocityConstraint(2)
                 .setTValueConstraint(0.98)
                 .setTimeoutConstraint(300)
                 .build();
-
         to_reload_blue_1 = follower
                 .pathBuilder()
-                .addPath(new BezierLine(new Pose(115.431, 30.550), new Pose(122.202, 20.972)))
-                .setLinearHeadingInterpolation(Math.toRadians(125), Math.toRadians(125))
+                .addPath(
+                        new BezierLine(new Pose(22.000, 124.000), new Pose(46.000, 84.000))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(320), Math.toRadians(0))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
                 .setVelocityConstraint(2)
@@ -110,9 +116,9 @@ public class Paths {
         to_reload_blue_2 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(122.202, 20.972), new Pose(127.486, 13.872))
+                        new BezierLine(new Pose(46.000, 84.000), new Pose(24.338, 83.831))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(125), Math.toRadians(125))
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
                 .setVelocityConstraint(2)
@@ -120,9 +126,12 @@ public class Paths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        to_score_blue = follower.pathBuilder()
-                .addPath(new BezierLine(new Pose(128,16), new Pose(24,126)))
-                .setLinearHeadingInterpolation(Math.toRadians(130), Math.toRadians(320))
+        to_score_blue = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(24.338, 83.831), new Pose(21.634, 123.493))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(320))
                 .setTranslationalConstraint(1.5)
                 .setHeadingConstraint(Math.toRadians(5))
                 .setVelocityConstraint(2)

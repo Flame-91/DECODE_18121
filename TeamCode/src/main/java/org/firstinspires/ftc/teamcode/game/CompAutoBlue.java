@@ -12,13 +12,12 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.Paths;
 
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime1;
-import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoBreaktime2;
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelServoRuntime;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 @Autonomous(name="CompAutoBlue")
 public class CompAutoBlue extends OpMode {
-    private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
+    private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE_1;
     private ScoreState currentScoreState = ScoreState.RUN1;
 
     FlyWheelSubsystem flyWheelSubsystem;
@@ -32,8 +31,8 @@ public class CompAutoBlue extends OpMode {
 
     // --- Enums for State Machines ---
     private enum AutoState {
-        GO_TO_PRELOAD_SCORE,
-        DRIVE_TO_RELOAD,
+        GO_TO_PRELOAD_SCORE_1,
+        GO_TO_PRELOAD_SCORE_2,
         DRIVE_TO_RELOAD1,
         DRIVE_TO_RELOAD2,
         DRIVE_TO_SCORE,
@@ -80,9 +79,9 @@ public class CompAutoBlue extends OpMode {
 
     private void autoStateUpdate() {
         switch (currentState) {
-            case GO_TO_PRELOAD_SCORE:
+            case GO_TO_PRELOAD_SCORE_1:
                 if (!pathStarted) {
-                    follower.followPath(paths.preload_score_blue);
+                    follower.followPath(paths.preload_score_blue_1);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -94,13 +93,13 @@ public class CompAutoBlue extends OpMode {
 
             case SCORE_1:
                 if (scoreAuto()) {
-                    currentState = AutoState.DRIVE_TO_RELOAD;
+                    currentState = AutoState.GO_TO_PRELOAD_SCORE_2;
                 }
                 break;
 
-            case DRIVE_TO_RELOAD:
+            case GO_TO_PRELOAD_SCORE_2:
                 if (!pathStarted) {
-                    follower.followPath(paths.to_reload_blue);
+                    follower.followPath(paths.preload_score_blue_2);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
