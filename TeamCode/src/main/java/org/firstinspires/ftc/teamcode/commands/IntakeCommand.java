@@ -33,5 +33,6 @@ public class IntakeCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setOuterIntakeServoPower(0);
+        intakeSubsystem.setInnerIntakeServoPower(0);
     }
 }
