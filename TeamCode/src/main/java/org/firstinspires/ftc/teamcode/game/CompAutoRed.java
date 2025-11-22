@@ -49,6 +49,7 @@ public class CompAutoRed extends OpMode {
         RUN3,
     }
 
+    @Override
     public void init() {
         servoElapsedTime = new ElapsedTime();
         reloadTime = new Timer();
@@ -63,6 +64,7 @@ public class CompAutoRed extends OpMode {
         telemetry.addData("Status", "Initialized");
     }
 
+    @Override
     public void loop() {
         flyWheelSubsystem.runFlywheel(0.57067);
         intakeSubsystem.setIntakeServoPower(1);
