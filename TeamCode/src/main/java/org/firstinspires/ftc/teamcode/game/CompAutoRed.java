@@ -67,7 +67,7 @@ public class CompAutoRed extends OpMode {
     @Override
     public void loop() {
         flyWheelSubsystem.runFlywheel(0.57067);
-        intakeSubsystem.setIntakeServoPower(1);
+        intakeSubsystem.setOuterIntakeServoPower(1);
 
         follower.update();
 
@@ -178,6 +178,7 @@ public class CompAutoRed extends OpMode {
         switch (currentScoreState) {
             case RUN1:
                 flyWheelSubsystem.runFlywheelServos(1);
+                intakeSubsystem.setInnerIntakeServoPower(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.BREAK1;
@@ -185,6 +186,7 @@ public class CompAutoRed extends OpMode {
                 return false;
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
+                intakeSubsystem.setOuterIntakeServoPower(0);
                 if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.RUN2;
@@ -192,6 +194,7 @@ public class CompAutoRed extends OpMode {
                 return false;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
+                intakeSubsystem.setOuterIntakeServoPower(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.BREAK2;
@@ -199,6 +202,7 @@ public class CompAutoRed extends OpMode {
                 return false;
             case BREAK2:
                 flyWheelSubsystem.runFlywheelServos(0);
+                intakeSubsystem.setOuterIntakeServoPower(0);
                 if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.RUN3;
@@ -206,6 +210,7 @@ public class CompAutoRed extends OpMode {
                 return false;
             case RUN3:
                 flyWheelSubsystem.runFlywheelServos(1.0);
+                intakeSubsystem.setOuterIntakeServoPower(1);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     return true;

@@ -25,8 +25,11 @@ public class IntakeSubsystem extends SubsystemBase {
         telemetry.update();
     }
 
-    public void setIntakeServoPower(double power) {
+    public void setOuterIntakeServoPower(double power) {
         outerIntakeServo.setPower(power);
+    }
+
+    public void setInnerIntakeServoPower(double power) {
         innerIntakeServo.setPower(power);
     }
 
