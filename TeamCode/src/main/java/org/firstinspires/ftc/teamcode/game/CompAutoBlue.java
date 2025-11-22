@@ -121,6 +121,7 @@ public class CompAutoBlue extends OpMode {
                     reloadTime.resetTimer();
                     currentState = AutoState.DRIVE_TO_RELOAD2;
                 }
+                break;
 
             case DRIVE_TO_RELOAD2:
                 if (!pathStarted) {
@@ -132,6 +133,7 @@ public class CompAutoBlue extends OpMode {
                     reloadTime.resetTimer();
                     currentState = AutoState.DRIVE_TO_SCORE;
                 }
+                break;
 
             case DRIVE_TO_SCORE:
                 if (!pathStarted && reloadTime.getElapsedTimeSeconds() > 2) {
