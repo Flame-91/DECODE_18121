@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,15 +11,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.util.Paths;
 
 @Autonomous(name = "CompAutoGoal")
 @Configurable
-public class CompAutoGoal extends OpMode {
+public class CompAutoGoalRed extends OpMode {
     private static double breakTime = 3.25;
     private static double motorPower = 0.5575;
+    private static boolean firstDone = false;
+    private static double motorPower2 = 0.51;
     private static double runTime = 0.2;
-    private static double transferRunTime = 2;
+    private static double transferRunTime1 = 0.4;
+    private static double transferRunTime2 = 1;
     private DcMotor frontRight;
+    Paths paths = new Paths(follower);
     private DcMotor frontLeft;
     private DcMotor backRight;
     private DcMotor backLeft;
@@ -26,6 +34,7 @@ public class CompAutoGoal extends OpMode {
         RUN1,
         BREAK1,
         TRANSFER1,
+        TRANSFER2,
         RUN2,
         BREAK2,
         RUN3,
@@ -54,8 +63,10 @@ public class CompAutoGoal extends OpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        follower.setStartingPose(new Pose(122, 124));
     }
 
     @Override
@@ -66,8 +77,12 @@ public class CompAutoGoal extends OpMode {
     @Override
     public void loop() {
         // Only run the flywheel motor if we are not in the done state.
-        if (scoreState != ScoreState.DONE) {
-            flywheelSubsystem.runFlywheel(motorPower);
+        if (scoreState != ScoreState.DONE ) {
+            if (!firstDone) {
+                flywheelSubsystem.runFlywheel(motorPower);
+            } else {
+                flywheelSubsystem.runFlywheel(motorPower2);
+            }
         }
 
         switch (scoreState) {
@@ -90,6 +105,7 @@ public class CompAutoGoal extends OpMode {
 
             case BREAK1:
                 flywheelSubsystem.runFlywheelServos(0);
+                firstDone = true;
                 if (elapsedTime.seconds() >= breakTime) {
                     elapsedTime.reset();
                     scoreState = ScoreState.TRANSFER1;
@@ -97,12 +113,23 @@ public class CompAutoGoal extends OpMode {
                 break;
 
             case TRANSFER1:
+                intakeSubsystem.setInnerIntakeServoPower(0);
+                intakeSubsystem.setOuterIntakeServoPower(1);
+                if (elapsedTime.seconds() >= transferRunTime1) {
+                    elapsedTime.reset();
+                    scoreState = ScoreState.TRANSFER2;
+                }
+                break;
+
+            case TRANSFER2:
                 intakeSubsystem.setInnerIntakeServoPower(1);
-                if (elapsedTime.seconds() >= transferRunTime) {
+                intakeSubsystem.setOuterIntakeServoPower(1);
+                if (elapsedTime.seconds() >= transferRunTime2) {
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN2;
                 }
                 break;
+
 
             case RUN2:
                 flywheelSubsystem.runFlywheelServos(1);
@@ -129,11 +156,8 @@ public class CompAutoGoal extends OpMode {
                 break;
 
             case FORWARD:
-                frontLeft.setPower(1);
-                backLeft.setPower(1);
-                frontRight.setPower(1);
-                backRight.setPower(1);
-                if (elapsedTime.seconds() >= 3) {
+                follower.followPath(paths.goal_red);
+                if (!follower.isBusy()) {
                     scoreState = ScoreState.DONE;
                 }
                 break;
