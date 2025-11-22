@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.Paths;
 
-@Autonomous(name = "CompAutoGoalBlue")
+@Autonomous(name = "CompAutoGoalRed")
 @Configurable
 public class CompAutoGoalRed extends OpMode {
     private static double breakTime = 3.25;
