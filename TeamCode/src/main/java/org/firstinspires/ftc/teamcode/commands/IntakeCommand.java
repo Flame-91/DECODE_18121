@@ -21,19 +21,17 @@ public class IntakeCommand extends CommandBase {
     public void execute() {
 //        intakeSubsystem.setOuterIntakeServoPower(1);
         gamepad.readButtons();
-        if (gamepad.wasJustPressed(GamepadKeys.Button.Y)) {
-            innerFlywheelRunning = !innerFlywheelRunning;
-        }
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
+
+        if (gamepad.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
             intakeSubsystem.setInnerIntakeServoPower(-1.0);
             intakeSubsystem.setOuterIntakeServoPower(-1.0);
         }
-        else if (innerFlywheelRunning) {
+        else if (gamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)) {
             intakeSubsystem.setInnerIntakeServoPower(1.0);
-            intakeSubsystem.setOuterIntakeServoPower(0);
+            intakeSubsystem.setOuterIntakeServoPower(1.0);
         } else {
             intakeSubsystem.setInnerIntakeServoPower(0);
-            intakeSubsystem.setOuterIntakeServoPower(1.01);
+            intakeSubsystem.setOuterIntakeServoPower(1.0);
         }
     }
 

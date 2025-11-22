@@ -44,9 +44,8 @@ public class CompAutoBlue extends OpMode {
     private enum ScoreState {
         RUN1,
         BREAK1,
-        RUN2,
-        BREAK2,
-        RUN3,
+        TRANSFER1,
+        RUN2
     }
 
     @Override
@@ -177,7 +176,7 @@ public class CompAutoBlue extends OpMode {
         switch (currentScoreState) {
             case RUN1:
                 flyWheelSubsystem.runFlywheelServos(1);
-                intakeSubsystem.setInnerIntakeServoPower(1);
+                intakeSubsystem.setInnerIntakeServoPower(0);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.BREAK1;
@@ -185,31 +184,23 @@ public class CompAutoBlue extends OpMode {
                 return false;
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
-                intakeSubsystem.setOuterIntakeServoPower(0);
+                intakeSubsystem.setInnerIntakeServoPower(0);
                 if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
+                    servoElapsedTime.reset();
+                    currentScoreState = ScoreState.TRANSFER1;
+                }
+                return false;
+            case TRANSFER1:
+                intakeSubsystem.setInnerIntakeServoPower(1);
+                if (servoElapsedTime.seconds() >= 2) {
                     servoElapsedTime.reset();
                     currentScoreState = ScoreState.RUN2;
                 }
                 return false;
+
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
-                intakeSubsystem.setOuterIntakeServoPower(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.BREAK2;
-                }
-                return false;
-            case BREAK2:
-                flyWheelSubsystem.runFlywheelServos(0);
-                intakeSubsystem.setOuterIntakeServoPower(0);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
-                    servoElapsedTime.reset();
-                    currentScoreState = ScoreState.RUN3;
-                }
-                return false;
-            case RUN3:
-                flyWheelSubsystem.runFlywheelServos(1.0);
-                intakeSubsystem.setOuterIntakeServoPower(1);
+                intakeSubsystem.setInnerIntakeServoPower(0);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     return true;

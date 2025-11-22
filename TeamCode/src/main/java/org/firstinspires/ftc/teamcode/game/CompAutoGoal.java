@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 @Autonomous(name = "CompAutoGoal")
 @Configurable
@@ -14,6 +15,7 @@ public class CompAutoGoal extends OpMode {
     private static double breakTime = 3.25;
     private static double motorPower = 0.5575;
     private static double runTime = 0.2;
+    private static double transferRunTime = 2;
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -23,6 +25,7 @@ public class CompAutoGoal extends OpMode {
         BREAK0,
         RUN1,
         BREAK1,
+        TRANSFER1,
         RUN2,
         BREAK2,
         RUN3,
@@ -33,12 +36,14 @@ public class CompAutoGoal extends OpMode {
     private ScoreState scoreState;
     private ElapsedTime elapsedTime;
     private FlyWheelSubsystem flywheelSubsystem;
+    private IntakeSubsystem intakeSubsystem;
 
     @Override
     public void init() {
         elapsedTime = new ElapsedTime();
         scoreState = ScoreState.BREAK0;
         flywheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
 
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
@@ -86,6 +91,14 @@ public class CompAutoGoal extends OpMode {
             case BREAK1:
                 flywheelSubsystem.runFlywheelServos(0);
                 if (elapsedTime.seconds() >= breakTime) {
+                    elapsedTime.reset();
+                    scoreState = ScoreState.TRANSFER1;
+                }
+                break;
+
+            case TRANSFER1:
+                intakeSubsystem.setInnerIntakeServoPower(1);
+                if (elapsedTime.seconds() >= transferRunTime) {
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN2;
                 }
