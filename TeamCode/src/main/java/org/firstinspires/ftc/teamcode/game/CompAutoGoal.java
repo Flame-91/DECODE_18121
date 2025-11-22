@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.game;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
@@ -13,6 +14,10 @@ public class CompAutoGoal extends OpMode {
     private static double breakTime = 3.25;
     private static double motorPower = 0.5575;
     private static double runTime = 0.2;
+    private DcMotor frontRight;
+    private DcMotor frontLeft;
+    private DcMotor backRight;
+    private DcMotor backLeft;
     // Added a DONE state to signal the end of the autonomous sequence
     private enum ScoreState {
         BREAK0,
@@ -21,7 +26,8 @@ public class CompAutoGoal extends OpMode {
         RUN2,
         BREAK2,
         RUN3,
-        DONE // New state to signify completion
+        FORWARD,
+        DONE// New state to signify completion
     }
 
     private ScoreState scoreState;
@@ -33,6 +39,18 @@ public class CompAutoGoal extends OpMode {
         elapsedTime = new ElapsedTime();
         scoreState = ScoreState.BREAK0;
         flywheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
+
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
@@ -93,6 +111,16 @@ public class CompAutoGoal extends OpMode {
                 flywheelSubsystem.runFlywheelServos(1);
                 if (elapsedTime.seconds() >= runTime) {
                     elapsedTime.reset();
+                    scoreState = ScoreState.FORWARD;
+                }
+                break;
+
+            case FORWARD:
+                frontLeft.setPower(1);
+                backLeft.setPower(1);
+                frontRight.setPower(1);
+                backRight.setPower(1);
+                if (elapsedTime.seconds() >= 3) {
                     scoreState = ScoreState.DONE;
                 }
                 break;

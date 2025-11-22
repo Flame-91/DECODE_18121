@@ -165,7 +165,6 @@ public class CompAutoBlue extends OpMode {
                     follower.followPath(paths.to_base_blue);
                     pathStarted = true;
                 }
-
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     currentState = AutoState.IDLE;
