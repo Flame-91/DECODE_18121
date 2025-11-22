@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.util.Paths;
 
 @Autonomous(name = "CompAutoGoalBlue")
 @Configurable
-public class CompAutoGoalRed extends OpMode {
+public class CompAutoGoalBlue extends OpMode {
     private static double breakTime = 3.25;
     private static double motorPower = 0.5575;
     private static boolean firstDone = false;
@@ -159,7 +159,7 @@ public class CompAutoGoalRed extends OpMode {
                 break;
 
             case FORWARD:
-                follower.followPath(paths.goal_red);
+                follower.followPath(paths.goal_blue);
                 if (!follower.isBusy()) {
                     scoreState = ScoreState.DONE;
                 }

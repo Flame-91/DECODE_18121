@@ -19,6 +19,7 @@ public class Paths {
     public PathChain to_score_red;
     public PathChain to_base_red;
     public PathChain goal_red;
+    public PathChain goal_blue;
 
     public Paths(Follower follower) {
 //        preload_score_red = follower.pathBuilder()
@@ -239,6 +240,19 @@ public class Paths {
                 .pathBuilder()
                 .addPath (
                         new BezierLine(new Pose(122, 124), new Pose(123, 68))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(220), Math.toRadians(45))
+                .setTranslationalConstraint(1.5)
+                .setHeadingConstraint(Math.toRadians(5))
+                .setVelocityConstraint(2)
+                .setTValueConstraint(0.98)
+                .setTimeoutConstraint(300)
+                .build();
+
+        goal_blue = follower
+                .pathBuilder()
+                .addPath (
+                        new BezierLine(new Pose(25, 124), new Pose(123, 68))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(320), Math.toRadians(45))
                 .setTranslationalConstraint(1.5)
