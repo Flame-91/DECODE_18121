@@ -26,7 +26,6 @@ public class CompAutoBlue extends OpMode {
     ElapsedTime servoElapsedTime;
     Timer reloadTime;
 
-    private int shotCount = 0;
     private boolean pathStarted = false;
 
     // --- Enums for State Machines ---
@@ -37,7 +36,9 @@ public class CompAutoBlue extends OpMode {
         DRIVE_TO_RELOAD2,
         DRIVE_TO_SCORE,
         SCORE_1,
-        IDLE
+        SCORE_2,
+        IDLE,
+        DRIVE_TO_BASE
     }
 
     private enum ScoreState {
@@ -89,13 +90,13 @@ public class CompAutoBlue extends OpMode {
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     servoElapsedTime.reset();
-                    currentState = AutoState.SCORE_1;
+                    currentState = AutoState.GO_TO_PRELOAD_SCORE_2;
                 }
                 break;
 
             case SCORE_1:
                 if (scoreAuto()) {
-                    currentState = AutoState.GO_TO_PRELOAD_SCORE_2;
+                    currentState = AutoState.DRIVE_TO_RELOAD1;
                 }
                 break;
 
@@ -107,7 +108,7 @@ public class CompAutoBlue extends OpMode {
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     reloadTime.resetTimer();
-                    currentState = AutoState.DRIVE_TO_RELOAD1;
+                    currentState = AutoState.SCORE_1;
                 }
                 break;
 
@@ -143,12 +144,30 @@ public class CompAutoBlue extends OpMode {
 
                 if (pathStarted && !follower.isBusy()) {
                     pathStarted = false;
-                    currentState = AutoState.SCORE_1;
+                    currentState = AutoState.SCORE_2;
+                }
+                break;
+
+            case SCORE_2:
+                if (scoreAuto()) {
+                    currentState = AutoState.DRIVE_TO_BASE;
                 }
                 break;
 
             case IDLE:
                 flyWheelSubsystem.runFlywheel(0); // Stop the flywheel
+                break;
+
+            case DRIVE_TO_BASE:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_base_blue);
+                    pathStarted = true;
+                }
+
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    currentState = AutoState.IDLE;
+                }
                 break;
         }
     }

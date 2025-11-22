@@ -18,33 +18,35 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 @Autonomous(name="CompAutoRed")
 public class CompAutoRed extends OpMode {
-    private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
+    private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE_1;
     private ScoreState currentScoreState = ScoreState.RUN1;
-
     FlyWheelSubsystem flyWheelSubsystem;
     IntakeSubsystem intakeSubsystem;
     Paths paths;
     ElapsedTime servoElapsedTime;
     Timer reloadTime;
 
-    private int shotCount = 0;
     private boolean pathStarted = false;
 
     // --- Enums for State Machines ---
     private enum AutoState {
-        GO_TO_PRELOAD_SCORE,
-        DRIVE_TO_RELOAD,
+        GO_TO_PRELOAD_SCORE_1,
+        GO_TO_PRELOAD_SCORE_2,
         DRIVE_TO_RELOAD1,
         DRIVE_TO_RELOAD2,
         DRIVE_TO_SCORE,
         SCORE_1,
-        IDLE
+        SCORE_2,
+        IDLE,
+        DRIVE_TO_BASE
     }
 
     private enum ScoreState {
         RUN1,
         BREAK1,
         RUN2,
+        BREAK2,
+        RUN3,
     }
 
     public void init() {
@@ -80,33 +82,33 @@ public class CompAutoRed extends OpMode {
 
     private void autoStateUpdate() {
         switch (currentState) {
-            case GO_TO_PRELOAD_SCORE:
+            case GO_TO_PRELOAD_SCORE_1:
                 if (!pathStarted) {
-                    follower.followPath(paths.preload_score_red);
+                    follower.followPath(paths.preload_score_red_1);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     servoElapsedTime.reset();
-                    currentState = AutoState.SCORE_1;
+                    currentState = AutoState.GO_TO_PRELOAD_SCORE_2;
                 }
                 break;
 
             case SCORE_1:
                 if (scoreAuto()) {
-                    currentState = AutoState.DRIVE_TO_RELOAD;
+                    currentState = AutoState.DRIVE_TO_RELOAD1;
                 }
                 break;
 
-            case DRIVE_TO_RELOAD:
+            case GO_TO_PRELOAD_SCORE_2:
                 if (!pathStarted) {
-                    follower.followPath(paths.to_reload_red);
+                    follower.followPath(paths.preload_score_red_2);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
                     pathStarted = false;
                     reloadTime.resetTimer();
-                    currentState = AutoState.DRIVE_TO_RELOAD1;
+                    currentState = AutoState.SCORE_1;
                 }
                 break;
 
@@ -120,6 +122,7 @@ public class CompAutoRed extends OpMode {
                     reloadTime.resetTimer();
                     currentState = AutoState.DRIVE_TO_RELOAD2;
                 }
+                break;
 
             case DRIVE_TO_RELOAD2:
                 if (!pathStarted) {
@@ -131,6 +134,7 @@ public class CompAutoRed extends OpMode {
                     reloadTime.resetTimer();
                     currentState = AutoState.DRIVE_TO_SCORE;
                 }
+                break;
 
             case DRIVE_TO_SCORE:
                 if (!pathStarted && reloadTime.getElapsedTimeSeconds() > 2) {
@@ -140,12 +144,30 @@ public class CompAutoRed extends OpMode {
 
                 if (pathStarted && !follower.isBusy()) {
                     pathStarted = false;
-                    currentState = AutoState.SCORE_1;
+                    currentState = AutoState.SCORE_2;
+                }
+                break;
+
+            case SCORE_2:
+                if (scoreAuto()) {
+                    currentState = AutoState.DRIVE_TO_BASE;
                 }
                 break;
 
             case IDLE:
                 flyWheelSubsystem.runFlywheel(0); // Stop the flywheel
+                break;
+
+            case DRIVE_TO_BASE:
+                if (!pathStarted) {
+                    follower.followPath(paths.to_base_red);
+                    pathStarted = true;
+                }
+
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    currentState = AutoState.IDLE;
+                }
                 break;
         }
     }
@@ -168,6 +190,20 @@ public class CompAutoRed extends OpMode {
                 return false;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                    servoElapsedTime.reset();
+                    currentScoreState = ScoreState.BREAK2;
+                }
+                return false;
+            case BREAK2:
+                flyWheelSubsystem.runFlywheelServos(0);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
+                    servoElapsedTime.reset();
+                    currentScoreState = ScoreState.RUN3;
+                }
+                return false;
+            case RUN3:
+                flyWheelSubsystem.runFlywheelServos(1.0);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     return true;

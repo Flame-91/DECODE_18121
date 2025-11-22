@@ -15,6 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
         innerIntakeServo = hardwareMap.get(CRServo.class, "innerIntakeServo");
         this.telemetry = telemetry;
         outerIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        innerIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
