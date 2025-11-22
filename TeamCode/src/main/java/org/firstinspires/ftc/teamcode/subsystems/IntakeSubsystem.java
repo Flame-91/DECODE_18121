@@ -16,6 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         outerIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
         innerIntakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        register();
     }
 
     @Override

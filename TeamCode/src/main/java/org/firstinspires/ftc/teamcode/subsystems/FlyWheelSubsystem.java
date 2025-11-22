@@ -20,6 +20,7 @@ public class FlyWheelSubsystem extends SubsystemBase {
         rightFlyWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         this.telemetry = telemetry;
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        register();
     }
 
     @Override
