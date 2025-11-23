@@ -14,5 +14,11 @@ public class GlobalConstants {
     public static double pivotKI = 0.005;
     public static double pivotKD = 0.0001;
 
+    public static double flywheelMotorPower = 1;
+    public static double flywheelMotorRuntime = 2.75;
+    public static double flywheelServoRuntime = 0.2;
+    public static double flywheelServoBreaktime1 = 0.75;
+    public static double flywheelServoBreaktime2 = 1.25;
+
     public static double imuOffset = 0;
 }

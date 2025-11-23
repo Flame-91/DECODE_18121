@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.flywheelMotorPower;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.flywheelMotorRuntime;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.flywheelServoBreaktime1;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.flywheelServoBreaktime2;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.flywheelServoRuntime;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,12 +24,6 @@ public class FlywheelCommand extends CommandBase {
     private FlywheelState currentState;
     private final ElapsedTime flywheelServoTimer;
     private final ElapsedTime flywheelMotorTimer;
-
-    public final static double flywheelMotorPower = 1;
-    public final static double flywheelMotorRuntime = 2.75;
-    public final static double flywheelServoRuntime = 0.2;
-    public final static double flywheelServoBreaktime1 = 0.75;
-    public final static double flywheelServoBreaktime2 = 1.25;
 
     public FlywheelCommand(GamepadEx gamepad, FlywheelSubsystem flywheelSubsystem) {
         this.flywheelSubsystem = flywheelSubsystem;
