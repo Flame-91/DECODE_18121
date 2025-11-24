@@ -45,7 +45,7 @@ public class PivotCommand extends CommandBase {
             pivotSubsystem.setPivotPower(-output);
         }
 
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
             pivotSubsystem.movePivotWithoutEncoder(-0.3);
         }
 

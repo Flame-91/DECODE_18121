@@ -24,12 +24,12 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
-import org.firstinspires.ftc.teamcode.util.Paths.RedPaths;
+import org.firstinspires.ftc.teamcode.util.Paths.BluePaths;
 
-@Autonomous(name = "RedAuto")
+@Autonomous(name = "BlueAuto")
 @Configurable
 @Config
-public class RedAuto extends OpMode {
+public class BlueAuto extends OpMode {
     public static double servoRuntime = 0.4;
     public static double servoBreaktime1 = 0.75;
     public static double servoBreaktime2 = 1.5;
@@ -75,7 +75,7 @@ public class RedAuto extends OpMode {
     PivotSubsystem pivotSubsystem;
     private IMU imu;
     ElapsedTime servoElapsedTime;
-    RedPaths paths;
+    BluePaths paths;
     Follower follower;
     private long lastTime;
     PIDController pivotPIDController;
@@ -100,7 +100,7 @@ public class RedAuto extends OpMode {
         servoElapsedTime = new ElapsedTime();
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(56, 8, Math.toRadians(90)));
-        paths = new RedPaths(follower);
+        paths = new BluePaths(follower);
         lastTime = System.nanoTime();
         pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, 0.75);
 

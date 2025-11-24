@@ -6,19 +6,20 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 public class RedPaths {
-    public PathChain shoot1;
-    public PathChain reload11;
-    public PathChain reload12;
-    public PathChain shoot2;
-    public PathChain reload21;
-    public PathChain reload22;
-    public PathChain shoot3;
+    public PathChain score_1;
+    public PathChain reload_1_1;
+    public PathChain reload_1_2;
+    public PathChain score_2;
+    public PathChain reload_2_1;
+    public PathChain reload_2_2;
+    public PathChain score_3;
     public PathChain gate;
-    public PathChain reload31;
-    public PathChain shoot4;
+    public PathChain reload_3_1;
+    public PathChain reload_3_2;
+    public PathChain score_4;
 
     public RedPaths(Follower follower) {
-        shoot1 = follower
+        score_1 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(87.250, 8.000), new Pose(87.991, 18.000))
@@ -31,7 +32,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        reload11 = follower
+        reload_1_1 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(87.991, 18.000), new Pose(103.414, 83.932))
@@ -44,7 +45,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        reload12 = follower
+        reload_1_2 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(103.414, 83.932), new Pose(126.467, 84.095))
@@ -57,7 +58,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        shoot2 = follower
+        score_2 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(126.467, 84.095), new Pose(94.485, 93.835))
@@ -70,7 +71,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        reload21 = follower
+        reload_2_1 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(94.485, 93.835), new Pose(102.277, 58.769))
@@ -83,7 +84,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        reload22 = follower
+        reload_2_2 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(102.277, 58.769), new Pose(127.116, 59.094))
@@ -96,7 +97,7 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        shoot3 = follower
+        score_3 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(127.116, 59.094), new Pose(86.205, 86.205))
@@ -122,10 +123,10 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        reload31 = follower
+        reload_3_1 = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(127.928, 70.458), new Pose(134.587, 43.761))
+                        new BezierLine(new Pose(127.928, 70.458), new Pose(128.735, 49.527))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                 .setTranslationalConstraint(1.5)
@@ -135,7 +136,20 @@ public class RedPaths {
                 .setTimeoutConstraint(300)
                 .build();
 
-        shoot4 = follower
+        reload_3_2 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(128.735, 49.527), new Pose(133.993, 47.661))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .setTranslationalConstraint(1.5)
+                .setHeadingConstraint(Math.toRadians(5))
+                .setVelocityConstraint(2)
+                .setTValueConstraint(0.98)
+                .setTimeoutConstraint(300)
+                .build();
+
+        score_4 = follower
                 .pathBuilder()
                 .addPath(
                         new BezierLine(new Pose(134.587, 43.761), new Pose(86.205, 86.205))

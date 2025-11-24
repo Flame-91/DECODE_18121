@@ -51,7 +51,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     }
 
     public void drive(double x, double y, double rotation) {
-        double headingRadians = -(imu.getRobotYawPitchRollAngles().getYaw() + GlobalConstants.imuOffset) * Math.PI / 180.0;
+        double headingRadians = -(imu.getRobotYawPitchRollAngles().getYaw()) * Math.PI / 180.0;
 
         double rotatedX = x * Math.cos(headingRadians) - y * Math.sin(headingRadians);
         double rotatedY = x * Math.sin(headingRadians) + y * Math.cos(headingRadians);
@@ -71,6 +71,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
+    }
+
+    public void resetIMU() {
+        imu.resetYaw();
     }
 
     public double getBackLeftMotorPower() { return backLeft.getPower(); }

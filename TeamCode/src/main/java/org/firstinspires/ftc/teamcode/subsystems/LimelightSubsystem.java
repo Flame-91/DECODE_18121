@@ -45,7 +45,7 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         result = limelight.getLatestResult();
-        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + GlobalConstants.imuOffset);
+        limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
