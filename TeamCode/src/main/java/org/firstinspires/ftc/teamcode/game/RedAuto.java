@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.game;
 
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKF;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
 
@@ -8,7 +9,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.configurables.variables.instances.JSONErrorVariable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -73,6 +73,7 @@ public class RedAuto extends OpMode {
     IntakeSubsystem intakeSubsystem;
     LimelightSubsystem limelightSubsystem;
     PivotSubsystem pivotSubsystem;
+    double totalPivotOutput;
     private IMU imu;
     ElapsedTime servoElapsedTime;
     RedPaths paths;
@@ -103,8 +104,12 @@ public class RedAuto extends OpMode {
         paths = new RedPaths(follower);
         lastTime = System.nanoTime();
         pivotPIDController = new PIDController(pivotKP, pivotKI, pivotKD, 0.75);
+        totalPivotOutput = 0;
 
         telemetry.addData("Status", "Initialized");
+        telemetryPacket.put("Status", "Initialized");
+        telemetry.update();
+        dashboard.sendTelemetryPacket(telemetryPacket);
     }
 
     @Override
@@ -113,6 +118,17 @@ public class RedAuto extends OpMode {
         scoreStateUpdate();
         pivotUpdate();
         limelightUpdate();
+        intakeUpdate();
+        flywheelMotorUpdate();
+
+        telemetry.addData("Current autoState", autoState);
+        telemetry.addData("Current scoreState", scoreState);
+
+        telemetryPacket.put("Current autoState", autoState);
+        telemetryPacket.put("Current scoreState", scoreState);
+
+        telemetry.update();
+        dashboard.sendTelemetryPacket(telemetryPacket);
     }
 
     public void autoStateUpdate() {
@@ -316,15 +332,18 @@ public class RedAuto extends OpMode {
     public void pivotUpdate() {
         if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
-            double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
+            double targetPosition = limelightSubsystem.getPitchError(0.42545);
+            double pitchError = targetPosition - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
 
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
+            double feedForward = pivotKF * targetPosition;
 
+            totalPivotOutput = output + feedForward;
             pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
-            pivotSubsystem.setPivotPower(-output);
+            pivotSubsystem.setPivotPower(totalPivotOutput);
         }
     }
 
@@ -337,5 +356,13 @@ public class RedAuto extends OpMode {
         double heading = Math.toRadians(currentPosition.getOrientation().getYaw()); // outputs in degrees, so converting to radians for pedro
         Pose currentPose = new Pose(xInches, yInches, heading);
         follower.setPose(currentPose);
+    }
+
+    public void intakeUpdate() {
+        intakeSubsystem.setIntakeServoPower(1); // add more here to customize
+    }
+
+    public void flywheelMotorUpdate() {
+        flywheelSubsystem.setFlywheelMotorPower(1); // add more here to customize
     }
 }
