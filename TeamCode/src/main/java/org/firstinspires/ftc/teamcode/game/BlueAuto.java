@@ -110,7 +110,6 @@ public class BlueAuto extends OpMode {
     @Override
     public void loop() {
         autoStateUpdate();
-        scoreStateUpdate();
         pivotUpdate();
         limelightUpdate();
     }
