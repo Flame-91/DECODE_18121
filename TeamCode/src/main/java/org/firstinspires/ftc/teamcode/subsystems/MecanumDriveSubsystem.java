@@ -4,15 +4,20 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MecanumDriveSubsystem extends SubsystemBase {
+    private static final Logger log = LoggerFactory.getLogger(MecanumDriveSubsystem.class);
     private final DcMotor backLeft, backRight, frontLeft, frontRight;
     private final Telemetry telemetry;
     private final IMU imu;
+    ElapsedTime elapsedTime;
     public MecanumDriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
@@ -31,6 +36,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         );
         imu.initialize(imuParams);
         this.imu = imu;
+        elapsedTime = new ElapsedTime();
         register();
     }
 
@@ -91,5 +97,12 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
     public double getBackRightPower() {
         return backRight.getPower();
+    }
+
+    public void drive(double power) {
+        frontLeft.setPower(-power);
+        frontRight.setPower(-1.5*power);
+        backLeft.setPower(-power);
+        backRight.setPower(-1.5*power);
     }
 }

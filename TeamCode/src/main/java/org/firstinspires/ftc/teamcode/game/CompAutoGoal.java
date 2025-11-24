@@ -1,18 +1,30 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.util.Paths;
 
 @Autonomous(name = "CompAutoGoal")
 @Configurable
 public class CompAutoGoal extends OpMode {
-    private static double breakTime = 3.25;
-    private static double motorPower = 0.5575;
-    private static double runTime = 0.2;
+    private static double breakTime = 3;
+    private static double motorPower = 0.4867;
+    private static double runTime = FlywheelCommand.flywheelServoRuntime;
+    Follower follower;
+    Paths paths;
+    MecanumDriveSubsystem mecanumDriveSubsystem;
+    private boolean pathStarted = false;
     // Added a DONE state to signal the end of the autonomous sequence
     private enum ScoreState {
         BREAK0,
@@ -21,7 +33,10 @@ public class CompAutoGoal extends OpMode {
         RUN2,
         BREAK2,
         RUN3,
-        DONE // New state to signify completion
+        DELAY,
+        DONE,
+        MOVE1,
+        MOVE2// New state to signify completion
     }
 
     private ScoreState scoreState;
@@ -33,6 +48,10 @@ public class CompAutoGoal extends OpMode {
         elapsedTime = new ElapsedTime();
         scoreState = ScoreState.BREAK0;
         flywheelSubsystem = new FlyWheelSubsystem(hardwareMap, telemetry);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(22, 124, Math.toRadians(320)));
+        mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, telemetry);
+        paths = new Paths(follower);
     }
 
     @Override
@@ -43,7 +62,7 @@ public class CompAutoGoal extends OpMode {
     @Override
     public void loop() {
         // Only run the flywheel motor if we are not in the done state.
-        if (scoreState != ScoreState.DONE) {
+        if (scoreState != ScoreState.MOVE1 && scoreState != ScoreState.MOVE2) {
             flywheelSubsystem.runFlywheel(motorPower);
         }
 
@@ -93,6 +112,29 @@ public class CompAutoGoal extends OpMode {
                 flywheelSubsystem.runFlywheelServos(1);
                 if (elapsedTime.seconds() >= runTime) {
                     elapsedTime.reset();
+                    pathStarted = false;
+                    scoreState = ScoreState.MOVE1;
+                }
+                break;
+
+            case MOVE1:
+                if (elapsedTime.seconds() <= 5) {
+                    mecanumDriveSubsystem.drive(0.3);
+                } else {
+                    mecanumDriveSubsystem.drive(0);
+                    scoreState = ScoreState.DONE;
+                }
+                break;
+
+            case MOVE2:
+                if (!pathStarted) {
+                    follower.followPath(paths.goal_blue2);
+                    pathStarted = true;
+                }
+
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    elapsedTime.reset();
                     scoreState = ScoreState.DONE;
                 }
                 break;
@@ -101,6 +143,7 @@ public class CompAutoGoal extends OpMode {
                 // Stop the flywheel motor and servos
                 flywheelSubsystem.runFlywheel(0);
                 flywheelSubsystem.runFlywheelServos(0);
+                mecanumDriveSubsystem.drive(0);
 
                 requestOpModeStop();
                 break;
