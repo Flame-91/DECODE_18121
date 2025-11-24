@@ -33,12 +33,9 @@ public class RedAuto extends OpMode {
     public static double servoRuntime = 0.4;
     public static double servoBreaktime1 = 0.75;
     public static double servoBreaktime2 = 1.5;
-
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
-
     private boolean pathStarted = false;
-
     private enum AutoState {
         GO_TO_SCORE_1,
         SCORE_1,
