@@ -339,7 +339,6 @@ public class RedAuto extends OpMode {
             double feedForward = pivotKF * targetPosition;
 
             totalPivotOutput = output + feedForward;
-            pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
             pivotSubsystem.setPivotPower(totalPivotOutput);
         }
     }
