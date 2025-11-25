@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.game;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,6 +13,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.*;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
@@ -39,13 +41,15 @@ public class TeleOp extends OpMode {
         );
         imu.initialize(imuParams);
 
+        follower = Constants.createFollower(hardwareMap);
+
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
-        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem);
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, limelightSubsystem);
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
 
@@ -79,7 +83,7 @@ public class TeleOp extends OpMode {
         driver.readButtons();
         if (driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
             driveCommand.changeTeam("red");
-        } else if (driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) {
+        } else if (driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
             driveCommand.changeTeam("blue");
         }
     }
