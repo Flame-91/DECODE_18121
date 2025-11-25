@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.game;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -22,6 +24,8 @@ public class TeleOp extends OpMode {
     private PivotSubsystem pivotSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private GamepadEx driver;
+    private DriveCommand driveCommand;
+    private Follower follower;
     private IMU imu;
 
     @Override
@@ -41,10 +45,12 @@ public class TeleOp extends OpMode {
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem);
+
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
 
         mecanumDriveSubsystem.setDefaultCommand(
-                new DriveCommand(driver, mecanumDriveSubsystem)
+                driveCommand
         );
 
         pivotSubsystem.setDefaultCommand(
@@ -69,7 +75,14 @@ public class TeleOp extends OpMode {
     }
 
     @Override
-    public void init_loop() {}
+    public void init_loop() {
+        driver.readButtons();
+        if (driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            driveCommand.changeTeam("red");
+        } else if (driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) {
+            driveCommand.changeTeam("blue");
+        }
+    }
 
     @Override
     public void loop() {

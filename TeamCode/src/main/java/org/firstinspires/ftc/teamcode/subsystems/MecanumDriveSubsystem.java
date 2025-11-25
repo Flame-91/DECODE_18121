@@ -73,6 +73,25 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backRight.setPower(backRightPower);
     }
 
+    public void robotCentricDrive(double x, double y, double rotation) {
+        double frontLeftPower = y + x + rotation;
+        double frontRightPower = y - x - rotation;
+        double backLeftPower = y - x + rotation;
+        double backRightPower = y + x - rotation;
+
+        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
+
+        frontLeftPower /= max;
+        frontRightPower /= max;
+        backLeftPower /= max;
+        backRightPower /= max;
+
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
+    }
+
     public void resetIMU() {
         imu.resetYaw();
     }
