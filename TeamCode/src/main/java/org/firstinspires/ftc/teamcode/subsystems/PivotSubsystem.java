@@ -18,9 +18,9 @@ public class PivotSubsystem extends SubsystemBase {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
         leftPivotMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivotMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
@@ -62,8 +62,8 @@ public class PivotSubsystem extends SubsystemBase {
     public void resetPivotEncoder() { // Should only be called if pivot is at rest DOWN
         leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public int convertPivotAngleToTicks(double angle) {
         return (int) (angle * (537.7/360));

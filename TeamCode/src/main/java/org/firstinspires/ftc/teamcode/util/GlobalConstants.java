@@ -13,6 +13,7 @@ public class GlobalConstants {
     public static double pivotKP = 0.05;
     public static double pivotKI = 0.005;
     public static double pivotKD = 0.0001;
+    public static double pivotKF = 0.15;
 
     public static double flywheelMotorPower = 1;
     public static double flywheelMotorRuntime = 2.75;

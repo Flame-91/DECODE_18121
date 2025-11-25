@@ -121,7 +121,10 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public double[] getBotPose() {
         if (hasTarget() && !isObelisk()) {
+            limelight.pipelineSwitch(1);
+            result = limelight.getLatestResult();
             Pose3D botPose = result.getBotpose_MT2();
+            limelight.pipelineSwitch(0);
             return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
@@ -130,7 +133,11 @@ public class LimelightSubsystem extends SubsystemBase {
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
     public Pose3D getBotPosePose3D() {
         if (hasTarget() && !isObelisk()) {
-            return result.getBotpose_MT2();
+            limelight.pipelineSwitch(1);
+            result = limelight.getLatestResult();
+            Pose3D botPose = result.getBotpose_MT2();
+            limelight.pipelineSwitch(0);
+            return botPose;
         }
         return null;
     }
