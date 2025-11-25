@@ -17,6 +17,7 @@ public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem mecanumDriveSubsystem;
     private final LimelightSubsystem limelightSubsystem;
 
+    public double[] periodicMT2Pos;
     private final GamepadEx gamepad;
 
     PIDController PID; // Initialize pid controller

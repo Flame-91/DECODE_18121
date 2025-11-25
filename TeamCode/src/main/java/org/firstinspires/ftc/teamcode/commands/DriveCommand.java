@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.seattlesolvers.solverslib.command.CommandBase;
@@ -19,6 +20,7 @@ public class DriveCommand extends CommandBase {
     String team;
     private final Pose blue_base;
     private final Pose red_base;
+    private boolean toBase = false;
     Follower follower;
 
     public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive, Follower follower, LimelightSubsystem ll) {
@@ -43,9 +45,10 @@ public class DriveCommand extends CommandBase {
                 (39.3701*(botPose.getPosition().x)) + 72,
                 (39.3701*(botPose.getPosition().y)) + 72,
                 Math.toRadians(botPose.getOrientation().getYaw()),
-                Math.toRadians(botPose.getOrientation().getPitch()),
+                Math.toRadians(botPose.getOrientation().getPitch()), //Are they radians and which one?
                 Math.toRadians(botPose.getOrientation().getRoll())
         };
+
         gamepad.readButtons();
         if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
             if (centric.equals("robot")) {
@@ -53,6 +56,10 @@ public class DriveCommand extends CommandBase {
             } else if (centric.equals("field")) {
                 centric = "robot";
             }
+        }
+
+        if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            drive.resetIMU();
         }
 
         if (centric.equals("field")) {
@@ -63,15 +70,20 @@ public class DriveCommand extends CommandBase {
             drive.robotCentricDrive(x, y, rotation); //Backup
         }
 
-        if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-            drive.resetIMU();
-        }
-
         if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], Math.toRadians(pedroCoordinates[2])));
+            Pose currentPose = new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]); //Is it yaw?
             if (team.equals("blue")) {
                 PathChain bluePath = follower
-                        .pathBuilder();
+                        .pathBuilder()
+                        .addPath(new BezierLine(currentPose, blue_base))
+                        .setLinearHeadingInterpolation(pedroCoordinates[2], 90)
+                        .setTranslationalConstraint(1.5)
+                        .setHeadingConstraint(Math.toRadians(5))
+                        .setVelocityConstraint(2)
+                        .setTValueConstraint(0.98)
+                        .setTimeoutConstraint(300)
+                        .build();
+                follower.followPath(bluePath);
             }
         }
     }

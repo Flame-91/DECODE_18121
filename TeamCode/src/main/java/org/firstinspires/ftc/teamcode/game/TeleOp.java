@@ -12,6 +12,7 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.commands.*;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.*;
@@ -41,8 +42,6 @@ public class TeleOp extends OpMode {
         );
         imu.initialize(imuParams);
 
-        follower = Constants.createFollower(hardwareMap);
-
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
@@ -50,6 +49,16 @@ public class TeleOp extends OpMode {
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
         driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, limelightSubsystem);
+        follower = Constants.createFollower(hardwareMap);
+        Pose3D startingPose3d = limelightSubsystem.getBotPosePose3D();
+        double[] pedroStartingPose = {
+                (39.3701*(startingPose3d.getPosition().x)) + 72,
+                (39.3701*(startingPose3d.getPosition().y)) + 72,
+                Math.toRadians(startingPose3d.getOrientation().getYaw()),
+                Math.toRadians(startingPose3d.getOrientation().getPitch()), //Are they radians and which one? (I used yaw)
+                Math.toRadians(startingPose3d.getOrientation().getRoll())
+        };
+        follower.setStartingPose(new Pose(pedroStartingPose[0], pedroStartingPose[1], pedroStartingPose[2]));
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
 
