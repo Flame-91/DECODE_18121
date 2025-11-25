@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKF;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotShootingOffset;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -34,18 +36,21 @@ public class PivotCommand extends CommandBase {
     public void execute() {
         if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
             pivotSubsystem.movePivotWithoutEncoder(-0.3);
-        }  if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
+        } if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
             pivotSubsystem.resetPivotEncoder();
-        }  else if (limelightSubsystem.hasTarget()) {
+        } else if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
-            double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
+            double targetPosition = limelightSubsystem.getPitchError(pivotShootingOffset);
+            double pitchError = targetPosition - pivotPositionAngle;
 
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
+            double feedforward = pivotKF * targetPosition;
 
-            pivotSubsystem.setPivotPower(output);
+            double totalOutput = output + feedforward;
+            pivotSubsystem.setPivotPower(totalOutput);
         }
     }
 }
