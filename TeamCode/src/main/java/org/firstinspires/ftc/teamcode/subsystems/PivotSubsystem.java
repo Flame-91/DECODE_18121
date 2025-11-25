@@ -32,11 +32,9 @@ public class PivotSubsystem extends SubsystemBase {
     public void periodic() {
         telemetry.addData("pivotPower", getPivotPower());
         telemetry.addData("currentPivotPosition", getCurrentPivotPosition());
-        telemetry.addData("targetPivotPosition", getTargetPivotPosition());
 
         telemetryPacket.put("pivotPower", getPivotPower());
         telemetryPacket.put("currentPivotPosition", getCurrentPivotPosition());
-        telemetryPacket.put("targetPivotPosition", getTargetPivotPosition());
     }
 
     public void setPivotPower(double power) {
@@ -44,18 +42,10 @@ public class PivotSubsystem extends SubsystemBase {
         rightPivotMotor.setPower(power);
     }
 
-    public void setPivotTargetPosition(int position) {
-        leftPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
-        rightPivotMotor.setTargetPosition(position - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot));
-    }
-
     public double convertPivotTicksToAngle(double ticks) {
         return ticks * (360/537.7); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
     }
     public void movePivotWithoutEncoder(double power) {
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
     }
@@ -70,6 +60,6 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
-    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
+//    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
     public double getPivotPower() { return leftPivotMotor.getPower(); }
 }

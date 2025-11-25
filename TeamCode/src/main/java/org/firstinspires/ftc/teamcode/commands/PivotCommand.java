@@ -32,7 +32,11 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (limelightSubsystem.hasTarget()) {
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
+            pivotSubsystem.movePivotWithoutEncoder(-0.3);
+        }  if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
+            pivotSubsystem.resetPivotEncoder();
+        }  else if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
             double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
 
@@ -41,16 +45,7 @@ public class PivotCommand extends CommandBase {
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
 
-            pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
-            pivotSubsystem.setPivotPower(-output);
-        }
-
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
-            pivotSubsystem.movePivotWithoutEncoder(-0.3);
-        }
-
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            pivotSubsystem.resetPivotEncoder();
+            pivotSubsystem.setPivotPower(output);
         }
     }
 }

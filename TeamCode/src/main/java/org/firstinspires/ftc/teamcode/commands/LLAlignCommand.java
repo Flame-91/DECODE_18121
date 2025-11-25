@@ -31,13 +31,13 @@ public class LLAlignCommand extends CommandBase {
         double maxYawSpeed = 1;
         PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed);
 
-        addRequirements((Subsystem) this.mecanumDriveSubsystem);
+        addRequirements(this.mecanumDriveSubsystem);
     }
 
     @Override
     public void execute() {
         if (limelightSubsystem.hasTarget()) {
-            error = limelightSubsystem.getYawError(); // horizontal offset
+            error = -limelightSubsystem.getYawError(); // horizontal offset, negative since error is defined as target - current which is 0 - yawError = -yawError
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
@@ -45,7 +45,7 @@ public class LLAlignCommand extends CommandBase {
 
             output = PID.calculate(error, deltaTime);
 
-            mecanumDriveSubsystem.drive(0, 0, -output);
+            mecanumDriveSubsystem.drive(0, 0, output);
         }
     }
 
