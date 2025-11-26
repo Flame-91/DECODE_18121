@@ -14,6 +14,7 @@ public class GlobalConstants {
     public static double pivotKI = 0.005;
     public static double pivotKD = 0.0001;
     public static double pivotKF = 0.15;
+    public static double pivotShootingOffset = 0.42545;
 
     public static double flywheelKP = 1;
     public static double flywheelKI = 0.1;
