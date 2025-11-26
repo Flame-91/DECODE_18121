@@ -101,7 +101,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        if (limelightSubsystem.hasTarget()) {
+        if (limelightSubsystem.getBotPosePose3D() != null) {
             Pose3D botPose = limelightSubsystem.getBotPosePose3D();
             pedroCoordinates[0] = (39.3701*(botPose.getPosition().x)) + 72;
             pedroCoordinates[1] = (39.3701*(botPose.getPosition().y)) + 72;
