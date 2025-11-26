@@ -27,6 +27,7 @@ public class TeleOp extends OpMode {
     private PivotSubsystem pivotSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private GamepadEx driver;
+    private double[] pedroCoordinates;
     private DriveCommand driveCommand;
     private Follower follower;
     private IMU imu;
@@ -48,17 +49,17 @@ public class TeleOp extends OpMode {
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
-        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, limelightSubsystem);
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower);
         follower = Constants.createFollower(hardwareMap);
         Pose3D startingPose3d = limelightSubsystem.getBotPosePose3D();
-        double[] pedroStartingPose = {
+        pedroCoordinates = new double[]{
                 (39.3701*(startingPose3d.getPosition().x)) + 72,
                 (39.3701*(startingPose3d.getPosition().y)) + 72,
                 Math.toRadians(startingPose3d.getOrientation().getYaw()),
                 Math.toRadians(startingPose3d.getOrientation().getPitch()), //Are they radians and which one? (I used yaw)
                 Math.toRadians(startingPose3d.getOrientation().getRoll())
         };
-        follower.setStartingPose(new Pose(pedroStartingPose[0], pedroStartingPose[1], pedroStartingPose[2]));
+        follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
 
@@ -85,6 +86,7 @@ public class TeleOp extends OpMode {
         );
 
         pivotSubsystem.resetPivotEncoder();
+
     }
 
     @Override
@@ -99,6 +101,16 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
+        if (limelightSubsystem.hasTarget()) {
+            Pose3D botPose = limelightSubsystem.getBotPosePose3D();
+            pedroCoordinates[0] = (39.3701*(botPose.getPosition().x)) + 72;
+            pedroCoordinates[1] = (39.3701*(botPose.getPosition().y)) + 72;
+            pedroCoordinates[2] = Math.toRadians(botPose.getOrientation().getYaw());
+            pedroCoordinates[3] = Math.toRadians(botPose.getOrientation().getPitch());
+            pedroCoordinates[4] = Math.toRadians(botPose.getOrientation().getRoll());
+            follower.setPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
+            driveCommand.updateFollower(follower); //add more methods here to update individual command's followers, not sure if necessary but just in case
+        }
         // FTC Dashboard
         CommandScheduler.getInstance().run();
         dashboard.sendTelemetryPacket(telemetryPacket);
