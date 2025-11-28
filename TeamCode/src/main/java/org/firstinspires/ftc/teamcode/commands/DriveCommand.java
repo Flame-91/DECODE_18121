@@ -4,13 +4,10 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 public class DriveCommand extends CommandBase {
@@ -24,11 +21,13 @@ public class DriveCommand extends CommandBase {
     Pose beforeBase;
     private double heading;
     Follower follower;
+    private boolean knowPose;
 
-    public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive, Follower follower) {
+    public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive, Follower follower, boolean knowPose) {
         this.drive = drive;
         this.gamepad = gamepad;
         this.follower = follower;
+        this.knowPose = knowPose;
         blue_base = new Pose(105.331136738056, 33.21252059308073, Math.toRadians(90)); //Is it degrees???
         red_base = new Pose(38.66886326194399, 33.44975288303131, Math.toRadians(90)); //Is it degrees???
         beforeBase = new Pose(1, 1, 1); //to get rid of warning
@@ -104,10 +103,12 @@ public class DriveCommand extends CommandBase {
             drive.resetIMU();
         }
 
-        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON) && knowPose) {
             beforeBase = follower.getPose();
             heading = follower.getHeading();
             toBase = true;
+        } else if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+            gamepad.gamepad.rumble(1, 1, 500);
         }
     }
 
@@ -115,8 +116,13 @@ public class DriveCommand extends CommandBase {
         this.team = team;
     }
 
-    public void updateFollower(Follower follower) {
-        this.follower.setPose(follower.getPose());
+    public void updateFollower(Pose pose) {
+        follower.setPose(pose);
+    }
+
+    public void setFollowerStartingPose(Pose pose) {
+        follower.setStartingPose(pose);
+        knowPose = true;
     }
 
     @Override
