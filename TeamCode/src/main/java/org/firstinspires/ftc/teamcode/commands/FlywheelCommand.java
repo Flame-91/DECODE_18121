@@ -35,7 +35,7 @@ public class FlywheelCommand extends CommandBase {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower);
             if (motorElapsedTime.seconds() > 2.75) {
                 gamepad.gamepad.rumble(1, 1, 300);
-                motorElapsedTime.reset(); // thick
+                motorElapsedTime.reset();
             }
         } else {
             flyWheelSubsystem.runFlywheel(0);
@@ -43,6 +43,12 @@ public class FlywheelCommand extends CommandBase {
         }
 
         gamepad.readButtons();
+
+        if (gamepad.getButton(GamepadKeys.Button.Y)) {
+            flyWheelSubsystem.runFlywheelServos(1.0);
+            return;
+        }
+
         switch (currentState) {
             case IDLE:
                 flyWheelSubsystem.runFlywheelServos(0);
@@ -60,7 +66,6 @@ public class FlywheelCommand extends CommandBase {
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentState = ServoState.BREAK1;
-
                 }
                 break;
             case BREAK1:
