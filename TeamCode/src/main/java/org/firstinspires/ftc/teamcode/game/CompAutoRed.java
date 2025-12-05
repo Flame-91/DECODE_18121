@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -16,6 +17,7 @@ import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelSe
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 @Autonomous(name="CompAutoRed")
+@Configurable
 public class CompAutoRed extends OpMode {
     private AutoState currentState = AutoState.GO_TO_PRELOAD_SCORE;
     private ScoreState currentScoreState = ScoreState.RUN1;

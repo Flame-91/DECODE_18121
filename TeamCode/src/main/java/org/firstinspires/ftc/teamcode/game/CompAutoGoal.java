@@ -65,6 +65,7 @@ public class CompAutoGoal extends OpMode {
         if (scoreState != ScoreState.MOVE1 && scoreState != ScoreState.MOVE2) {
             flywheelSubsystem.runFlywheel(motorPower);
         }
+        follower.update();
 
         switch (scoreState) {
             case BREAK0:
@@ -113,15 +114,27 @@ public class CompAutoGoal extends OpMode {
                 if (elapsedTime.seconds() >= runTime) {
                     elapsedTime.reset();
                     pathStarted = false;
+                    scoreState = ScoreState.DELAY;
+                }
+                break;
+
+            case DELAY:
+                if (elapsedTime.seconds() >= 1.5) {
+                    pathStarted = false;
+                    elapsedTime.reset();
                     scoreState = ScoreState.MOVE1;
                 }
                 break;
 
             case MOVE1:
-                if (elapsedTime.seconds() <= 5) {
-                    mecanumDriveSubsystem.drive(0.3);
-                } else {
-                    mecanumDriveSubsystem.drive(0);
+                if (!pathStarted) {
+                    follower.followPath(paths.goal_blue);
+                    pathStarted = true;
+                }
+
+                if (!follower.isBusy()) {
+                    pathStarted = false;
+                    elapsedTime.reset();
                     scoreState = ScoreState.DONE;
                 }
                 break;
