@@ -35,7 +35,7 @@ public class FlywheelCommand extends CommandBase {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower);
             if (motorElapsedTime.seconds() > 2.75) {
                 gamepad.gamepad.rumble(1, 1, 300);
-                motorElapsedTime.reset();
+                motorElapsedTime.reset(); // thick
             }
         } else {
             flyWheelSubsystem.runFlywheel(0);
