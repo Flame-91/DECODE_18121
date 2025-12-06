@@ -306,7 +306,8 @@ public class BlueAuto extends OpMode {
                 flywheelSubsystem.setFlywheelServoPower(1);
                 if (servoElapsedTime.seconds() >= servoRuntime) {
                     servoElapsedTime.reset();
-                    scoreState = ScoreState.BREAK_2;
+                    scoreState = ScoreState.RUN_1;
+                    return true;
                 }
                 return false;
             case BREAK_2:

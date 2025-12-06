@@ -33,9 +33,12 @@ public class RedAuto extends OpMode {
     public static double servoRuntime = 0.4;
     public static double servoBreaktime1 = 0.75;
     public static double servoBreaktime2 = 1.5;
+
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final TelemetryPacket telemetryPacket = new TelemetryPacket();
+
     private boolean pathStarted = false;
+
     private enum AutoState {
         GO_TO_SCORE_1,
         SCORE_1,
@@ -112,7 +115,6 @@ public class RedAuto extends OpMode {
     @Override
     public void loop() {
         autoStateUpdate();
-        scoreStateUpdate();
         pivotUpdate();
         limelightUpdate();
         intakeUpdate();
@@ -304,7 +306,8 @@ public class RedAuto extends OpMode {
                 flywheelSubsystem.setFlywheelServoPower(1);
                 if (servoElapsedTime.seconds() >= servoRuntime) {
                     servoElapsedTime.reset();
-                    scoreState = ScoreState.BREAK_2;
+                    scoreState = ScoreState.RUN_1;
+                    return true;
                 }
                 return false;
             case BREAK_2:
