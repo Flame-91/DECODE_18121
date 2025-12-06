@@ -16,9 +16,4 @@ public class IntakeCommand extends CommandBase {
     public void execute() {
         intakeSubsystem.setIntakeServoPower(1);
     }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
 }

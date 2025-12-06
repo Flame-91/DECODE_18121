@@ -78,7 +78,7 @@ public class FlywheelCommand extends CommandBase {
             case RUN2:
                 flywheelSubsystem.setFlywheelServoPower(1);
                 if (flywheelServoTimer.seconds() >= flywheelServoRuntime) {
-                    currentState = FlywheelState.BREAK2;
+                    currentState = FlywheelState.IDLE;
                     flywheelServoTimer.reset();
                 }
                 break;
