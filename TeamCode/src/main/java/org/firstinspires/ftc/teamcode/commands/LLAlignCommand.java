@@ -4,10 +4,10 @@ import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKD;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.LLAlignKP;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.Subsystem;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
@@ -17,6 +17,7 @@ public class LLAlignCommand extends CommandBase {
     private final MecanumDriveSubsystem mecanumDriveSubsystem;
     private final LimelightSubsystem limelightSubsystem;
 
+    public double[] periodicMT2Pos;
     private final GamepadEx gamepad;
 
     PIDController PID; // Initialize pid controller
@@ -31,13 +32,13 @@ public class LLAlignCommand extends CommandBase {
         double maxYawSpeed = 1;
         PID = new PIDController(LLAlignKP, LLAlignKI, LLAlignKD, maxYawSpeed);
 
-        addRequirements((Subsystem) this.mecanumDriveSubsystem);
+        addRequirements(this.mecanumDriveSubsystem);
     }
 
     @Override
     public void execute() {
         if (limelightSubsystem.hasTarget()) {
-            error = limelightSubsystem.getYawError(); // horizontal offset
+            error = -limelightSubsystem.getYawError(); // horizontal offset, negative since error is defined as target - current which is 0 - yawError = -yawError
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
@@ -45,7 +46,7 @@ public class LLAlignCommand extends CommandBase {
 
             output = PID.calculate(error, deltaTime);
 
-            mecanumDriveSubsystem.drive(0, 0, -output);
+            mecanumDriveSubsystem.drive(0, 0, output);
         }
     }
 

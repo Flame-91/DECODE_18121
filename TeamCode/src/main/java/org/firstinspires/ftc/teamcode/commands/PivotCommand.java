@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKD;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKF;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKI;
 import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotKP;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotShootingOffset;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.command.CommandBase;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
@@ -32,25 +34,23 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (limelightSubsystem.hasTarget()) {
+        if (gamepad.getButton(GamepadKeys.Button.DPAD_LEFT)) {
+            pivotSubsystem.movePivotWithoutEncoder(-0.3);
+        } if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
+            pivotSubsystem.resetPivotEncoder();
+        } else if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
-            double pitchError = limelightSubsystem.getPitchError(0.42545) - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
+            double targetPosition = limelightSubsystem.getPitchError(pivotShootingOffset);
+            double pitchError = targetPosition - pivotPositionAngle;
 
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
+            double feedforward = pivotKF * targetPosition;
 
-            pivotSubsystem.setPivotTargetPosition(pivotSubsystem.convertPivotAngleToTicks(pitchError));
-            pivotSubsystem.setPivotPower(-output);
-        }
-
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-            pivotSubsystem.movePivotWithoutEncoder(-0.3);
-        }
-
-        if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-            pivotSubsystem.resetPivotEncoder();
+            double totalOutput = output + feedforward;
+            pivotSubsystem.setPivotPower(totalOutput);
         }
     }
 }

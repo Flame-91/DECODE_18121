@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.GlobalConstants;
@@ -51,7 +51,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     }
 
     public void drive(double x, double y, double rotation) {
-        double headingRadians = -(imu.getRobotYawPitchRollAngles().getYaw() + GlobalConstants.imuOffset) * Math.PI / 180.0;
+        double headingRadians = -(imu.getRobotYawPitchRollAngles().getYaw()) * Math.PI / 180.0;
 
         double rotatedX = x * Math.cos(headingRadians) - y * Math.sin(headingRadians);
         double rotatedY = x * Math.sin(headingRadians) + y * Math.cos(headingRadians);
@@ -71,6 +71,29 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
+    }
+
+    public void robotCentricDrive(double x, double y, double rotation) {
+        double frontLeftPower = y + x + rotation;
+        double frontRightPower = y - x - rotation;
+        double backLeftPower = y - x + rotation;
+        double backRightPower = y + x - rotation;
+
+        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower), Math.max(Math.abs(frontRightPower), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))));
+
+        frontLeftPower /= max;
+        frontRightPower /= max;
+        backLeftPower /= max;
+        backRightPower /= max;
+
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
+    }
+
+    public void resetIMU() {
+        imu.resetYaw();
     }
 
     public double getBackLeftMotorPower() { return backLeft.getPower(); }
