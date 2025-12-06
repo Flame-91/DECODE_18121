@@ -60,15 +60,13 @@ public class TeleOp extends OpMode {
                     (39.3701 * (startingPose3d.getPosition().x)) + 72,
                     (39.3701 * (startingPose3d.getPosition().y)) + 72,
                     Math.toRadians(startingPose3d.getOrientation().getYaw()),
-                    Math.toRadians(startingPose3d.getOrientation().getPitch()), //Are they radians and which one? (I used yaw)
-                    Math.toRadians(startingPose3d.getOrientation().getRoll())
             };
             follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
             knowPose = true;
         }
-        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, knowPose);
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, knowPose);
 
         mecanumDriveSubsystem.setDefaultCommand(
                 driveCommand
