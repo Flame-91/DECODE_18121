@@ -22,7 +22,7 @@ public class DriveCommand extends CommandBase {
     private double heading;
     Follower follower;
     private boolean knowPose;
-
+    private boolean pathInitiated;
     public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive, Follower follower, boolean knowPose) {
         this.drive = drive;
         this.gamepad = gamepad;
@@ -34,6 +34,7 @@ public class DriveCommand extends CommandBase {
         heading = 0.0;
         centric = "robot";
         team = "unselected";
+        pathInitiated = false;
         addRequirements(drive);
     }
 
@@ -41,42 +42,44 @@ public class DriveCommand extends CommandBase {
     public void execute() {
         gamepad.readButtons();
         if (toBase) {
-            if (team.equals("blue")) {
-                PathChain bluePath = follower
-                        .pathBuilder()
-                        .addPath(new BezierLine(beforeBase, blue_base))
-                        .setLinearHeadingInterpolation(heading, 90)
-                        .setTranslationalConstraint(1.5)
-                        .setHeadingConstraint(Math.toRadians(5))
-                        .setVelocityConstraint(2)
-                        .setTValueConstraint(0.98)
-                        .setTimeoutConstraint(300)
-                        .build();
-                follower.followPath(bluePath);
-                if (!follower.isBusy()) {
+            if (!pathInitiated) {
+                if (team.equals("blue")) {
+                    PathChain bluePath = follower
+                            .pathBuilder()
+                            .addPath(new BezierLine(beforeBase, blue_base))
+                            .setLinearHeadingInterpolation(heading, 90)
+                            .setTranslationalConstraint(1.5)
+                            .setHeadingConstraint(Math.toRadians(5))
+                            .setVelocityConstraint(2)
+                            .setTValueConstraint(0.98)
+                            .setTimeoutConstraint(300)
+                            .build();
+                    follower.followPath(bluePath);
+                    if (!follower.isBusy()) {
+                        toBase = false;
+                    }
+                } else if (team.equals("red")) {
+                    PathChain redPath = follower
+                            .pathBuilder()
+                            .addPath(new BezierLine(beforeBase, red_base))
+                            .setLinearHeadingInterpolation(heading, 90)
+                            .setTranslationalConstraint(1.5)
+                            .setHeadingConstraint(Math.toRadians(5))
+                            .setVelocityConstraint(2)
+                            .setTValueConstraint(0.98)
+                            .setTimeoutConstraint(300)
+                            .build();
+                    follower.followPath(redPath);
+                    if (!follower.isBusy()) {
+                        toBase = false;
+                    }
+                } else if (team.equals("unselected")) {
+                    gamepad.gamepad.rumble(1, 1, 500); //means no team selected, have to go manually
                     toBase = false;
                 }
-            } else if (team.equals("red")) {
-                PathChain redPath = follower
-                        .pathBuilder()
-                        .addPath(new BezierLine(beforeBase, red_base))
-                        .setLinearHeadingInterpolation(heading, 90)
-                        .setTranslationalConstraint(1.5)
-                        .setHeadingConstraint(Math.toRadians(5))
-                        .setVelocityConstraint(2)
-                        .setTValueConstraint(0.98)
-                        .setTimeoutConstraint(300)
-                        .build();
-                follower.followPath(redPath);
-                if (!follower.isBusy()) {
+                if (gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)) {
                     toBase = false;
                 }
-            } else if (team.equals("unselected")) {
-                gamepad.gamepad.rumble(1, 1, 500); //means no team selected, have to go manually
-                toBase = false;
-            }
-            if (gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)) {
-                toBase = false;
             }
         } else {
             double x = gamepad.getLeftX();
@@ -103,13 +106,14 @@ public class DriveCommand extends CommandBase {
             drive.resetIMU();
         }
 
-        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON) && knowPose) {
+        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON) && knowPose && !toBase) {
             beforeBase = follower.getPose();
             heading = follower.getHeading();
             toBase = true;
         } else if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
             gamepad.gamepad.rumble(1, 1, 500);
         }
+        follower.update();
     }
 
     public void changeTeam(String team) {

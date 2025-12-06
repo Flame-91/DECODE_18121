@@ -47,9 +47,9 @@ public class PivotCommand extends CommandBase {
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
-            double feedforward = pivotKF * targetPosition;
+            double feedForward = pivotKF * Math.cos(Math.toRadians(targetPosition));
 
-            double totalOutput = output + feedforward;
+            double totalOutput = output +  feedForward;
             pivotSubsystem.setPivotPower(totalOutput);
         }
     }

@@ -119,6 +119,7 @@ public class RedAuto extends OpMode {
         limelightUpdate();
         intakeUpdate();
         flywheelMotorUpdate();
+        follower.update();
 
         telemetry.addData("Current autoState", autoState);
         telemetry.addData("Current scoreState", scoreState);
@@ -339,7 +340,7 @@ public class RedAuto extends OpMode {
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
             lastTime = currentTime;
             double output = pivotPIDController.calculate(pitchError, deltaTime);
-            double feedForward = pivotKF * targetPosition;
+            double feedForward = pivotKF * Math.cos(Math.toRadians(targetPosition));
 
             totalPivotOutput = output + feedForward;
             pivotSubsystem.setPivotPower(totalPivotOutput);
