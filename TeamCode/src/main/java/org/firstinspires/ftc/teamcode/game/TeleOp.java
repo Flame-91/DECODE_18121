@@ -23,7 +23,6 @@ public class TeleOp extends OpMode {
     private MecanumDriveSubsystem mecanumDriveSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private FlywheelSubsystem flywheelSubsystem;
-    private PivotSubsystem pivotSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private GamepadEx driver;
     private double[] pedroCoordinates;
@@ -46,7 +45,6 @@ public class TeleOp extends OpMode {
         mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap, imu, telemetry, telemetryPacket);
         limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
-        pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
         follower = Constants.createFollower(hardwareMap);
@@ -71,11 +69,6 @@ public class TeleOp extends OpMode {
         mecanumDriveSubsystem.setDefaultCommand(
                 driveCommand
         );
-
-        pivotSubsystem.setDefaultCommand(
-                new PivotCommand(driver, pivotSubsystem, limelightSubsystem)
-        );
-
         intakeSubsystem.setDefaultCommand(
                 new IntakeCommand(intakeSubsystem)
         );
@@ -89,9 +82,6 @@ public class TeleOp extends OpMode {
         flywheelSubsystem.setDefaultCommand(
                 new FlywheelCommand(driver, flywheelSubsystem)
         );
-
-        pivotSubsystem.resetPivotEncoder();
-
     }
 
     @Override
@@ -114,7 +104,7 @@ public class TeleOp extends OpMode {
             pedroCoordinates[3] = Math.toRadians(botPose.getOrientation().getPitch());
             pedroCoordinates[4] = Math.toRadians(botPose.getOrientation().getRoll());
             follower.setPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
-            driveCommand.updateFollower(follower.getPose()); //add more methods here to update individual command's followers, not sure if necessary but just in case
+            driveCommand.updateFollower(follower.getPose()); // add more methods here to update individual command's followers, not sure if necessary but just in case
         } else if (limelightSubsystem.getBotPosePose3D() != null && !knowPose) {
             Pose3D botPose = limelightSubsystem.getBotPosePose3D();
             pedroCoordinates[0] = (39.3701*(botPose.getPosition().x)) + 72;
@@ -125,6 +115,7 @@ public class TeleOp extends OpMode {
             follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
             driveCommand.setFollowerStartingPose(follower.getPose());
         }
+
         // FTC Dashboard
         CommandScheduler.getInstance().run();
         dashboard.sendTelemetryPacket(telemetryPacket);
