@@ -81,7 +81,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getYawError() {
         if (hasTarget()) {
             double d = getHorizontalDistanceMeters();
-            double l = d * Math.tan(Math.toRadians(result.getTx()));
+            double l = d * Math.tan(Math.toRadians(result.getTy()));
             double w = l - limelightHorizontalOffsetMeters;
             return Math.atan(Math.toRadians(d/w));
         }
@@ -91,7 +91,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
     public double getPitchError() {
         if (hasTarget()) {
-            return result.getTy();
+            return -result.getTx();
         }
         return -361.0;
     }
@@ -104,10 +104,11 @@ public class LimelightSubsystem extends SubsystemBase {
         return -361.0;
     }
 
+    // Returns horizontal distance to goal in meters, or -1 if no target
     public double getHorizontalDistanceMeters() {
         if (hasTarget()) {
             double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
-            double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+            double angleToGoalRadians = Math.toRadians(angleToGoalDegrees);
 
             return (goalHeightMeters - limelightLensHeightMeters) / Math.tan(angleToGoalRadians);
         }
