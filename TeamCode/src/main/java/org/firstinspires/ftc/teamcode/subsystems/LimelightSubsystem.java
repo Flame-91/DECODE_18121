@@ -11,7 +11,6 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.util.GlobalConstants;
 
 import java.util.List;
 
@@ -49,12 +48,12 @@ public class LimelightSubsystem extends SubsystemBase {
 
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
-        telemetry.addData("pitchError", getPitchError());
+        telemetry.addData("pitchError", getPitchErrorDegrees());
         telemetry.addData("botPose", getBotPose());
 
         telemetryPacket.put("hasTarget", hasTarget());
         telemetryPacket.put("getAprilTagID", getAprilTagID());
-        telemetryPacket.put("PitchError", getPitchError());
+        telemetryPacket.put("PitchError", getPitchErrorDegrees());
         telemetryPacket.put("botPose", getBotPose());
     }
 
@@ -78,28 +77,31 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     // Returns horizontal angle to target (yaw) in degrees, or -361 if no target
-    public double getYawError() {
+    public double getYawErrorDegrees() {
         if (hasTarget()) {
             double d = getHorizontalDistanceMeters();
-            double l = d * Math.tan(Math.toRadians(result.getTy()));
+            double l = d * Math.tan(Math.toRadians(result.getTy())); // ty since limelight is mounted vertically
             double w = l - limelightHorizontalOffsetMeters;
-            return Math.atan(Math.toRadians(d/w));
+            return Math.toDegrees(Math.atan(d/w));
         }
         return -361.0;
     }
 
     // Returns vertical angle to target (pitch) in degrees, or -361 if no target
-    public double getPitchError() {
+    public double getPitchErrorDegrees() {
         if (hasTarget()) {
-            return -result.getTx();
+            return -result.getTx(); // tx since limelight is mounted vertically, and negative since left is up
         }
         return -361.0;
     }
 
-    public double getPitchError(double offsetMeters) {
+    public double getPitchErrorDegrees(double offsetMeters) {
         if (hasTarget()) {
             double horizontalDistanceMeters = getHorizontalDistanceMeters();
-            return Math.atan(Math.toRadians(((distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters) / horizontalDistanceMeters));
+
+            double heightDifference = (distanceFromFloorToTagMeters - limelightLensHeightMeters) + offsetMeters;
+
+            return Math.toDegrees(Math.atan(heightDifference / horizontalDistanceMeters));
         }
         return -361.0;
     }
@@ -107,7 +109,7 @@ public class LimelightSubsystem extends SubsystemBase {
     // Returns horizontal distance to goal in meters, or -1 if no target
     public double getHorizontalDistanceMeters() {
         if (hasTarget()) {
-            double angleToGoalDegrees = limelightMountAngleDegrees + getPitchError();
+            double angleToGoalDegrees = limelightMountAngleDegrees + getPitchErrorDegrees();
             double angleToGoalRadians = Math.toRadians(angleToGoalDegrees);
 
             return (goalHeightMeters - limelightLensHeightMeters) / Math.tan(angleToGoalRadians);
@@ -116,7 +118,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     private boolean isObelisk() {
-         return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
+        return getAprilTagID() == 21 || getAprilTagID() == 22 || getAprilTagID() == 23;
     }
     // returns the robot's center's position on the field if limelight can see an april tag
 
@@ -126,7 +128,14 @@ public class LimelightSubsystem extends SubsystemBase {
             result = limelight.getLatestResult();
             Pose3D botPose = result.getBotpose_MT2();
             limelight.pipelineSwitch(0);
-            return new double[]{botPose.getPosition().x, botPose.getPosition().y, botPose.getPosition().z, botPose.getOrientation().getRoll(), botPose.getOrientation().getPitch(), botPose.getOrientation().getYaw()};  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+            return new double[] {
+                    botPose.getPosition().x,
+                    botPose.getPosition().y,
+                    botPose.getPosition().z,
+                    botPose.getOrientation().getRoll(),
+                    botPose.getOrientation().getPitch(),
+                    botPose.getOrientation().getYaw()
+            };  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
         }
         return new double[]{};
     }

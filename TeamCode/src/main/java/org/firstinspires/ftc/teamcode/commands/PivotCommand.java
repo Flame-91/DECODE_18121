@@ -40,7 +40,7 @@ public class PivotCommand extends CommandBase {
             pivotSubsystem.resetPivotEncoder();
         } else if (limelightSubsystem.hasTarget()) {
             double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPositionAngle());
-            double targetPosition = limelightSubsystem.getPitchError(pivotShootingOffset);
+            double targetPosition = limelightSubsystem.getPitchErrorDegrees(pivotShootingOffset);
             double pitchError = targetPosition - pivotPositionAngle;
 
             long currentTime = System.nanoTime();

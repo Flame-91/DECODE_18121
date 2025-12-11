@@ -38,7 +38,7 @@ public class LLAlignCommand extends CommandBase {
     @Override
     public void execute() {
         if (limelightSubsystem.hasTarget()) {
-            error = -limelightSubsystem.getYawError(); // horizontal offset, negative since error is defined as target - current which is 0 - yawError = -yawError
+            error = -limelightSubsystem.getYawErrorDegrees(); // horizontal offset, negative since error is defined as target - current which is 0 - yawError = -yawError
             long currentTime = System.nanoTime();
             double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
 
