@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotTicksAtFortyFive;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.pivotTicksAtNinety;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -31,10 +34,12 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("pivotPower", getPivotPower());
-        telemetry.addData("currentPivotPosition", getCurrentPivotPosition());
+        telemetry.addData("currentPivotPositionAngle", getCurrentPivotPositionAngle());
+        telemetry.addData("currentPivotPositionTicks", getCurrentPivotPositionTicks());
 
         telemetryPacket.put("pivotPower", getPivotPower());
-        telemetryPacket.put("currentPivotPosition", getCurrentPivotPosition());
+        telemetryPacket.put("currentPivotPositionAngle", getCurrentPivotPositionAngle());
+        telemetryPacket.put("currentPivotPositionTicks", getCurrentPivotPositionTicks());
     }
 
     public void setPivotPower(double power) {
@@ -42,9 +47,6 @@ public class PivotSubsystem extends SubsystemBase {
         rightPivotMotor.setPower(power);
     }
 
-    public double convertPivotTicksToAngle(double ticks) {
-        return ticks * (360/384.5); // 384.5 is PPR of motor (resolution of encoder) and this value depends on which motor we r using but the PPR is available on GoBilda.com
-    }
     public void movePivotWithoutEncoder(double power) {
         leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
@@ -55,11 +57,16 @@ public class PivotSubsystem extends SubsystemBase {
         leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public int convertPivotAngleToTicks(double angle) {
-        return (int) (angle * (384.5/360));
+    public double convertPivotTicksToAngle(double ticks) {
+        return (int) ((int) ticks*(45 / (pivotTicksAtNinety-pivotTicksAtFortyFive)));
     }
 
-    public double getCurrentPivotPosition() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
-//    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
+    public int convertPivotAngleToTicks(double angle) {
+        return (int) ((int) angle*((pivotTicksAtNinety-pivotTicksAtFortyFive) / 45));
+    }
+
+    public double getCurrentPivotPositionTicks() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
+    public double getCurrentPivotPositionAngle() { return convertPivotTicksToAngle(leftPivotMotor.getCurrentPosition()) - offsetAngleFromLimelightToPivot; }
+    //    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
     public double getPivotPower() { return leftPivotMotor.getPower(); }
 }
