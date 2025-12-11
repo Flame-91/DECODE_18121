@@ -126,6 +126,7 @@ public class TeleOp extends OpMode {
             driveCommand.setFollowerStartingPose(follower.getPose());
         }
         // FTC Dashboard
+        driver.readButtons();
         CommandScheduler.getInstance().run();
         dashboard.sendTelemetryPacket(telemetryPacket);
         telemetry.update();
