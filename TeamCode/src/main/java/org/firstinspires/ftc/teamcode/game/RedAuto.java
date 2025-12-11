@@ -332,7 +332,7 @@ public class RedAuto extends OpMode {
 
     public void pivotUpdate() {
         if (limelightSubsystem.hasTarget()) {
-            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPosition());
+            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPositionAngle());
             double targetPosition = limelightSubsystem.getPitchError(0.42545);
             double pitchError = targetPosition - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
 
