@@ -19,10 +19,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.FlywheelSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.PivotSubsystem;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.firstinspires.ftc.teamcode.util.Paths.BluePaths;
 
@@ -69,10 +65,10 @@ public class BlueAuto extends OpMode {
 
     private AutoState autoState;
     private ScoreState scoreState;
-    FlywheelSubsystem flywheelSubsystem;
-    IntakeSubsystem intakeSubsystem;
-    LimelightSubsystem limelightSubsystem;
-    PivotSubsystem pivotSubsystem;
+//    FlywheelSubsystem flywheelSubsystem;
+//    IntakeSubsystem intakeSubsystem;
+//    LimelightSubsystem limelightSubsystem;
+//    PivotSubsystem pivotSubsystem;
     double totalPivotOutput;
     private IMU imu;
     ElapsedTime servoElapsedTime;
@@ -94,9 +90,9 @@ public class BlueAuto extends OpMode {
 
         autoState = AutoState.GO_TO_SCORE_1;
         scoreState = ScoreState.RUN_1;
-        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
-        limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
+//        flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
+//        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
+//        limelightSubsystem = new LimelightSubsystem(hardwareMap, imu, telemetry, telemetryPacket, dashboard);
 
         servoElapsedTime = new ElapsedTime();
         follower = Constants.createFollower(hardwareMap);
@@ -115,10 +111,10 @@ public class BlueAuto extends OpMode {
     @Override
     public void loop() {
         autoStateUpdate();
-        pivotUpdate();
-        limelightUpdate();
-        intakeUpdate();
-        flywheelMotorUpdate();
+//        pivotUpdate();
+//        limelightUpdate();
+//        intakeUpdate();
+//        flywheelMotorUpdate();
         follower.update();
 
         telemetry.addData("Current autoState", autoState);
@@ -146,7 +142,9 @@ public class BlueAuto extends OpMode {
                 break;
 
             case SCORE_1:
-                if (scoreStateUpdate()) { autoState = AutoState.GO_TO_RELOAD_1_1; }
+//                if{
+                autoState = AutoState.GO_TO_RELOAD_1_1;
+//                }
                 break;
 
             case GO_TO_RELOAD_1_1:
@@ -173,7 +171,7 @@ public class BlueAuto extends OpMode {
 
             case GO_TO_SCORE_2:
                 if (!pathStarted) {
-                    follower.followPath(paths.score_2) ;
+                    follower.followPath(paths.score_2);
                     pathStarted = true;
                 }
                 if (!follower.isBusy()) {
@@ -184,7 +182,8 @@ public class BlueAuto extends OpMode {
                 break;
 
             case SCORE_2:
-                if (scoreStateUpdate()) { autoState = AutoState.GO_TO_RELOAD_2_1; }
+                autoState = AutoState.GO_TO_RELOAD_2_1;
+
                 break;
 
             case GO_TO_RELOAD_2_1:
@@ -222,7 +221,7 @@ public class BlueAuto extends OpMode {
                 break;
 
             case SCORE_3:
-                if (scoreStateUpdate()) { autoState = AutoState.GATE; }
+                autoState = AutoState.GATE;
                 break;
 
             case GATE:
@@ -278,7 +277,7 @@ public class BlueAuto extends OpMode {
                 break;
 
             case SCORE_4:
-                if (scoreStateUpdate()) { autoState = AutoState.DONE; }
+                autoState = AutoState.DONE;
                 break;
 
             case DONE:
@@ -286,83 +285,84 @@ public class BlueAuto extends OpMode {
                 break;
         }
     }
-
-    public boolean scoreStateUpdate() {
-        switch (scoreState) {
-            case RUN_1:
-                flywheelSubsystem.setFlywheelServoPower(1);
-                if (servoElapsedTime.seconds() >= servoRuntime) {
-                    servoElapsedTime.reset();
-                    scoreState = ScoreState.BREAK_1;
-                }
-                return false;
-            case BREAK_1:
-                flywheelSubsystem.setFlywheelServoPower(0);
-                if (servoElapsedTime.seconds() >= servoBreaktime1) {
-                    servoElapsedTime.reset();
-                    scoreState = ScoreState.RUN_2;
-                }
-                return false;
-            case RUN_2:
-                flywheelSubsystem.setFlywheelServoPower(1);
-                if (servoElapsedTime.seconds() >= servoRuntime) {
-                    servoElapsedTime.reset();
-                    scoreState = ScoreState.RUN_1;
-                    return true;
-                }
-                return false;
-            case BREAK_2:
-                flywheelSubsystem.setFlywheelServoPower(0);
-                if (servoElapsedTime.seconds() >= servoBreaktime2) {
-                    servoElapsedTime.reset();
-                    scoreState = ScoreState.RUN_3;
-                }
-                return false;
-            case RUN_3:
-                flywheelSubsystem.setFlywheelServoPower(1);
-                if (servoElapsedTime.seconds() >= servoRuntime) {
-                    servoElapsedTime.reset();
-                    scoreState = ScoreState.RUN_1;
-                    return true;
-                }
-                return false;
-        }
-        return false;
-    }
-
-    public void pivotUpdate() {
-        if (limelightSubsystem.hasTarget()) {
-            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPositionAngle());
-            double targetPosition = limelightSubsystem.getPitchError(0.42545);
-            double pitchError = targetPosition - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
-
-            long currentTime = System.nanoTime();
-            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
-            lastTime = currentTime;
-            double output = pivotPIDController.calculate(pitchError, deltaTime);
-            double feedForward = pivotKF * Math.cos(Math.toRadians(targetPosition));
-
-            totalPivotOutput = output + feedForward;
-            pivotSubsystem.setPivotPower(totalPivotOutput);
-        }
-    }
-
-    public void limelightUpdate() {
-        if (!limelightSubsystem.hasTarget()) return;
-        Pose3D currentPosition = limelightSubsystem.getBotPosePose3D(); // gets position of robot using limelight MT2 (very very accurate)
-        if (currentPosition == null) return; // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
-        double xInches = (currentPosition.getPosition().x * 39.3701) + 72; // converts meters to inches and adding 72 for pedro coordinates
-        double yInches = (currentPosition.getPosition().y * 39.3701) + 72;
-        double heading = Math.toRadians(currentPosition.getOrientation().getYaw()); // outputs in degrees, so converting to radians for pedro
-        Pose currentPose = new Pose(xInches, yInches, heading);
-        follower.setPose(currentPose);
-    }
-
-    public void intakeUpdate() {
-        intakeSubsystem.setIntakeServoPower(1); // add more here to customize
-    }
-
-    public void flywheelMotorUpdate() {
-        flywheelSubsystem.setFlywheelMotorPower(1); // add more here to customize
-    }
 }
+
+//    public boolean scoreStateUpdate() {
+//        switch (scoreState) {
+//            case RUN_1:
+//                flywheelSubsystem.setFlywheelServoPower(1);
+//                if (servoElapsedTime.seconds() >= servoRuntime) {
+//                    servoElapsedTime.reset();
+//                    scoreState = ScoreState.BREAK_1;
+//                }
+//                return false;
+//            case BREAK_1:
+//                flywheelSubsystem.setFlywheelServoPower(0);
+//                if (servoElapsedTime.seconds() >= servoBreaktime1) {
+//                    servoElapsedTime.reset();
+//                    scoreState = ScoreState.RUN_2;
+//                }
+//                return false;
+//            case RUN_2:
+//                flywheelSubsystem.setFlywheelServoPower(1);
+//                if (servoElapsedTime.seconds() >= servoRuntime) {
+//                    servoElapsedTime.reset();
+//                    scoreState = ScoreState.RUN_1;
+//                    return true;
+//                }
+//                return false;
+//            case BREAK_2:
+//                flywheelSubsystem.setFlywheelServoPower(0);
+//                if (servoElapsedTime.seconds() >= servoBreaktime2) {
+//                    servoElapsedTime.reset();
+//                    scoreState = ScoreState.RUN_3;
+//                }
+//                return false;
+//            case RUN_3:
+//                flywheelSubsystem.setFlywheelServoPower(1);
+//                if (servoElapsedTime.seconds() >= servoRuntime) {
+//                    servoElapsedTime.reset();
+//                    scoreState = ScoreState.RUN_1;
+//                    return true;
+//                }
+//                return false;
+//        }
+//        return false;
+//    }
+//
+//    public void pivotUpdate() {
+//        if (limelightSubsystem.hasTarget()) {
+//            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPositionAngle());
+//            double targetPosition = limelightSubsystem.getPitchError(0.42545);
+//            double pitchError = targetPosition - pivotPositionAngle; // 0.42545 is how far up from the center of the april tag we need to shoot
+//
+//            long currentTime = System.nanoTime();
+//            double deltaTime = (currentTime - lastTime) / 1_000_000_000.0;
+//            lastTime = currentTime;
+//            double output = pivotPIDController.calculate(pitchError, deltaTime);
+//            double feedForward = pivotKF * Math.cos(Math.toRadians(targetPosition));
+//
+//            totalPivotOutput = output + feedForward;
+//            pivotSubsystem.setPivotPower(totalPivotOutput);
+//        }
+//    }
+//
+//    public void limelightUpdate() {
+//        if (!limelightSubsystem.hasTarget()) return;
+//        Pose3D currentPosition = limelightSubsystem.getBotPosePose3D(); // gets position of robot using limelight MT2 (very very accurate)
+//        if (currentPosition == null) return; // current position is null if its looking at an obelisk (since obelisk is not meant for precision localization)
+//        double xInches = (currentPosition.getPosition().x * 39.3701) + 72; // converts meters to inches and adding 72 for pedro coordinates
+//        double yInches = (currentPosition.getPosition().y * 39.3701) + 72;
+//        double heading = Math.toRadians(currentPosition.getOrientation().getYaw()); // outputs in degrees, so converting to radians for pedro
+//        Pose currentPose = new Pose(xInches, yInches, heading);
+//        follower.setPose(currentPose);
+//    }
+//
+//    public void intakeUpdate() {
+//        intakeSubsystem.setIntakeServoPower(1); // add more here to customize
+//    }
+//
+//    public void flywheelMotorUpdate() {
+//        flywheelSubsystem.setFlywheelMotorPower(1); // add more here to customize
+//    }
+//}
