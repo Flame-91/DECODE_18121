@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.game;
 
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorPower2A;
 import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorPower3A;
-import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorRevA;
-import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorRevB;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -19,7 +17,7 @@ public class CompAutoRedGoal extends OpMode {
     double flywheelServoRuntimeA = FlywheelCommand.flywheelServoRuntimeA;
     double flywheelServoBreaktime1A = FlywheelCommand.flywheelServoBreaktime1A;
     double flywheelServoBreaktime2A = FlywheelCommand.flywheelServoBreaktime2A;
-    double revTimeA = flywheelMotorRevA;
+    double revTimeA = FlywheelCommand.revTimeA;
     double delay = 1.0;
     double moveTime = 2.5;
     private MecanumDriveSubsystem mecanumDriveSubsystem;
