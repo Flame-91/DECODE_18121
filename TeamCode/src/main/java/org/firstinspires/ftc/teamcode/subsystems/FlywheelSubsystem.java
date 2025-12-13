@@ -27,8 +27,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         rightFlywheelServo.setDirection(DcMotorSimple.Direction.FORWARD);
         leftFlywheelServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFlywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFlywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFlywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFlywheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         this.telemetry = telemetry;
         this.telemetryPacket = telemetryPacket;
@@ -52,7 +52,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     public void setFlywheelServoPower(double power) {
         leftFlywheelServo.setPower(power);
-        rightFlywheelMotor.setPower(power);
+        rightFlywheelServo.setPower(power);
     }
 
     public double getLeftFlywheelMotorPower() { return leftFlywheelMotor.getPower(); }

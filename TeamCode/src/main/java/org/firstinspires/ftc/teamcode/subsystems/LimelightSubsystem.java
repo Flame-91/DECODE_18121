@@ -19,10 +19,10 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
     private final double distanceFromFloorToTagMeters = .7051; // correct (available in documentation)
-    private final double limelightLensHeightMeters = 0.254; // v1
+    private final double limelightLensHeightMeters = 0.36; // v1
     private final double limelightMountAngleDegrees = 15; // v1 (angle back)
     private final double goalHeightMeters = 0.7493; // correct (available in documentation)
-    private final double limelightHorizontalOffsetMeters = 0.196; // v1 offset left or right from center of lens to center of robot in meters
+    private final double limelightHorizontalOffsetMeters = -0.1945; // v1 offset left or right from center of lens to center of robot in meters
     private final IMU imu;
     LLResult result;
     public LimelightSubsystem(HardwareMap hardwareMap, IMU imu, Telemetry telemetry, TelemetryPacket telemetryPacket, FtcDashboard dashboard) {
@@ -49,12 +49,15 @@ public class LimelightSubsystem extends SubsystemBase {
         telemetry.addData("hasTarget", hasTarget());
         telemetry.addData("getAprilTagID", getAprilTagID());
         telemetry.addData("pitchError", getPitchErrorDegrees());
-        telemetry.addData("botPose", getBotPose());
+        telemetry.addData("yawError", getYawErrorDegrees());
+//        telemetry.addData("botPose", getBotPose());
 
         telemetryPacket.put("hasTarget", hasTarget());
         telemetryPacket.put("getAprilTagID", getAprilTagID());
         telemetryPacket.put("PitchError", getPitchErrorDegrees());
-        telemetryPacket.put("botPose", getBotPose());
+        telemetryPacket.put("yawError", getYawErrorDegrees());
+        telemetryPacket.put("-ty", -result.getTy());
+//        telemetryPacket.put("botPose", getBotPose());
     }
 
     // Returns true if any target is visible
@@ -80,7 +83,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getYawErrorDegrees() {
         if (hasTarget()) {
             double d = getHorizontalDistanceMeters();
-            double l = d * Math.tan(Math.toRadians(result.getTy())); // ty since limelight is mounted vertically
+            double l = d * Math.tan(Math.toRadians(-(90-result.getTy()))); // ty since limelight is mounted vertically
             double w = l - limelightHorizontalOffsetMeters;
             return Math.toDegrees(Math.atan(d/w));
         }
@@ -122,35 +125,35 @@ public class LimelightSubsystem extends SubsystemBase {
     }
     // returns the robot's center's position on the field if limelight can see an april tag
 
-    public double[] getBotPose() {
-        if (hasTarget() && !isObelisk()) {
-            limelight.pipelineSwitch(1);
-            result = limelight.getLatestResult();
-            Pose3D botPose = result.getBotpose_MT2();
-            limelight.pipelineSwitch(0);
-            return new double[] {
-                    botPose.getPosition().x,
-                    botPose.getPosition().y,
-                    botPose.getPosition().z,
-                    botPose.getOrientation().getRoll(),
-                    botPose.getOrientation().getPitch(),
-                    botPose.getOrientation().getYaw()
-            };  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
-        }
-        return new double[]{};
-    }
+//    public double[] getBotPose() {
+//        if (hasTarget() && !isObelisk()) {
+//            limelight.pipelineSwitch(1);
+//            result = limelight.getLatestResult();
+//            Pose3D botPose = result.getBotpose_MT2();
+//            limelight.pipelineSwitch(0);
+//            return new double[] {
+//                    botPose.getPosition().x,
+//                    botPose.getPosition().y,
+//                    botPose.getPosition().z,
+//                    botPose.getOrientation().getRoll(),
+//                    botPose.getOrientation().getPitch(),
+//                    botPose.getOrientation().getYaw()
+//            };  // returns [x,y,z,roll,pitch,yaw] so getBotPose()[4] is pitch
+//        }
+//        return new double[]{};
+//    }
 
     // returns robot's center's position on field if ll can see april tag in Pose3D instead of double[] and returns null if LL can't see april tag
-    public Pose3D getBotPosePose3D() {
-        if (hasTarget() && !isObelisk()) {
-            limelight.pipelineSwitch(1);
-            result = limelight.getLatestResult();
-            Pose3D botPose = result.getBotpose_MT2();
-            limelight.pipelineSwitch(0);
-            return botPose;
-        }
-        return null;
-    }
+//    public Pose3D getBotPosePose3D() {
+//        if (hasTarget() && !isObelisk()) {
+//            limelight.pipelineSwitch(1);
+//            result = limelight.getLatestResult();
+//            Pose3D botPose = result.getBotpose_MT2();
+//            limelight.pipelineSwitch(0);
+//            return botPose;
+//        }
+//        return null;
+//    }
 
     // Returns the motif pattern based on AprilTag ID
     public String[] motif() {
