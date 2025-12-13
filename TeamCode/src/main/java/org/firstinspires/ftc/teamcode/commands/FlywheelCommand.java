@@ -11,10 +11,10 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = 0.525; // public static for panels
-    public static double flywheelServoRuntime = 0.18;
-    public static double flywheelServoBreaktime1 = 1.2;
-    public static double flywheelServoBreaktime2 = 1.8;
+    public static double flywheelMotorPower = 0.47; // public static for panels
+    public static double flywheelServoRuntime = 0.2;
+    public static double flywheelServoBreaktime1 = 1.5;
+    public static double flywheelServoBreaktime2 = 2.1;
     private final GamepadEx gamepad;
     private final ElapsedTime servoElapsedTime;
     private final ElapsedTime motorElapsedTime;

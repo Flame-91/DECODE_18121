@@ -99,10 +99,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         return backRight.getPower();
     }
 
-    public void drive(double power) {
-        frontLeft.setPower(-power);
-        frontRight.setPower(-1.5*power);
-        backLeft.setPower(-power);
-        backRight.setPower(-1.5*power);
+    public void drive(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
     }
 }

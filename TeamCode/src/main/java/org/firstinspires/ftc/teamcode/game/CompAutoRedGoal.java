@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.commands.FlywheelCommand;
 import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
-@Autonomous(name = "CompAutoBlueGoal")
-public class CompAutoBlueGoal extends OpMode {
+@Autonomous(name = "CompAutoRedGoal")
+public class CompAutoRedGoal extends OpMode {
     double motorPower = FlywheelCommand.flywheelMotorPower;
     double servoRun = FlywheelCommand.flywheelServoRuntime;
     double break1 = FlywheelCommand.flywheelServoBreaktime1;
@@ -111,7 +111,7 @@ public class CompAutoBlueGoal extends OpMode {
 
             case MOVE:
                 flyWheelSubsystem.runFlywheelServos(0);
-                mecanumDriveSubsystem.drive(-0.25, -0.4, -0.25, -0.4);
+                mecanumDriveSubsystem.drive(-0.4, -0.25, -0.4, -0.25);
                 if (elapsedTime.seconds() >= moveTime) {
                     elapsedTime.reset();
                     scoreState = ScoreState.DONE;

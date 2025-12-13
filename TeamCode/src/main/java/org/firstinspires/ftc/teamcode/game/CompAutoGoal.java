@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.util.Paths;
 @Configurable
 public class CompAutoGoal extends OpMode {
     private static double breakTime = 3;
-    private static double motorPower = 0.4867;
+    private static double motorPower = 0.4867; //0.5175??
     private static double runTime = FlywheelCommand.flywheelServoRuntime;
     Follower follower;
     Paths paths;
@@ -127,14 +127,10 @@ public class CompAutoGoal extends OpMode {
                 break;
 
             case MOVE1:
-                if (!pathStarted) {
-                    follower.followPath(paths.goal_blue);
-                    pathStarted = true;
-                }
-
-                if (!follower.isBusy()) {
-                    pathStarted = false;
-                    elapsedTime.reset();
+                if (elapsedTime.seconds() <= 4) {
+                    mecanumDriveSubsystem.drive(0.3, 0.15, 0.3, 0.15);
+                } else {
+                    mecanumDriveSubsystem.drive(0, 0, 0, 0);
                     scoreState = ScoreState.DONE;
                 }
                 break;
@@ -156,8 +152,7 @@ public class CompAutoGoal extends OpMode {
                 // Stop the flywheel motor and servos
                 flywheelSubsystem.runFlywheel(0);
                 flywheelSubsystem.runFlywheelServos(0);
-                mecanumDriveSubsystem.drive(0);
-
+                mecanumDriveSubsystem.drive(0, 0, 0, 0);
                 requestOpModeStop();
                 break;
         }
