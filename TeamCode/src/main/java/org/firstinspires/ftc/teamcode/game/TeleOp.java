@@ -13,7 +13,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.commands.*;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
@@ -29,7 +29,6 @@ public class TeleOp extends OpMode {
     private double[] pedroCoordinates;
     private boolean knowPose;
     private DriveCommand driveCommand;
-    private Follower follower;
     private IMU imu;
 
     @Override
@@ -49,24 +48,10 @@ public class TeleOp extends OpMode {
         pivotSubsystem = new PivotSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
-        follower = Constants.createFollower(hardwareMap);
 
-        if (limelightSubsystem.getBotPosePose3D() == null) {
-            pedroCoordinates = new double[5];
-            knowPose = false;
-        } else {
-            Pose3D startingPose3d = limelightSubsystem.getBotPosePose3D();
-            pedroCoordinates = new double[]{
-                    (39.3701 * (startingPose3d.getPosition().x)) + 72,
-                    (39.3701 * (startingPose3d.getPosition().y)) + 72,
-                    Math.toRadians(startingPose3d.getOrientation().getYaw()),
-            };
-            follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
-            knowPose = true;
-        }
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
-        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, knowPose);
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, knowPose);
 
         mecanumDriveSubsystem.setDefaultCommand(
                 driveCommand
@@ -77,7 +62,7 @@ public class TeleOp extends OpMode {
         );
 
         intakeSubsystem.setDefaultCommand(
-                new IntakeCommand(intakeSubsystem)
+                new IntakeCommand(driver, intakeSubsystem)
         );
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
@@ -90,7 +75,7 @@ public class TeleOp extends OpMode {
                 new FlywheelCommand(driver, flywheelSubsystem)
         );
 
-        pivotSubsystem.resetPivotEncoder();
+//        pivotSubsystem.resetPivotEncoder();
 
     }
 
@@ -106,25 +91,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        if (limelightSubsystem.getBotPosePose3D() != null && knowPose) {
-            Pose3D botPose = limelightSubsystem.getBotPosePose3D();
-            pedroCoordinates[0] = (39.3701*(botPose.getPosition().x)) + 72;
-            pedroCoordinates[1] = (39.3701*(botPose.getPosition().y)) + 72;
-            pedroCoordinates[2] = Math.toRadians(botPose.getOrientation().getYaw());
-            pedroCoordinates[3] = Math.toRadians(botPose.getOrientation().getPitch());
-            pedroCoordinates[4] = Math.toRadians(botPose.getOrientation().getRoll());
-            follower.setPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
-            driveCommand.updateFollower(follower.getPose()); //add more methods here to update individual command's followers, not sure if necessary but just in case
-        } else if (limelightSubsystem.getBotPosePose3D() != null && !knowPose) {
-            Pose3D botPose = limelightSubsystem.getBotPosePose3D();
-            pedroCoordinates[0] = (39.3701*(botPose.getPosition().x)) + 72;
-            pedroCoordinates[1] = (39.3701*(botPose.getPosition().y)) + 72;
-            pedroCoordinates[2] = Math.toRadians(botPose.getOrientation().getYaw());
-            pedroCoordinates[3] = Math.toRadians(botPose.getOrientation().getPitch());
-            pedroCoordinates[4] = Math.toRadians(botPose.getOrientation().getRoll());
-            follower.setStartingPose(new Pose(pedroCoordinates[0], pedroCoordinates[1], pedroCoordinates[2]));
-            driveCommand.setFollowerStartingPose(follower.getPose());
-        }
+
         // FTC Dashboard
         driver.readButtons();
         CommandScheduler.getInstance().run();

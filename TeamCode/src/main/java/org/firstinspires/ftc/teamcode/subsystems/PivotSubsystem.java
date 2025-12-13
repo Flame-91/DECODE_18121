@@ -13,16 +13,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 public class PivotSubsystem extends SubsystemBase {
-    private final DcMotor leftPivotMotor;
+//    private final DcMotor leftPivotMotor;
     private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    public static double offsetAngleFromLimelightToPivot = -5;
+    public static double offsetAngleFromLimelightToPivot = -20;
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
-        leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
+//        leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
-        leftPivotMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftPivotMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivotMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -44,18 +44,18 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setPivotPower(double power) {
-        leftPivotMotor.setPower(power);
+//        leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
     }
 
     public void movePivotWithoutEncoder(double power) {
-        leftPivotMotor.setPower(power);
+//        leftPivotMotor.setPower(power);
         rightPivotMotor.setPower(power);
     }
     public void resetPivotEncoder() { // Should only be called if pivot is at rest DOWN
-        leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public double convertPivotTicksToAngle(double ticks) {
@@ -66,8 +66,8 @@ public class PivotSubsystem extends SubsystemBase {
         return (int) ((int) angle*((pivotTicksAtNinety-pivotTicksAtFortyFive) / 45));
     }
 
-    public double getCurrentPivotPositionTicks() { return leftPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
-    public double getCurrentPivotPositionAngle() { return convertPivotTicksToAngle(leftPivotMotor.getCurrentPosition()) - offsetAngleFromLimelightToPivot; }
+    public double getCurrentPivotPositionTicks() { return rightPivotMotor.getCurrentPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
+    public double getCurrentPivotPositionAngle() { return convertPivotTicksToAngle(rightPivotMotor.getCurrentPosition()) - offsetAngleFromLimelightToPivot; }
     //    public double getTargetPivotPosition() { return leftPivotMotor.getTargetPosition()  - convertPivotAngleToTicks(offsetAngleFromLimelightToPivot); }
-    public double getPivotPower() { return leftPivotMotor.getPower(); }
+    public double getPivotPower() { return rightPivotMotor.getPower(); }
 }

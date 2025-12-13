@@ -27,4 +27,7 @@ public class GlobalConstants {
     public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 0.75;
     public static double flywheelServoBreaktime2 = 1.25;
+
+    public static double leftSideMultiplier = 1.2;
+    public static double rightSideMultiplier = 0.5;
 }

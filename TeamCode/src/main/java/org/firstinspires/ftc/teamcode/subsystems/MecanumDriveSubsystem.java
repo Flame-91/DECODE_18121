@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.leftSideMultiplier;
+import static org.firstinspires.ftc.teamcode.util.GlobalConstants.rightSideMultiplier;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -23,8 +26,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -86,10 +89,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         backLeftPower /= max;
         backRightPower /= max;
 
-        frontLeft.setPower(frontLeftPower);
-        frontRight.setPower(frontRightPower);
-        backLeft.setPower(backLeftPower);
-        backRight.setPower(backRightPower);
+        frontLeft.setPower(frontLeftPower * leftSideMultiplier);
+        frontRight.setPower(frontRightPower * rightSideMultiplier);
+        backLeft.setPower(backLeftPower * leftSideMultiplier);
+        backRight.setPower(backRightPower * rightSideMultiplier);
     }
 
     public void resetIMU() {
