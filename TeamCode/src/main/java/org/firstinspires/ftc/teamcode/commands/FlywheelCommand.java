@@ -17,6 +17,14 @@ public class FlywheelCommand extends CommandBase {
     public static double flywheelServoRuntimeA = 0.2;
     public static double flywheelServoBreaktime1A = 0.75;
     public static double flywheelServoBreaktime2A = 1;
+    public static double flywheelMotorPower1B = 0.7;
+    public static double flywheelMotorPower2B = 0.7;
+    public static double flywheelMotorPower3B = 0.7;
+    public static double flywheelServoRuntimeB = 0.2;
+    public static double flywheelServoBreaktime1B = 0.1;
+    public static double flywheelServoBreaktime2B = 0.2;
+    private boolean close;
+
     private final GamepadEx gamepad;
     private final ElapsedTime servoElapsedTime;
     private final ElapsedTime motorElapsedTime;
@@ -28,11 +36,13 @@ public class FlywheelCommand extends CommandBase {
         this.flyWheelSubsystem = flyWheelSubsystem;
         servoElapsedTime = new ElapsedTime();
         motorElapsedTime = new ElapsedTime();
+        close = true;
         addRequirements(flyWheelSubsystem);
     }
 
     @Override
     public void execute() {
+
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower1A);
             if (motorElapsedTime.seconds() > 2.75) {
