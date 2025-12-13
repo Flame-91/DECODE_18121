@@ -23,6 +23,8 @@ public class FlywheelCommand extends CommandBase {
     public static double flywheelServoRuntimeB = 0.2;
     public static double flywheelServoBreaktime1B = 0.1;
     public static double flywheelServoBreaktime2B = 0.2;
+    public static double flywheelMotorRevA = 2.5;
+    public static double flywheelMotorRevB = 3.25;
     private boolean close;
 
     private final GamepadEx gamepad;
@@ -45,7 +47,7 @@ public class FlywheelCommand extends CommandBase {
 
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower1A);
-            if (motorElapsedTime.seconds() > 2.75) {
+            if (motorElapsedTime.seconds() > flywheelMotorRevA) {
                 gamepad.gamepad.rumble(1, 1, 100);
                 motorElapsedTime.reset();
             }

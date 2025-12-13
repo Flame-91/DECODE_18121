@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.game;
 
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorPower2A;
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorPower3A;
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorRevA;
+import static org.firstinspires.ftc.teamcode.commands.FlywheelCommand.flywheelMotorRevB;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,12 +15,11 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 @Autonomous(name = "CompAutoBlueGoal")
 public class CompAutoBlueGoal extends OpMode {
-    double motorPower = FlywheelCommand.flywheelMotorPower1A;
-    double servoRun = FlywheelCommand.flywheelServoRuntimeA;
-    double break1 = FlywheelCommand.flywheelServoBreaktime1A;
-    double break2 = FlywheelCommand.flywheelServoBreaktime2A;
-    double runTime = FlywheelCommand.flywheelServoRuntimeA;
-    double revTime = 3.5;
+    double flywheelMotorPower1A = FlywheelCommand.flywheelMotorPower1A;
+    double flywheelServoRuntimeA = FlywheelCommand.flywheelServoRuntimeA;
+    double flywheelServoBreaktime1A = FlywheelCommand.flywheelServoBreaktime1A;
+    double flywheelServoBreaktime2A = FlywheelCommand.flywheelServoBreaktime2A;
+    double revTimeA = flywheelMotorRevA;
     double delay = 1.0;
     double moveTime = 2.5;
     private MecanumDriveSubsystem mecanumDriveSubsystem;
@@ -49,13 +53,13 @@ public class CompAutoBlueGoal extends OpMode {
     @Override
     public void loop() {
         if (scoreState != ScoreState.MOVE && scoreState != ScoreState.DONE) {
-            flyWheelSubsystem.runFlywheel(motorPower);
+            flyWheelSubsystem.runFlywheel(flywheelMotorPower1A);
         }
 
         switch (scoreState) {
             case REV:
                 flyWheelSubsystem.runFlywheelServos(0);
-                if (elapsedTime.seconds() >= revTime) {
+                if (elapsedTime.seconds() >= revTimeA) {
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN1;
                 }
@@ -63,7 +67,8 @@ public class CompAutoBlueGoal extends OpMode {
 
             case RUN1:
                 flyWheelSubsystem.runFlywheelServos(1.0);
-                if (elapsedTime.seconds() >= runTime) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower1A);
+                if (elapsedTime.seconds() >= flywheelServoRuntimeA) {
                     elapsedTime.reset();
                     scoreState = ScoreState.BREAK1;
                 }
@@ -71,7 +76,8 @@ public class CompAutoBlueGoal extends OpMode {
 
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
-                if (elapsedTime.seconds() >= break1) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower2A);
+                if (elapsedTime.seconds() >= flywheelServoBreaktime1A) {
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN2;
                 }
@@ -79,7 +85,8 @@ public class CompAutoBlueGoal extends OpMode {
 
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1.0);
-                if (elapsedTime.seconds() >= runTime) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower2A);
+                if (elapsedTime.seconds() >= flywheelServoRuntimeA) {
                     elapsedTime.reset();
                     scoreState = ScoreState.BREAK2;
                 }
@@ -87,7 +94,9 @@ public class CompAutoBlueGoal extends OpMode {
 
             case BREAK2:
                 flyWheelSubsystem.runFlywheelServos(0);
-                if (elapsedTime.seconds() >= break2) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower3A);
+
+                if (elapsedTime.seconds() >= flywheelServoBreaktime2A) {
                     elapsedTime.reset();
                     scoreState = ScoreState.RUN3;
                 }
@@ -95,7 +104,8 @@ public class CompAutoBlueGoal extends OpMode {
 
             case RUN3:
                 flyWheelSubsystem.runFlywheelServos(1.0);
-                if (elapsedTime.seconds() >= runTime) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower3A);
+                if (elapsedTime.seconds() >= flywheelServoRuntimeA) {
                     elapsedTime.reset();
                     scoreState = ScoreState.DELAY;
                 }
