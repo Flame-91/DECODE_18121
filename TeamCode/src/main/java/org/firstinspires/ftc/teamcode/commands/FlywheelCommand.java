@@ -11,11 +11,12 @@ import org.firstinspires.ftc.teamcode.subsystems.FlyWheelSubsystem;
 @Configurable
 public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
-    public static double flywheelMotorPower = 0.47; // public static for panels
-    public static double flywheelServoRuntime = 0.2;
-    public static double farMotorPower = 0.7;
-    public static double flywheelServoBreaktime1 = 0.75;
-    public static double flywheelServoBreaktime2 = 1;
+    public static double flywheelMotorPower1A = 0.47; // public static for panels
+    public static double flywheelMotorPower2A = 0.7;
+    public static double flywheelMotorPower3A = 0.8;
+    public static double flywheelServoRuntimeA = 0.2;
+    public static double flywheelServoBreaktime1A = 0.75;
+    public static double flywheelServoBreaktime2A = 1;
     private final GamepadEx gamepad;
     private final ElapsedTime servoElapsedTime;
     private final ElapsedTime motorElapsedTime;
@@ -33,7 +34,7 @@ public class FlywheelCommand extends CommandBase {
     @Override
     public void execute() {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
-            flyWheelSubsystem.runFlywheel(flywheelMotorPower);
+            flyWheelSubsystem.runFlywheel(flywheelMotorPower1A);
             if (motorElapsedTime.seconds() > 2.75) {
                 gamepad.gamepad.rumble(1, 1, 100);
                 motorElapsedTime.reset();
@@ -74,42 +75,41 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case RUN1:
                 flyWheelSubsystem.runFlywheelServos(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                if (servoElapsedTime.seconds() >= flywheelServoRuntimeA) {
                     servoElapsedTime.reset();
                     currentState = ServoState.BREAK1;
                 }
                 break;
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
-//                flyWheelSubsystem.runFlywheel(secondMotorPower);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower2A);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime1A) {
                     servoElapsedTime.reset();
                     currentState = ServoState.RUN2;
-
                 }
                 break;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
-//                flyWheelSubsystem.runFlywheel(thirdMotorPower);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower2A);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntimeA) {
                     servoElapsedTime.reset();
                     currentState = ServoState.BREAK2;
                 }
                 break;
             case BREAK2:
                 flyWheelSubsystem.runFlywheelServos(0);
-                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower3A);
+                if (servoElapsedTime.seconds() >= flywheelServoBreaktime2A) {
                     servoElapsedTime.reset();
                     currentState = ServoState.RUN3;
-
                 }
                 break;
             case RUN3:
                 flyWheelSubsystem.runFlywheelServos(1);
-                if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
+                flyWheelSubsystem.runFlywheel(flywheelMotorPower3A);
+                if (servoElapsedTime.seconds() >= flywheelServoRuntimeA) {
                     servoElapsedTime.reset();
                     currentState = ServoState.IDLE;
-
                 }
                 break;
             case REVERSE:

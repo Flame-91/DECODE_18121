@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
 @Autonomous(name = "CompAutoBlueGoal")
 public class CompAutoBlueGoal extends OpMode {
-    double motorPower = FlywheelCommand.flywheelMotorPower;
-    double servoRun = FlywheelCommand.flywheelServoRuntime;
-    double break1 = FlywheelCommand.flywheelServoBreaktime1;
-    double break2 = FlywheelCommand.flywheelServoBreaktime2;
-    double runTime = FlywheelCommand.flywheelServoRuntime;
+    double motorPower = FlywheelCommand.flywheelMotorPower1A;
+    double servoRun = FlywheelCommand.flywheelServoRuntimeA;
+    double break1 = FlywheelCommand.flywheelServoBreaktime1A;
+    double break2 = FlywheelCommand.flywheelServoBreaktime2A;
+    double runTime = FlywheelCommand.flywheelServoRuntimeA;
     double revTime = 3.5;
     double delay = 1.0;
     double moveTime = 2.5;
