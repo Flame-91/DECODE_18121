@@ -6,10 +6,9 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 
-public class DriveCommand extends CommandBase {
-    private final MecanumDriveSubsystem drive;
+public class DriveCommand extends CommandBase {    private final MecanumDriveSubsystem drive;
     private final GamepadEx gamepad;
-    private String centric = "field centric";
+    private String centric = "robot centric";
     public DriveCommand(GamepadEx gamepad, MecanumDriveSubsystem drive) {
         this.drive = drive;
         this.gamepad = gamepad;
@@ -38,4 +37,5 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) { drive.MecanumDriveKitBot(0, 0, 0); }
+
 }
