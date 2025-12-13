@@ -13,8 +13,7 @@ public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     public static double flywheelMotorPower = 0.47; // public static for panels
     public static double flywheelServoRuntime = 0.2;
-    public static double secondMotorPower = 0.8;
-    public static double thirdMotorPower = 0.8;
+    public static double farMotorPower = 0.7;
     public static double flywheelServoBreaktime1 = 0.75;
     public static double flywheelServoBreaktime2 = 1;
     private final GamepadEx gamepad;
@@ -82,7 +81,7 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
-                flyWheelSubsystem.runFlywheel(secondMotorPower);
+//                flyWheelSubsystem.runFlywheel(secondMotorPower);
                 if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
                     servoElapsedTime.reset();
                     currentState = ServoState.RUN2;
@@ -91,7 +90,7 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
-                flyWheelSubsystem.runFlywheel(thirdMotorPower);
+//                flyWheelSubsystem.runFlywheel(thirdMotorPower);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentState = ServoState.BREAK2;
