@@ -13,7 +13,6 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.commands.*;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
@@ -45,17 +44,16 @@ public class TeleOp extends OpMode {
         flywheelSubsystem = new FlywheelSubsystem(hardwareMap, telemetry, telemetryPacket);
         intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry, telemetryPacket);
 
-        follower = Constants.createFollower(hardwareMap);
 
         driver = new GamepadEx(gamepad1); // All keybindings are in readme
-        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, follower, knowPose);
+        driveCommand = new DriveCommand(driver, mecanumDriveSubsystem, knowPose);
 
         mecanumDriveSubsystem.setDefaultCommand(
                 driveCommand
         );
 
         intakeSubsystem.setDefaultCommand(
-                new IntakeCommand(intakeSubsystem)
+                new IntakeCommand(driver, intakeSubsystem)
         );
 
         flywheelSubsystem.setDefaultCommand(

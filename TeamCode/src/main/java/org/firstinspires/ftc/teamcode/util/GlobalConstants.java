@@ -22,7 +22,7 @@ public class GlobalConstants {
     public static double flywheelKI = 0.1;
     public static double flywheelKD = 0.001;
 
-    public static double flywheelMotorPower = 1;
+    public static double flywheelMotorPower = 0.3;
     public static double flywheelMotorRuntime = 2.75;
     public static double flywheelServoRuntime = 0.2;
     public static double flywheelServoBreaktime1 = 0.75;

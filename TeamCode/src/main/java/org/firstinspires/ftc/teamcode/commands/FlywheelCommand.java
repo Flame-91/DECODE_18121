@@ -45,6 +45,7 @@ public class FlywheelCommand extends CommandBase {
             }
         } else {
             flywheelMotorTimer.reset();
+            flywheelSubsystem.setFlywheelMotorPower(0);
         }
 
         switch (currentState) {
