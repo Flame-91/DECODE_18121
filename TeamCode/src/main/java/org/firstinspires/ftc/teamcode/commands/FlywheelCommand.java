@@ -13,8 +13,10 @@ public class FlywheelCommand extends CommandBase {
     private final FlyWheelSubsystem flyWheelSubsystem;
     public static double flywheelMotorPower = 0.47; // public static for panels
     public static double flywheelServoRuntime = 0.2;
-    public static double flywheelServoBreaktime1 = 1.5;
-    public static double flywheelServoBreaktime2 = 2.1;
+    public static double secondMotorPower = 0.8;
+    public static double thirdMotorPower = 0.8;
+    public static double flywheelServoBreaktime1 = 0.75;
+    public static double flywheelServoBreaktime2 = 1;
     private final GamepadEx gamepad;
     private final ElapsedTime servoElapsedTime;
     private final ElapsedTime motorElapsedTime;
@@ -34,13 +36,23 @@ public class FlywheelCommand extends CommandBase {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
             flyWheelSubsystem.runFlywheel(flywheelMotorPower);
             if (motorElapsedTime.seconds() > 2.75) {
-                gamepad.gamepad.rumble(1, 1, 300);
+                gamepad.gamepad.rumble(1, 1, 100);
                 motorElapsedTime.reset();
             }
         } else {
             flyWheelSubsystem.runFlywheel(0);
             motorElapsedTime.reset();
         }
+//        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .5) {
+//            flyWheelSubsystem.runFlywheel(flywheelMotorPower);
+//            if (motorElapsedTime.seconds() > 2.75) {
+//                gamepad.gamepad.rumble(1, 1, 100);
+//                motorElapsedTime.reset();
+//            }
+//        } else {
+//            flyWheelSubsystem.runFlywheel(0);
+//            motorElapsedTime.reset();
+//        }
 
         gamepad.readButtons();
 
@@ -70,6 +82,7 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case BREAK1:
                 flyWheelSubsystem.runFlywheelServos(0);
+                flyWheelSubsystem.runFlywheel(secondMotorPower);
                 if (servoElapsedTime.seconds() >= flywheelServoBreaktime1) {
                     servoElapsedTime.reset();
                     currentState = ServoState.RUN2;
@@ -78,6 +91,7 @@ public class FlywheelCommand extends CommandBase {
                 break;
             case RUN2:
                 flyWheelSubsystem.runFlywheelServos(1);
+                flyWheelSubsystem.runFlywheel(thirdMotorPower);
                 if (servoElapsedTime.seconds() >= flywheelServoRuntime) {
                     servoElapsedTime.reset();
                     currentState = ServoState.BREAK2;
