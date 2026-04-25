@@ -15,8 +15,8 @@ public class GlobalConstants {
     public static double pivotKD = 0.0001;
     public static double pivotKF = 0.15;
     public static double pivotShootingOffset = 0.42545;
-    public static double pivotTicksAtNinety = 67; // MAKE SURE to subtract offsets (which is the angle of when pivot is down)
-    public static double pivotTicksAtFortyFive = 83; // Use telemetry to print encoder ticks, and then use angle to get linear equation (p value)
+    public static double pivotTicksAtNinety = 67; // MAKE SURE to subtract offsets (which is the angle of when pivot is down), should be automatic in telemetry if pivot is started at down
+    public static double pivotTicksAtFortyFive = 83; // Use telemetry to print encoder ticks, a
 
     public static double flywheelKP = 1;
     public static double flywheelKI = 0.1;

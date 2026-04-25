@@ -39,7 +39,7 @@ public class PivotCommand extends CommandBase {
         } if (gamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
             pivotSubsystem.resetPivotEncoder();
         } else if (limelightSubsystem.hasTarget()) {
-            double pivotPositionAngle = pivotSubsystem.convertPivotTicksToAngle(pivotSubsystem.getCurrentPivotPositionAngle());
+            double pivotPositionAngle = pivotSubsystem.getCurrentPivotPositionAngle();
             double targetPosition = limelightSubsystem.getPitchErrorDegrees(pivotShootingOffset);
             double pitchError = targetPosition - pivotPositionAngle;
 

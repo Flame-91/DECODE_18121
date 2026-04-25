@@ -11,12 +11,13 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+
 public class PivotSubsystem extends SubsystemBase {
     private final DcMotor leftPivotMotor;
     private final DcMotor rightPivotMotor;
     private final Telemetry telemetry;
     private final TelemetryPacket telemetryPacket;
-    double offsetAngleFromLimelightToPivot = -5;
+    public static double offsetAngleFromLimelightToPivot = -5;
     public PivotSubsystem(HardwareMap hardwareMap, Telemetry telemetry, TelemetryPacket telemetryPacket) {
         leftPivotMotor = hardwareMap.get(DcMotor.class, "leftPivotMotor");
         rightPivotMotor = hardwareMap.get(DcMotor.class, "rightPivotMotor");
