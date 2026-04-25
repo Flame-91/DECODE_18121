@@ -58,7 +58,7 @@ public class PivotSubsystem extends SubsystemBase {
         rightPivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public double convertPivotTicksToAngle(double ticks) {
-        return (int) ((int) ticks*(45 / (pivotTicksAtNinety-pivotTicksAtFortyFive)));
+        return ticks*(45 / (pivotTicksAtNinety-pivotTicksAtFortyFive));
     }
 
     public int convertPivotAngleToTicks(double angle) {
